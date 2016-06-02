@@ -15,11 +15,6 @@ public class MessageService {
 
     private Map<Long, Message> messages = MessengerDB.getMessages();
 
-    public MessageService() {
-
-    }
-
-
     public List<Message> getAllMessages() {
         return new ArrayList<>(messages.values());
     }

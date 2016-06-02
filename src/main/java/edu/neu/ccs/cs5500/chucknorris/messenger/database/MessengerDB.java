@@ -15,13 +15,15 @@ public class MessengerDB {
     private static Map<Long, Message> messages = new ConcurrentHashMap<>();
     private static Map<Long, Profile> profiles = new ConcurrentHashMap<>();
     private static AtomicLong messageCounter = new AtomicLong(2L);
-    private static AtomicLong profileCounter = new AtomicLong();
+    private static AtomicLong profileCounter = new AtomicLong(1L);
 
     static {
         Message m1 = new Message(0L, "Hello World", "Yogi");
         messages.put(m1.getId(), m1);
         Message m2 = new Message(1L, "Bye World", "Anton");
         messages.put(m2.getId(), m2);
+        Profile p1 = new Profile(0L, "yoganandc", "Yoganand", "Chandrasekhar");
+        profiles.put(p1.getId(), p1);
     }
 
     public static Map<Long, Message> getMessages() {

@@ -14,7 +14,7 @@ public class Profile {
     private String profileName;
     private String firstName;
     private String lastName;
-    private Date created;
+    private Date updated;
 
     public Profile() {
     }
@@ -24,7 +24,7 @@ public class Profile {
         this.profileName = profileName;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.created = new Date();
+        this.updated = new Date();
     }
 
     public long getId() {
@@ -59,11 +59,11 @@ public class Profile {
         this.lastName = lastName;
     }
 
-    public Date getCreated() {
-        return created;
+    public Date getUpdated() {
+        return updated;
     }
 
-    public void setCreated(Date created) {
-        this.created = created;
+    public void setUpdated(Date updated) {
+        this.updated = updated;
     }
 }
