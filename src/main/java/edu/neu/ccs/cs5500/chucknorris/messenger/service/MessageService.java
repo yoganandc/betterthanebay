@@ -19,6 +19,32 @@ public class MessageService {
         return new ArrayList<>(messages.values());
     }
 
+    public List<Message> getMessagesByUser(String author) {
+        List<Message> ret = new ArrayList<>();
+        for(Message m : messages.values()) {
+            if(m.getAuthor().equals(author)) {
+                ret.add(m);
+            }
+        }
+        return ret;
+    }
+
+    public List<Message> getMessagesByPage(int start, int size) {
+        int numMessages = messages.size();
+        List<Message> ret = new ArrayList<>();
+        if(start >= numMessages) {
+            return ret;
+        }
+        else if(start + size > numMessages) {
+            ret.addAll(new ArrayList<Message>(messages.values()).subList(start, numMessages));
+            return ret;
+        }
+        else {
+            ret.addAll(new ArrayList<Message>(messages.values()).subList(start, start + size));
+            return ret;
+        }
+    }
+
     public Message getMessage(long id) {
         return messages.get(id);
     }
@@ -31,7 +57,7 @@ public class MessageService {
     }
 
     public Message updateMessage(Message message) {
-        if (message.getId() < 0) {
+        if (!messages.containsKey(message.getId())) {
             return null;
         }
         message.setUpdated(new Date());

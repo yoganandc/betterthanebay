@@ -4,6 +4,7 @@ package edu.neu.ccs.cs5500.chucknorris.messenger.resources;
  * Created by yoganandc on 5/26/16.
  */
 
+import edu.neu.ccs.cs5500.chucknorris.messenger.beans.MessageFilter;
 import edu.neu.ccs.cs5500.chucknorris.messenger.service.MessageService;
 import edu.neu.ccs.cs5500.chucknorris.messenger.model.Message;
 
@@ -19,7 +20,14 @@ public class MessageResource {
     MessageService messageService = new MessageService();
 
     @GET
-    public List<Message> getMessages() {
+    public List<Message> getMessages(@BeanParam MessageFilter params) {
+        if(params.getAuthor() != null && !params.getAuthor().isEmpty()) {
+            return messageService.getMessagesByUser(params.getAuthor());
+        }
+        if(params.getStart() != null && params.getSize() >= 0 &&
+                params.getSize() != null && params.getSize() >= 1) {
+            return messageService.getMessagesByPage(params.getStart(), params.getSize());
+        }
         return messageService.getAllMessages();
     }
 
@@ -45,5 +53,10 @@ public class MessageResource {
     @Path("/{messageId}")
     public void removeMessage(@PathParam("messageId") long messageId) {
         messageService.removeMessage(messageId);
+    }
+
+    @Path("/{messageId}/comments")
+    public CommentResource getCommentResource() {
+        return new CommentResource();
     }
 }

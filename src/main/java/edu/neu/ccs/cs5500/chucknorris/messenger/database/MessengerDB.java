@@ -1,5 +1,6 @@
 package edu.neu.ccs.cs5500.chucknorris.messenger.database;
 
+import edu.neu.ccs.cs5500.chucknorris.messenger.model.Comment;
 import edu.neu.ccs.cs5500.chucknorris.messenger.model.Message;
 import edu.neu.ccs.cs5500.chucknorris.messenger.model.Profile;
 
@@ -14,8 +15,10 @@ public class MessengerDB {
 
     private static Map<Long, Message> messages = new ConcurrentHashMap<>();
     private static Map<Long, Profile> profiles = new ConcurrentHashMap<>();
+    private static Map<Long, Comment> comments = new ConcurrentHashMap<>();
     private static AtomicLong messageCounter = new AtomicLong(2L);
     private static AtomicLong profileCounter = new AtomicLong(1L);
+    private static AtomicLong commentCounter = new AtomicLong(1L);
 
     static {
         Message m1 = new Message(0L, "Hello World", "Yogi");
@@ -24,6 +27,8 @@ public class MessengerDB {
         messages.put(m2.getId(), m2);
         Profile p1 = new Profile(0L, "yoganandc", "Yoganand", "Chandrasekhar");
         profiles.put(p1.getId(), p1);
+        Comment c1 = new Comment(0L, 1L, "LOL", "Yogi");
+        comments.put(c1.getId(), c1);
     }
 
     public static Map<Long, Message> getMessages() {
@@ -34,6 +39,8 @@ public class MessengerDB {
         return profiles;
     }
 
+    public static Map<Long, Comment> getComments() { return comments; }
+
     public static long getNextMessageId() {
         return messageCounter.getAndIncrement();
     }
@@ -41,5 +48,7 @@ public class MessengerDB {
     public static long getNextProfileId() {
         return profileCounter.getAndIncrement();
     }
+
+    public static long getNextCommentId() { return commentCounter.getAndIncrement(); }
 
 }
