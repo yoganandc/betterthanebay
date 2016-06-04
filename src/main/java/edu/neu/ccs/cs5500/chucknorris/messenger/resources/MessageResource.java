@@ -9,7 +9,11 @@ import edu.neu.ccs.cs5500.chucknorris.messenger.service.MessageService;
 import edu.neu.ccs.cs5500.chucknorris.messenger.model.Message;
 
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
+import java.net.URI;
 import java.util.List;
 
 @Path("/messages")
@@ -38,8 +42,14 @@ public class MessageResource {
     }
 
     @POST
-    public Message addMessage(Message message) {
-        return messageService.addMessage(message);
+    public Response addMessage(Message message, @Context UriInfo uriInfo) {
+
+        // THIS FUNCTION RETURNS A 201 CREATED WITH THE LOCATION HEADER SET TO NEW URL
+        Message addedMessage = messageService.addMessage(message);
+        String addedId = String.valueOf(addedMessage.getId());
+        URI uri = uriInfo.getAbsolutePathBuilder().path(addedId).build();
+        return Response.created(uri).entity(addedMessage).build();
+
     }
 
     @PUT

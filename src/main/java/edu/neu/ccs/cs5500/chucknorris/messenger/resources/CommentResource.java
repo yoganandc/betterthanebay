@@ -9,7 +9,11 @@ import edu.neu.ccs.cs5500.chucknorris.messenger.model.Comment;
 import edu.neu.ccs.cs5500.chucknorris.messenger.service.CommentService;
 
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
+import java.net.URI;
 import java.util.List;
 
 @Consumes(MediaType.APPLICATION_JSON)
@@ -40,8 +44,15 @@ public class CommentResource {
     }
 
     @POST
-    public Comment addComment(@PathParam("messageId") long messageId, Comment comment) {
-        return commentService.addComment(messageId, comment);
+    public Response addComment(@PathParam("messageId") long messageId,
+                               Comment comment,
+                               @Context UriInfo uriInfo) {
+
+        // THIS FUNCTION RETURNS A 201 CREATED WITH THE LOCATION HEADER SET TO NEW URL
+        Comment addComment = commentService.addComment(messageId, comment);
+        String addId = String.valueOf(addComment.getId());
+        URI addUri = uriInfo.getAbsolutePathBuilder().path(addId).build();
+        return Response.created(addUri).entity(addComment).build();
     }
 
     @PUT

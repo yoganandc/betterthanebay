@@ -53,6 +53,7 @@ public class CommentService {
     public Comment addComment(long messageId, Comment comment) {
         if(messages.containsKey(messageId)) {
             comment.setId(MessengerDB.getNextCommentId());
+            comment.setMessageId(messageId);
             comment.setUpdated(new Date());
             comments.put(comment.getId(), comment);
             return comment;
