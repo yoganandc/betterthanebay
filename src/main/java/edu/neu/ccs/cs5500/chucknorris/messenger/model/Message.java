@@ -1,7 +1,9 @@
 package edu.neu.ccs.cs5500.chucknorris.messenger.model;
 
 import javax.xml.bind.annotation.XmlRootElement;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by yoganandc on 5/26/16.
@@ -14,6 +16,7 @@ public class Message {
     private String message;
     private Date updated;
     private String author;
+    private List<Link> links;
 
     public Message() {
 
@@ -24,6 +27,7 @@ public class Message {
         this.message = message;
         this.author = author;
         this.updated = new Date();
+        this.links = new ArrayList<>();
     }
 
     public long getId() {
@@ -56,5 +60,21 @@ public class Message {
 
     public void setAuthor(String author) {
         this.author = author;
+    }
+
+    public List<Link> getLinks() {
+        return links;
+    }
+
+    public void setLinks(List<Link> links) {
+        this.links = links;
+    }
+
+    public void addLink(String link, String rel) {
+        Link l = new Link(link, rel);
+        if(links == null) {
+            links = new ArrayList<>();
+        }
+        links.add(l);
     }
 }

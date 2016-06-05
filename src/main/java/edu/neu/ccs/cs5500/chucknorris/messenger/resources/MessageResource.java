@@ -37,19 +37,24 @@ public class MessageResource {
 
     @GET
     @Path("/{messageId}")
-    public Message getMessage(@PathParam("messageId") long messageId) {
-        return messageService.getMessage(messageId);
+    public Message getMessage(@PathParam("messageId") long messageId, @Context UriInfo uriInfo) {
+
+        // THIS FUNCTION ADDS THE LINKS PROPERTY TO THE MESSAGE RESPONSE
+        Message message = messageService.getMessage(messageId);
+        message.addLink(getSelfUri(message, uriInfo), "self");
+        message.addLink(getCommentsUri(message, uriInfo), "comments");
+
+        return message;
     }
 
     @POST
     public Response addMessage(Message message, @Context UriInfo uriInfo) {
 
-        // THIS FUNCTION RETURNS A 201 CREATED WITH THE LOCATION HEADER SET TO NEW URL
+        // THIS FUNCTION RETURNS A 201 CREATED WITH THE LOCATION HEADER SET TO NEW URI
         Message addedMessage = messageService.addMessage(message);
         String addedId = String.valueOf(addedMessage.getId());
         URI uri = uriInfo.getAbsolutePathBuilder().path(addedId).build();
         return Response.created(uri).entity(addedMessage).build();
-
     }
 
     @PUT
@@ -68,5 +73,19 @@ public class MessageResource {
     @Path("/{messageId}/comments")
     public CommentResource getCommentResource() {
         return new CommentResource();
+    }
+
+    // ------------------------------------------------------------------------------------------------
+
+    public String getSelfUri(Message message, UriInfo uriInfo) {
+        String uri = uriInfo.getBaseUriBuilder().path(MessageResource.class)
+                        .path(String.valueOf(message.getId())).build().toString();
+        return uri;
+    }
+
+    public String getCommentsUri(Message message, UriInfo uriInfo) {
+        String uri = uriInfo.getBaseUriBuilder().path(MessageResource.class, "getCommentResource")
+                        .resolveTemplate("messageId", message.getId()).build().toString();
+        return uri;
     }
 }
