@@ -9,6 +9,8 @@ public class Person {
   private String middle;
   private String last;
   private Date birthday;
+  private Date created;
+  private Date updated;
 
   public Person() {
     this.id = null;

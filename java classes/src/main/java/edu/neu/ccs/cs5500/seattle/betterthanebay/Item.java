@@ -6,7 +6,8 @@ import java.util.List;
 public class Item {
 
   private Long id;
-  private Person name;
+  private String name;
+  private String description;
   List<Integer> categories;
   private Double initialPrice;
   private Date startDate;
@@ -16,6 +17,8 @@ public class Item {
   private Feedback sellerFeedback;
   private Long bidId;
   private Long userId;
+  private Date created;
+  private Date updated;
 
   public Item() {
     this.id = null;
