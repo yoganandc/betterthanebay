@@ -42,11 +42,11 @@ public class Item {
     this.id = id;
   }
 
-  public Person getName() {
+  public String getName() {
     return this.name;
   }
 
-  public void setName(Person name) {
+  public void setName(String name) {
     this.name = name;
   }
 

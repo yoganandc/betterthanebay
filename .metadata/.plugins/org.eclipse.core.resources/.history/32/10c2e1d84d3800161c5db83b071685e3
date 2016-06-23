@@ -1,0 +1,5 @@
+package edu.neu.ccs.cs5500.seattle.betterthanebay.resources;
+
+public class BidResource {
+
+}

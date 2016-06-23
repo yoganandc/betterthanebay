@@ -15,13 +15,8 @@ public class User {
 
 
   public User() {
-    this.id = null;
-    this.userName = null;
-    this.password = null;
-    this.name = null;
     this.addresses = new ArrayList<Address>();
     this.payments = new ArrayList<Payment>();
-    this.rating = null;
   }
 
 

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workingSetManager>
+<workingSet editPageId="org.eclipse.ui.resourceWorkingSetPage" factoryID="org.eclipse.ui.internal.WorkingSetFactory" id="1466578161701_1" label="betterthanebay" name="betterthanebay">
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/java classes" type="4"/>
+</workingSet>
+<workingSet editPageId="org.eclipse.ui.resourceWorkingSetPage" factoryID="org.eclipse.ui.internal.WorkingSetFactory" id="1466578209653_2" label="HelloWorldConfiguration" name="HelloWorldConfiguration">
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/DataBase API" type="4"/>
+</workingSet>
+<workingSet aggregate="true" factoryID="org.eclipse.ui.internal.WorkingSetFactory" id="1466577312786_0" label="Window Working Set" name="Aggregate for window 1466577312785"/>
+</workingSetManager>
