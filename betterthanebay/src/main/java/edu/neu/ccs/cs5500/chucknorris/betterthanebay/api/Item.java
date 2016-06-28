@@ -1,4 +1,4 @@
-package edu.neu.ccs.cs5500.chucknorris.betterthanebay;
+package edu.neu.ccs.cs5500.chucknorris.betterthanebay.api;
 
 import java.util.Date;
 import java.util.List;
@@ -28,12 +28,20 @@ public class Item {
     this.id = id;
   }
 
-  public Person getName() {
+  public String getName() {
     return this.name;
   }
 
-  public void setName(Person name) {
+  public void setName(String name) {
     this.name = name;
+  }
+
+public String getDescription() {
+    return this.name;
+  }
+
+  public void setDescription(String description) {
+    this.description = description;
   }
 
   public List<Integer> getCategories() {

@@ -1,5 +1,4 @@
-INSERT INTO STATE VALUES 
-('AL', 'Alabama'),
+INSERT INTO STATE (code, name) VALUES
 ('AK', 'Alaska'),
 ('AZ', 'Arizona'),
 ('AR', 'Arkansas'),

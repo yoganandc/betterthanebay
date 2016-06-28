@@ -1,4 +1,4 @@
-package edu.neu.ccs.cs5500.chucknorris.betterthanebay;
+package edu.neu.ccs.cs5500.chucknorris.betterthanebay.api;
 
 import java.util.Date;
 
