@@ -1,0 +1,265 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="yoganandc (generated)" id="1467153222967-2" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <insert tableName="state">
+            <column name="id" valueNumeric="1"/>
+            <column name="name" value="Alabama"/>
+            <column name="code" value="AL"/>
+        </insert>
+        <insert tableName="state">
+            <column name="id" valueNumeric="2"/>
+            <column name="name" value="Alaska"/>
+            <column name="code" value="AK"/>
+        </insert>
+        <insert tableName="state">
+            <column name="id" valueNumeric="3"/>
+            <column name="name" value="Arizona"/>
+            <column name="code" value="AZ"/>
+        </insert>
+        <insert tableName="state">
+            <column name="id" valueNumeric="4"/>
+            <column name="name" value="Arkansas"/>
+            <column name="code" value="AR"/>
+        </insert>
+        <insert tableName="state">
+            <column name="id" valueNumeric="5"/>
+            <column name="name" value="California"/>
+            <column name="code" value="CA"/>
+        </insert>
+        <insert tableName="state">
+            <column name="id" valueNumeric="6"/>
+            <column name="name" value="Colorado"/>
+            <column name="code" value="CO"/>
+        </insert>
+        <insert tableName="state">
+            <column name="id" valueNumeric="7"/>
+            <column name="name" value="Connecticut"/>
+            <column name="code" value="CT"/>
+        </insert>
+        <insert tableName="state">
+            <column name="id" valueNumeric="8"/>
+            <column name="name" value="Delaware"/>
+            <column name="code" value="DE"/>
+        </insert>
+        <insert tableName="state">
+            <column name="id" valueNumeric="9"/>
+            <column name="name" value="District of Columbia"/>
+            <column name="code" value="DC"/>
+        </insert>
+        <insert tableName="state">
+            <column name="id" valueNumeric="10"/>
+            <column name="name" value="Florida"/>
+            <column name="code" value="FL"/>
+        </insert>
+        <insert tableName="state">
+            <column name="id" valueNumeric="11"/>
+            <column name="name" value="Georgia"/>
+            <column name="code" value="GA"/>
+        </insert>
+        <insert tableName="state">
+            <column name="id" valueNumeric="12"/>
+            <column name="name" value="Hawaii"/>
+            <column name="code" value="HI"/>
+        </insert>
+        <insert tableName="state">
+            <column name="id" valueNumeric="13"/>
+            <column name="name" value="Idaho"/>
+            <column name="code" value="ID"/>
+        </insert>
+        <insert tableName="state">
+            <column name="id" valueNumeric="14"/>
+            <column name="name" value="Illinois"/>
+            <column name="code" value="IL"/>
+        </insert>
+        <insert tableName="state">
+            <column name="id" valueNumeric="15"/>
+            <column name="name" value="Indiana"/>
+            <column name="code" value="IN"/>
+        </insert>
+        <insert tableName="state">
+            <column name="id" valueNumeric="16"/>
+            <column name="name" value="Iowa"/>
+            <column name="code" value="IA"/>
+        </insert>
+        <insert tableName="state">
+            <column name="id" valueNumeric="17"/>
+            <column name="name" value="Kansas"/>
+            <column name="code" value="KS"/>
+        </insert>
+        <insert tableName="state">
+            <column name="id" valueNumeric="18"/>
+            <column name="name" value="Kentucky"/>
+            <column name="code" value="KY"/>
+        </insert>
+        <insert tableName="state">
+            <column name="id" valueNumeric="19"/>
+            <column name="name" value="Louisiana"/>
+            <column name="code" value="LA"/>
+        </insert>
+        <insert tableName="state">
+            <column name="id" valueNumeric="20"/>
+            <column name="name" value="Maine"/>
+            <column name="code" value="ME"/>
+        </insert>
+        <insert tableName="state">
+            <column name="id" valueNumeric="21"/>
+            <column name="name" value="Maryland"/>
+            <column name="code" value="MD"/>
+        </insert>
+        <insert tableName="state">
+            <column name="id" valueNumeric="22"/>
+            <column name="name" value="Massachusetts"/>
+            <column name="code" value="MA"/>
+        </insert>
+        <insert tableName="state">
+            <column name="id" valueNumeric="23"/>
+            <column name="name" value="Michigan"/>
+            <column name="code" value="MI"/>
+        </insert>
+        <insert tableName="state">
+            <column name="id" valueNumeric="24"/>
+            <column name="name" value="Minnesota"/>
+            <column name="code" value="MN"/>
+        </insert>
+        <insert tableName="state">
+            <column name="id" valueNumeric="25"/>
+            <column name="name" value="Mississippi"/>
+            <column name="code" value="MS"/>
+        </insert>
+        <insert tableName="state">
+            <column name="id" valueNumeric="26"/>
+            <column name="name" value="Missouri"/>
+            <column name="code" value="MO"/>
+        </insert>
+        <insert tableName="state">
+            <column name="id" valueNumeric="27"/>
+            <column name="name" value="Montana"/>
+            <column name="code" value="MT"/>
+        </insert>
+        <insert tableName="state">
+            <column name="id" valueNumeric="28"/>
+            <column name="name" value="Nebraska"/>
+            <column name="code" value="NE"/>
+        </insert>
+        <insert tableName="state">
+            <column name="id" valueNumeric="29"/>
+            <column name="name" value="Nevada"/>
+            <column name="code" value="NV"/>
+        </insert>
+        <insert tableName="state">
+            <column name="id" valueNumeric="30"/>
+            <column name="name" value="New Hampshire"/>
+            <column name="code" value="NH"/>
+        </insert>
+        <insert tableName="state">
+            <column name="id" valueNumeric="31"/>
+            <column name="name" value="New Jersey"/>
+            <column name="code" value="NJ"/>
+        </insert>
+        <insert tableName="state">
+            <column name="id" valueNumeric="32"/>
+            <column name="name" value="New Mexico"/>
+            <column name="code" value="NM"/>
+        </insert>
+        <insert tableName="state">
+            <column name="id" valueNumeric="33"/>
+            <column name="name" value="New York"/>
+            <column name="code" value="NY"/>
+        </insert>
+        <insert tableName="state">
+            <column name="id" valueNumeric="34"/>
+            <column name="name" value="North Carolina"/>
+            <column name="code" value="NC"/>
+        </insert>
+        <insert tableName="state">
+            <column name="id" valueNumeric="35"/>
+            <column name="name" value="North Dakota"/>
+            <column name="code" value="ND"/>
+        </insert>
+        <insert tableName="state">
+            <column name="id" valueNumeric="36"/>
+            <column name="name" value="Ohio"/>
+            <column name="code" value="OH"/>
+        </insert>
+        <insert tableName="state">
+            <column name="id" valueNumeric="37"/>
+            <column name="name" value="Oklahoma"/>
+            <column name="code" value="OK"/>
+        </insert>
+        <insert tableName="state">
+            <column name="id" valueNumeric="38"/>
+            <column name="name" value="Oregon"/>
+            <column name="code" value="OR"/>
+        </insert>
+        <insert tableName="state">
+            <column name="id" valueNumeric="39"/>
+            <column name="name" value="Pennsylvania"/>
+            <column name="code" value="PA"/>
+        </insert>
+        <insert tableName="state">
+            <column name="id" valueNumeric="40"/>
+            <column name="name" value="Puerto Rico"/>
+            <column name="code" value="PR"/>
+        </insert>
+        <insert tableName="state">
+            <column name="id" valueNumeric="41"/>
+            <column name="name" value="Rhode Island"/>
+            <column name="code" value="RI"/>
+        </insert>
+        <insert tableName="state">
+            <column name="id" valueNumeric="42"/>
+            <column name="name" value="South Carolina"/>
+            <column name="code" value="SC"/>
+        </insert>
+        <insert tableName="state">
+            <column name="id" valueNumeric="43"/>
+            <column name="name" value="South Dakota"/>
+            <column name="code" value="SD"/>
+        </insert>
+        <insert tableName="state">
+            <column name="id" valueNumeric="44"/>
+            <column name="name" value="Tennessee"/>
+            <column name="code" value="TN"/>
+        </insert>
+        <insert tableName="state">
+            <column name="id" valueNumeric="45"/>
+            <column name="name" value="Texas"/>
+            <column name="code" value="TX"/>
+        </insert>
+        <insert tableName="state">
+            <column name="id" valueNumeric="46"/>
+            <column name="name" value="Utah"/>
+            <column name="code" value="UT"/>
+        </insert>
+        <insert tableName="state">
+            <column name="id" valueNumeric="47"/>
+            <column name="name" value="Vermont"/>
+            <column name="code" value="VT"/>
+        </insert>
+        <insert tableName="state">
+            <column name="id" valueNumeric="48"/>
+            <column name="name" value="Virginia"/>
+            <column name="code" value="VA"/>
+        </insert>
+        <insert tableName="state">
+            <column name="id" valueNumeric="49"/>
+            <column name="name" value="Washington"/>
+            <column name="code" value="WA"/>
+        </insert>
+        <insert tableName="state">
+            <column name="id" valueNumeric="50"/>
+            <column name="name" value="West Virginia"/>
+            <column name="code" value="WV"/>
+        </insert>
+        <insert tableName="state">
+            <column name="id" valueNumeric="51"/>
+            <column name="name" value="Wisconsin"/>
+            <column name="code" value="WI"/>
+        </insert>
+        <insert tableName="state">
+            <column name="id" valueNumeric="52"/>
+            <column name="name" value="Wyoming"/>
+            <column name="code" value="WY"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>

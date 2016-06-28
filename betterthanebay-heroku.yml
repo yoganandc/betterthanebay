@@ -2,14 +2,8 @@ database:
   # the name of your JDBC driver
   driverClass: org.postgresql.Driver
 
-  # the username
-  user: postgres
-
-  # the password
-  password: postgres
-
   # the JDBC URL
-  url: jdbc:postgresql://127.0.0.1/betterthanebay
+  url: ${JDBC_DATABASE_URL}
 
   # any properties specific to your JDBC driver:
   properties:
