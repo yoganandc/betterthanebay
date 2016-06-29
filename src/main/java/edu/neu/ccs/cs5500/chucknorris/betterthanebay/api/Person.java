@@ -1,7 +1,5 @@
 package edu.neu.ccs.cs5500.chucknorris.betterthanebay.api;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.util.Date;
 import java.util.Objects;
 
@@ -88,5 +86,16 @@ public class Person {
     @Override
     public int hashCode() {
         return Objects.hash(getId(), getFirst(), getMiddle(), getLast(), getBirthday());
+    }
+
+    @Override
+    public String toString() {
+        return "Person{" +
+                "id=" + id +
+                ", first='" + first + '\'' +
+                ", middle='" + middle + '\'' +
+                ", last='" + last + '\'' +
+                ", birthday=" + birthday +
+                '}';
     }
 }

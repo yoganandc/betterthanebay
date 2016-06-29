@@ -16,6 +16,7 @@ public class UserDAO extends AbstractDAO<User> {
     }
 
     public Optional<User> getById(Long id) {
-        return Optional.ofNullable(get(id));
+        Optional<User> ret = Optional.ofNullable(get(id));
+        return ret;
     }
 }

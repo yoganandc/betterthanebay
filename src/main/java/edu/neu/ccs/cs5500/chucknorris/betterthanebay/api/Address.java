@@ -26,7 +26,7 @@ public class Address {
     @Column(nullable = false)
     private String city;
 
-    @Column(nullable = false)
+    @Column(name = "state_id", nullable = false)
     private Integer state; // enums
 
     @Column(nullable = false)
@@ -96,5 +96,17 @@ public class Address {
     @Override
     public int hashCode() {
         return Objects.hash(getId(), getLine1(), getLine2(), getCity(), getState(), getZip());
+    }
+
+    @Override
+    public String toString() {
+        return "Address{" +
+                "id=" + id +
+                ", line1='" + line1 + '\'' +
+                ", line2='" + line2 + '\'' +
+                ", city='" + city + '\'' +
+                ", state=" + state +
+                ", zip='" + zip + '\'' +
+                '}';
     }
 }

@@ -117,4 +117,17 @@ public class Payment {
     public int hashCode() {
         return Objects.hash(getId(), getFirstName(), getLastName(), getNumber(), getExpiry(), getAddress(), getCsv());
     }
+
+    @Override
+    public String toString() {
+        return "Payment{" +
+                "csv=" + csv +
+                ", address=" + address +
+                ", expiry=" + expiry +
+                ", number='" + number + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", id=" + id +
+                '}';
+    }
 }

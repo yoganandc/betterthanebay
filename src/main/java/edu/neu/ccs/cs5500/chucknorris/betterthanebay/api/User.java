@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
-@Table(name = "user")
+@Table(name = "`user`")
 public class User {
 
     @Id
@@ -35,7 +35,7 @@ public class User {
 
     @OneToOne
     @JoinColumn(name = "person_id", nullable = false)
-    private Person name;
+    private Person details;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinTable(name = "user_address",
@@ -80,12 +80,12 @@ public class User {
         this.password = password;
     }
 
-    public Person getName() {
-        return this.name;
+    public Person getDetails() {
+        return this.details;
     }
 
-    public void setName(Person name) {
-        this.name = name;
+    public void setDetails(Person details) {
+        this.details = details;
     }
 
     public List<Address> getAddresses() {
@@ -136,7 +136,7 @@ public class User {
         return Objects.equals(getId(), user.getId()) &&
                 Objects.equals(getUsername(), user.getUsername()) &&
                 Objects.equals(getPassword(), user.getPassword()) &&
-                Objects.equals(getName(), user.getName()) &&
+                Objects.equals(getDetails(), user.getDetails()) &&
                 Objects.equals(getAddresses(), user.getAddresses()) &&
                 Objects.equals(getPayments(), user.getPayments()) &&
                 Objects.equals(getRating(), user.getRating()) &&
@@ -146,6 +146,21 @@ public class User {
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getUsername(), getPassword(), getName(), getAddresses(), getPayments(), getRating(), getCreated(), getUpdated());
+        return Objects.hash(getId(), getUsername(), getPassword(), getDetails(), getAddresses(), getPayments(), getRating(), getCreated(), getUpdated());
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", details=" + details +
+                ", addresses=" + addresses +
+                ", payments=" + payments +
+                ", rating=" + rating +
+                ", created=" + created +
+                ", updated=" + updated +
+                '}';
     }
 }
