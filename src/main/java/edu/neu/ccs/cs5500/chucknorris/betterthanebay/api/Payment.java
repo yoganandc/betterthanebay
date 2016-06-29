@@ -1,62 +1,120 @@
 package edu.neu.ccs.cs5500.chucknorris.betterthanebay.api;
 
 import java.util.Date;
+import java.util.Objects;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "payment")
 public class Payment {
 
-  private Long id;
-  private Person person;
-  private String number;
-  private Date exp;
-  private Address address;
-  private Integer csv;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-  public Long getId() {
-    return this.id;
-  }
+    @Column(name = "first_name", nullable = false)
+    private String firstName;
 
-  public void setId(Long id) {
-    this.id = id;
-  }
+    @Column(name = "last_name", nullable = false)
+    private String lastName;
 
-  public Person getPerson() {
-    return this.person;
-  }
+    @Column(nullable = false)
+    private String number;
 
-  public void setPerson(Person person) {
-    this.person = person;
-  }
+    @Column(nullable = false)
+    private Date expiry;
 
-  public String getNumber() {
-    return this.number;
-  }
+    @OneToOne
+    @JoinColumn(name = "address_id", nullable = false)
+    private Address address;
 
-  public void setNumber(String number) {
-    this.number = number;
-  }
+    @Column(nullable = false)
+    private Integer csv;
 
-  public Date getExp() {
-    return this.exp;
-  }
+    @ManyToOne
+    private User user;
 
-  public void setExp(Date exp) {
-    this.exp = exp;
-  }
+    public Long getId() {
+        return this.id;
+    }
 
-  public Address getAddress() {
-    return this.address;
-  }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-  public void setAddress(Address address) {
-    this.address = address;
-  }
+    public String getNumber() {
+        return this.number;
+    }
 
-  public Integer getCsv() {
-    return this.csv;
-  }
+    public void setNumber(String number) {
+        this.number = number;
+    }
 
-  public void setCsv(Integer csv) {
-    this.csv = csv;
-  }
+    public Date getExpiry() {
+        return this.expiry;
+    }
 
+    public void setExpiry(Date expiry) {
+        this.expiry = expiry;
+    }
+
+    public Address getAddress() {
+        return this.address;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
+    }
+
+    public Integer getCsv() {
+        return this.csv;
+    }
+
+    public void setCsv(Integer csv) {
+        this.csv = csv;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Payment payment = (Payment) o;
+        return Objects.equals(getId(), payment.getId()) &&
+                Objects.equals(getFirstName(), payment.getFirstName()) &&
+                Objects.equals(getLastName(), payment.getLastName()) &&
+                Objects.equals(getNumber(), payment.getNumber()) &&
+                Objects.equals(getExpiry(), payment.getExpiry()) &&
+                Objects.equals(getAddress(), payment.getAddress()) &&
+                Objects.equals(getCsv(), payment.getCsv());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getFirstName(), getLastName(), getNumber(), getExpiry(), getAddress(), getCsv());
+    }
 }
