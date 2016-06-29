@@ -24,3 +24,9 @@ database:
 
   # whether or not idle connections should be validated
   checkConnectionWhileIdle: false
+
+server:
+  type: simple
+  connector:
+    type: http
+    port: ${PORT}
