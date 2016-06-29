@@ -17,8 +17,10 @@ import javax.persistence.TemporalType;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "`user`")
@@ -42,10 +44,10 @@ public class User {
     @JoinTable(name = "user_address",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "address_id"))
-    private List<Address> addresses = new ArrayList<>();
+    private Set<Address> addresses = new HashSet<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    private List<Payment> payments = new ArrayList<>();
+    private Set<Payment> payments = new HashSet<>();
 
     private Double rating;
 
@@ -89,19 +91,19 @@ public class User {
         this.details = details;
     }
 
-    public List<Address> getAddresses() {
+    public Set<Address> getAddresses() {
         return this.addresses;
     }
 
-    public void setAddresses(List<Address> addresses) {
+    public void setAddresses(Set<Address> addresses) {
         this.addresses = addresses;
     }
 
-    public List<Payment> getPayments() {
+    public Set<Payment> getPayments() {
         return this.payments;
     }
 
-    public void setPayments(List<Payment> payments) {
+    public void setPayments(Set<Payment> payments) {
         this.payments = payments;
     }
 
