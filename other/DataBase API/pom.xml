@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.example.helloworld</groupId>
-  <artifactId>HelloWorldConfiguration</artifactId>
+  <artifactId>HelloWorldApplication</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>jar</packaging>
 
@@ -69,10 +69,10 @@
       <version>${dropwizard.version}</version>
     </dependency>
     
-    <dependency>
- 	  <groupId>io.dropwizard.modules</groupId>
-   	  <artifactId>dropwizard-java8-jdbi</artifactId>
-   	  <version>0.9.0-1</version>
+	<dependency>
+	  <groupId>io.dropwizard</groupId>
+	  <artifactId>dropwizard-jdbi</artifactId>
+	  <version>${dropwizard.version}</version>
 	</dependency>
 	
 	 <dependency>
@@ -80,18 +80,37 @@
       <artifactId>dropwizard-hibernate</artifactId>
       <version>${dropwizard.version}</version>
      </dependency>
-      
-     <dependency>
-      <groupId>mysql</groupId>
-      <artifactId>mysql-connector-java</artifactId>
-      <version>5.1.36</version>
-     </dependency>
      
-     <dependency>
-      <groupId>postgresql</groupId>
-      <artifactId>postgresql</artifactId>
-      <version>9.1-901-1.jdbc4</version>
-     </dependency>
+	<dependency>
+     <groupId>com.h2database</groupId>
+     <artifactId>h2</artifactId>
+     <version>1.4.192</version>
+    </dependency>
     
+    <dependency>
+     <groupId>org.apache.tomcat</groupId>
+     <artifactId>tomcat-jdbc</artifactId>
+    <version>9.0.0.M6</version>
+    </dependency>
+ 	 
+ 	   <dependency>
+      <groupId>org.jdbi</groupId>
+      <artifactId>jdbi</artifactId>
+      <version>2.73</version>
+ 	 </dependency>
+
+  <dependency>
+    <groupId>org.postgresql</groupId>
+    <artifactId>postgresql</artifactId>
+    <version>9.4.1208.jre7</version>
+  </dependency>
+
+  <dependency>
+      <groupId>io.dropwizard</groupId>
+      <artifactId>dropwizard-migrations</artifactId>
+      <version>1.0.0-rc3</version>
+  </dependency>
+
+  
   </dependencies>
 </project>

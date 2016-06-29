@@ -2,66 +2,61 @@ package com.example.helloworld.resources;
 
 import java.util.List;
 
+import javax.validation.Valid;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import com.example.helloworld.User;
 import com.example.helloworld.UserDAO;
-import com.google.common.base.Optional;
-
-import io.dropwizard.hibernate.UnitOfWork;
-import io.dropwizard.jersey.params.LongParam;
 
 @Path("/users")
+@Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public class UserResource {
-  /**
-   * The DAO object to manipulate users.
-   */
-  private UserDAO userDAO;
 
-  /**
-   * Constructor.
-   *
-   * @param userDAO DAO object to manipulate users.
-   */
+  UserDAO userDAO;
+
   public UserResource(UserDAO userDAO) {
     this.userDAO = userDAO;
   }
 
-  /**
-   * Looks for users whose first or last name contains the passed parameter as a substring. If name
-   * argument was not passed, returns all users stored in the database.
-   *
-   * @param name query parameter
-   * @return list of users whose first or last name contains the passed parameter as a substring or
-   *         list of all employees stored in the database.
-   */
   @GET
-  @UnitOfWork
-  public List<User> findByName(@QueryParam("name") Optional<String> name) {
-    if (name.isPresent()) {
-      return this.userDAO.findByName(name.get());
-    } else {
-      return this.userDAO.findAll();
-    }
+  public List<User> getAll() {
+    return this.userDAO.getAll();
   }
 
-  /**
-   * Method looks for a user by her id.
-   *
-   * @param id the id of an user we are looking for.
-   * @return Optional containing the found user or an empty Optional otherwise.
-   */
   @GET
   @Path("/{id}")
-  @UnitOfWork
-  public Optional<User> findById(@PathParam("id") LongParam id) {
-    return this.userDAO.findById(id.get());
+  public User get(@PathParam("id") Long id) {
+    return this.userDAO.findById(id);
+  }
+
+  @POST
+  public User add(@Valid User user) {
+    Long newId = this.userDAO.insert(user);
+    return user.setId(newId);
+  }
+
+  @PUT
+  @Path("/{id}")
+  public User update(@PathParam("id") Long id, @Valid User user) {
+    user = user.setId(id);
+    this.userDAO.update(user);
+
+    return user;
+  }
+
+  @DELETE
+  @Path("/{id}")
+  public void delete(@PathParam("id") Long id) {
+    this.userDAO.deleteById(id);
   }
 
 
