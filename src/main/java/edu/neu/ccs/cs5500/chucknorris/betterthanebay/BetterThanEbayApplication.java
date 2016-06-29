@@ -5,6 +5,7 @@ import de.thomaskrille.dropwizard_template_config.TemplateConfigBundle;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.api.Address;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.api.Payment;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.api.Person;
+import edu.neu.ccs.cs5500.chucknorris.betterthanebay.api.State;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.db.UserDAO;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.resources.UserResource;
 import io.dropwizard.Application;
@@ -19,8 +20,8 @@ import edu.neu.ccs.cs5500.chucknorris.betterthanebay.api.User;
 
 public class BetterThanEbayApplication extends Application<BetterThanEbayConfiguration> {
 
-    private final HibernateBundle<BetterThanEbayConfiguration> userDb = new HibernateBundle<BetterThanEbayConfiguration>(Person.class, Address.class,
-                                                                                Payment.class, User.class) {
+    private final HibernateBundle<BetterThanEbayConfiguration> userDb = new HibernateBundle<BetterThanEbayConfiguration>(Person.class, State.class,
+                                                                        Address.class, Payment.class, User.class) {
 
         @Override
         public DataSourceFactory getDataSourceFactory(BetterThanEbayConfiguration configuration) {

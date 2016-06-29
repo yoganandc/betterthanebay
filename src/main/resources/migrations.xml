@@ -1,102 +1,102 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
-    <changeSet author="yoganandc (generated)" id="1467202420463-1">
+    <changeSet author="yoganandc (generated)" id="1467220803162-1">
         <createSequence catalogName="betterthanebay" schemaName="public" sequenceName="address_id_seq"/>
     </changeSet>
-    <changeSet author="yoganandc (generated)" id="1467202420463-2">
+    <changeSet author="yoganandc (generated)" id="1467220803162-2">
         <createSequence catalogName="betterthanebay" schemaName="public" sequenceName="address_id_seq1"/>
     </changeSet>
-    <changeSet author="yoganandc (generated)" id="1467202420463-3">
+    <changeSet author="yoganandc (generated)" id="1467220803162-3">
         <createSequence catalogName="betterthanebay" schemaName="public" sequenceName="address_id_seq2"/>
     </changeSet>
-    <changeSet author="yoganandc (generated)" id="1467202420463-4">
+    <changeSet author="yoganandc (generated)" id="1467220803162-4">
         <createSequence catalogName="betterthanebay" schemaName="public" sequenceName="bid_id_seq"/>
     </changeSet>
-    <changeSet author="yoganandc (generated)" id="1467202420463-5">
+    <changeSet author="yoganandc (generated)" id="1467220803162-5">
         <createSequence catalogName="betterthanebay" schemaName="public" sequenceName="bid_id_seq1"/>
     </changeSet>
-    <changeSet author="yoganandc (generated)" id="1467202420463-6">
+    <changeSet author="yoganandc (generated)" id="1467220803162-6">
         <createSequence catalogName="betterthanebay" schemaName="public" sequenceName="bid_id_seq2"/>
     </changeSet>
-    <changeSet author="yoganandc (generated)" id="1467202420463-7">
+    <changeSet author="yoganandc (generated)" id="1467220803162-7">
         <createSequence catalogName="betterthanebay" schemaName="public" sequenceName="categories_id_seq"/>
     </changeSet>
-    <changeSet author="yoganandc (generated)" id="1467202420463-8">
+    <changeSet author="yoganandc (generated)" id="1467220803162-8">
         <createSequence catalogName="betterthanebay" schemaName="public" sequenceName="categories_id_seq1"/>
     </changeSet>
-    <changeSet author="yoganandc (generated)" id="1467202420463-9">
+    <changeSet author="yoganandc (generated)" id="1467220803162-9">
         <createSequence catalogName="betterthanebay" schemaName="public" sequenceName="categories_id_seq2"/>
     </changeSet>
-    <changeSet author="yoganandc (generated)" id="1467202420463-10">
+    <changeSet author="yoganandc (generated)" id="1467220803162-10">
         <createSequence catalogName="betterthanebay" schemaName="public" sequenceName="category_id_seq"/>
     </changeSet>
-    <changeSet author="yoganandc (generated)" id="1467202420463-11">
+    <changeSet author="yoganandc (generated)" id="1467220803162-11">
         <createSequence catalogName="betterthanebay" schemaName="public" sequenceName="category_id_seq1"/>
     </changeSet>
-    <changeSet author="yoganandc (generated)" id="1467202420463-12">
+    <changeSet author="yoganandc (generated)" id="1467220803162-12">
         <createSequence catalogName="betterthanebay" schemaName="public" sequenceName="category_id_seq2"/>
     </changeSet>
-    <changeSet author="yoganandc (generated)" id="1467202420463-13">
+    <changeSet author="yoganandc (generated)" id="1467220803162-13">
         <createSequence catalogName="betterthanebay" schemaName="public" sequenceName="feedback_id_seq"/>
     </changeSet>
-    <changeSet author="yoganandc (generated)" id="1467202420463-14">
+    <changeSet author="yoganandc (generated)" id="1467220803162-14">
         <createSequence catalogName="betterthanebay" schemaName="public" sequenceName="feedback_id_seq1"/>
     </changeSet>
-    <changeSet author="yoganandc (generated)" id="1467202420463-15">
+    <changeSet author="yoganandc (generated)" id="1467220803162-15">
         <createSequence catalogName="betterthanebay" schemaName="public" sequenceName="feedback_id_seq2"/>
     </changeSet>
-    <changeSet author="yoganandc (generated)" id="1467202420463-16">
+    <changeSet author="yoganandc (generated)" id="1467220803162-16">
         <createSequence catalogName="betterthanebay" schemaName="public" sequenceName="item_id_seq"/>
     </changeSet>
-    <changeSet author="yoganandc (generated)" id="1467202420463-17">
+    <changeSet author="yoganandc (generated)" id="1467220803162-17">
         <createSequence catalogName="betterthanebay" schemaName="public" sequenceName="item_id_seq1"/>
     </changeSet>
-    <changeSet author="yoganandc (generated)" id="1467202420463-18">
+    <changeSet author="yoganandc (generated)" id="1467220803162-18">
         <createSequence catalogName="betterthanebay" schemaName="public" sequenceName="item_id_seq2"/>
     </changeSet>
-    <changeSet author="yoganandc (generated)" id="1467202420463-19">
+    <changeSet author="yoganandc (generated)" id="1467220803162-19">
         <createSequence catalogName="betterthanebay" schemaName="public" sequenceName="payment_id_seq"/>
     </changeSet>
-    <changeSet author="yoganandc (generated)" id="1467202420463-20">
+    <changeSet author="yoganandc (generated)" id="1467220803162-20">
         <createSequence catalogName="betterthanebay" schemaName="public" sequenceName="payment_id_seq1"/>
     </changeSet>
-    <changeSet author="yoganandc (generated)" id="1467202420463-21">
+    <changeSet author="yoganandc (generated)" id="1467220803162-21">
         <createSequence catalogName="betterthanebay" schemaName="public" sequenceName="payment_id_seq2"/>
     </changeSet>
-    <changeSet author="yoganandc (generated)" id="1467202420463-22">
+    <changeSet author="yoganandc (generated)" id="1467220803162-22">
         <createSequence catalogName="betterthanebay" schemaName="public" sequenceName="person_id_seq"/>
     </changeSet>
-    <changeSet author="yoganandc (generated)" id="1467202420463-23">
+    <changeSet author="yoganandc (generated)" id="1467220803162-23">
         <createSequence catalogName="betterthanebay" schemaName="public" sequenceName="person_id_seq1"/>
     </changeSet>
-    <changeSet author="yoganandc (generated)" id="1467202420463-24">
+    <changeSet author="yoganandc (generated)" id="1467220803162-24">
         <createSequence catalogName="betterthanebay" schemaName="public" sequenceName="person_id_seq2"/>
     </changeSet>
-    <changeSet author="yoganandc (generated)" id="1467202420463-25">
+    <changeSet author="yoganandc (generated)" id="1467220803162-25">
         <createSequence catalogName="betterthanebay" schemaName="public" sequenceName="state_id_seq"/>
     </changeSet>
-    <changeSet author="yoganandc (generated)" id="1467202420463-26">
+    <changeSet author="yoganandc (generated)" id="1467220803162-26">
         <createSequence catalogName="betterthanebay" schemaName="public" sequenceName="state_id_seq1"/>
     </changeSet>
-    <changeSet author="yoganandc (generated)" id="1467202420463-27">
+    <changeSet author="yoganandc (generated)" id="1467220803162-27">
         <createSequence catalogName="betterthanebay" schemaName="public" sequenceName="state_id_seq2"/>
     </changeSet>
-    <changeSet author="yoganandc (generated)" id="1467202420463-28">
+    <changeSet author="yoganandc (generated)" id="1467220803162-28">
         <createSequence catalogName="betterthanebay" schemaName="public" sequenceName="user_address_id_seq"/>
     </changeSet>
-    <changeSet author="yoganandc (generated)" id="1467202420463-29">
+    <changeSet author="yoganandc (generated)" id="1467220803162-29">
         <createSequence catalogName="betterthanebay" schemaName="public" sequenceName="user_address_id_seq1"/>
     </changeSet>
-    <changeSet author="yoganandc (generated)" id="1467202420463-30">
+    <changeSet author="yoganandc (generated)" id="1467220803162-30">
         <createSequence catalogName="betterthanebay" schemaName="public" sequenceName="user_id_seq"/>
     </changeSet>
-    <changeSet author="yoganandc (generated)" id="1467202420463-31">
+    <changeSet author="yoganandc (generated)" id="1467220803162-31">
         <createSequence catalogName="betterthanebay" schemaName="public" sequenceName="user_id_seq1"/>
     </changeSet>
-    <changeSet author="yoganandc (generated)" id="1467202420463-32">
+    <changeSet author="yoganandc (generated)" id="1467220803162-32">
         <createSequence catalogName="betterthanebay" schemaName="public" sequenceName="user_id_seq2"/>
     </changeSet>
-    <changeSet author="yoganandc (generated)" id="1467202420463-33">
+    <changeSet author="yoganandc (generated)" id="1467220803162-33">
         <createTable catalogName="betterthanebay" schemaName="public" tableName="address">
             <column autoIncrement="true" name="id" type="SERIAL">
                 <constraints nullable="false"/>
@@ -116,7 +116,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="yoganandc (generated)" id="1467202420463-34">
+    <changeSet author="yoganandc (generated)" id="1467220803162-34">
         <createTable catalogName="betterthanebay" schemaName="public" tableName="bid">
             <column autoIncrement="true" name="id" type="SERIAL">
                 <constraints nullable="false"/>
@@ -138,7 +138,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="yoganandc (generated)" id="1467202420463-35">
+    <changeSet author="yoganandc (generated)" id="1467220803162-35">
         <createTable catalogName="betterthanebay" schemaName="public" tableName="categories">
             <column autoIncrement="true" name="id" type="SERIAL">
                 <constraints nullable="false"/>
@@ -151,7 +151,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="yoganandc (generated)" id="1467202420463-36">
+    <changeSet author="yoganandc (generated)" id="1467220803162-36">
         <createTable catalogName="betterthanebay" schemaName="public" tableName="category">
             <column autoIncrement="true" name="id" type="SERIAL">
                 <constraints nullable="false"/>
@@ -161,7 +161,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="yoganandc (generated)" id="1467202420463-37">
+    <changeSet author="yoganandc (generated)" id="1467220803162-37">
         <createTable catalogName="betterthanebay" schemaName="public" tableName="feedback">
             <column autoIncrement="true" name="id" type="SERIAL">
                 <constraints nullable="false"/>
@@ -178,7 +178,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="yoganandc (generated)" id="1467202420463-38">
+    <changeSet author="yoganandc (generated)" id="1467220803162-38">
         <createTable catalogName="betterthanebay" schemaName="public" tableName="item">
             <column autoIncrement="true" name="id" type="SERIAL">
                 <constraints nullable="false"/>
@@ -209,7 +209,7 @@
             <column name="updated" type="TIMESTAMP(29) WITHOUT TIME ZONE"/>
         </createTable>
     </changeSet>
-    <changeSet author="yoganandc (generated)" id="1467202420463-39">
+    <changeSet author="yoganandc (generated)" id="1467220803162-39">
         <createTable catalogName="betterthanebay" schemaName="public" tableName="payment">
             <column autoIncrement="true" name="id" type="SERIAL">
                 <constraints nullable="false"/>
@@ -237,7 +237,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="yoganandc (generated)" id="1467202420463-40">
+    <changeSet author="yoganandc (generated)" id="1467220803162-40">
         <createTable catalogName="betterthanebay" schemaName="public" tableName="person">
             <column autoIncrement="true" name="id" type="SERIAL">
                 <constraints nullable="false"/>
@@ -252,7 +252,7 @@
             <column name="birthday" type="date"/>
         </createTable>
     </changeSet>
-    <changeSet author="yoganandc (generated)" id="1467202420463-41">
+    <changeSet author="yoganandc (generated)" id="1467220803162-41">
         <createTable catalogName="betterthanebay" schemaName="public" tableName="state">
             <column autoIncrement="true" name="id" type="SERIAL">
                 <constraints nullable="false"/>
@@ -265,7 +265,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="yoganandc (generated)" id="1467202420463-42">
+    <changeSet author="yoganandc (generated)" id="1467220803162-42">
         <createTable catalogName="betterthanebay" schemaName="public" tableName="user">
             <column autoIncrement="true" name="id" type="SERIAL">
                 <constraints nullable="false"/>
@@ -288,7 +288,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="yoganandc (generated)" id="1467202420463-43">
+    <changeSet author="yoganandc (generated)" id="1467220803162-43">
         <createTable catalogName="betterthanebay" schemaName="public" tableName="user_address">
             <column autoIncrement="true" name="id" type="SERIAL">
                 <constraints nullable="false"/>
@@ -301,7 +301,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="yoganandc (generated)" id="1467202420463-44">
+    <changeSet author="yoganandc (generated)" id="1467220803162-44">
         <insert catalogName="betterthanebay" schemaName="public" tableName="address">
             <column name="id" valueNumeric="1"/>
             <column name="line1" value="2701 W Manor Pl"/>
@@ -343,7 +343,7 @@
             <column name="zip" value="32217"/>
         </insert>
     </changeSet>
-    <changeSet author="yoganandc (generated)" id="1467202420463-45">
+    <changeSet author="yoganandc (generated)" id="1467220803162-45">
         <insert catalogName="betterthanebay" schemaName="public" tableName="payment">
             <column name="id" valueNumeric="1"/>
             <column name="number" value="5389796361293957"/>
@@ -375,7 +375,7 @@
             <column name="last_name" value="Putin"/>
         </insert>
     </changeSet>
-    <changeSet author="yoganandc (generated)" id="1467202420463-46">
+    <changeSet author="yoganandc (generated)" id="1467220803162-46">
         <insert catalogName="betterthanebay" schemaName="public" tableName="person">
             <column name="id" valueNumeric="1"/>
             <column name="first" value="Alesya"/>
@@ -398,7 +398,7 @@
             <column name="birthday"/>
         </insert>
     </changeSet>
-    <changeSet author="yoganandc (generated)" id="1467202420463-47">
+    <changeSet author="yoganandc (generated)" id="1467220803162-47">
         <insert catalogName="betterthanebay" schemaName="public" tableName="state">
             <column name="id" valueNumeric="1"/>
             <column name="name" value="Alabama"/>
@@ -660,7 +660,7 @@
             <column name="code" value="WY"/>
         </insert>
     </changeSet>
-    <changeSet author="yoganandc (generated)" id="1467202420463-48">
+    <changeSet author="yoganandc (generated)" id="1467220803162-48">
         <insert catalogName="betterthanebay" schemaName="public" tableName="user">
             <column name="id" valueNumeric="1"/>
             <column name="username" value="alesyavt"/>
@@ -689,7 +689,7 @@
             <column name="person_id" valueNumeric="3"/>
         </insert>
     </changeSet>
-    <changeSet author="yoganandc (generated)" id="1467202420463-49">
+    <changeSet author="yoganandc (generated)" id="1467220803162-49">
         <insert catalogName="betterthanebay" schemaName="public" tableName="user_address">
             <column name="id" valueNumeric="1"/>
             <column name="user_id" valueNumeric="3"/>
@@ -711,116 +711,126 @@
             <column name="address_id" valueNumeric="4"/>
         </insert>
     </changeSet>
-    <changeSet author="yoganandc (generated)" id="1467202420463-50">
+    <changeSet author="yoganandc (generated)" id="1467220803162-50">
         <createIndex catalogName="betterthanebay" indexName="address_id_uindex" schemaName="public" tableName="address" unique="true">
             <column name="id"/>
         </createIndex>
     </changeSet>
-    <changeSet author="yoganandc (generated)" id="1467202420463-51">
+    <changeSet author="yoganandc (generated)" id="1467220803162-51">
         <createIndex catalogName="betterthanebay" indexName="bid_id_uindex" schemaName="public" tableName="bid" unique="true">
             <column name="id"/>
         </createIndex>
     </changeSet>
-    <changeSet author="yoganandc (generated)" id="1467202420463-52">
+    <changeSet author="yoganandc (generated)" id="1467220803162-52">
         <createIndex catalogName="betterthanebay" indexName="categories_id_uindex" schemaName="public" tableName="categories" unique="true">
             <column name="id"/>
         </createIndex>
     </changeSet>
-    <changeSet author="yoganandc (generated)" id="1467202420463-53">
+    <changeSet author="yoganandc (generated)" id="1467220803162-53">
         <createIndex catalogName="betterthanebay" indexName="category_id_uindex" schemaName="public" tableName="category" unique="true">
             <column name="id"/>
         </createIndex>
     </changeSet>
-    <changeSet author="yoganandc (generated)" id="1467202420463-54">
+    <changeSet author="yoganandc (generated)" id="1467220803162-54">
         <createIndex catalogName="betterthanebay" indexName="category_name_uindex" schemaName="public" tableName="category" unique="true">
             <column name="name"/>
         </createIndex>
     </changeSet>
-    <changeSet author="yoganandc (generated)" id="1467202420463-55">
+    <changeSet author="yoganandc (generated)" id="1467220803162-55">
         <createIndex catalogName="betterthanebay" indexName="feedback_id_uindex" schemaName="public" tableName="feedback" unique="true">
             <column name="id"/>
         </createIndex>
     </changeSet>
-    <changeSet author="yoganandc (generated)" id="1467202420463-56">
+    <changeSet author="yoganandc (generated)" id="1467220803162-56">
         <createIndex catalogName="betterthanebay" indexName="item_id_uindex" schemaName="public" tableName="item" unique="true">
             <column name="id"/>
         </createIndex>
     </changeSet>
-    <changeSet author="yoganandc (generated)" id="1467202420463-57">
+    <changeSet author="yoganandc (generated)" id="1467220803162-57">
         <createIndex catalogName="betterthanebay" indexName="payment_id_uindex" schemaName="public" tableName="payment" unique="true">
             <column name="id"/>
         </createIndex>
     </changeSet>
-    <changeSet author="yoganandc (generated)" id="1467202420463-58">
+    <changeSet author="yoganandc (generated)" id="1467220803162-58">
         <createIndex catalogName="betterthanebay" indexName="person_id_uindex" schemaName="public" tableName="person" unique="true">
             <column name="id"/>
         </createIndex>
     </changeSet>
-    <changeSet author="yoganandc (generated)" id="1467202420463-59">
+    <changeSet author="yoganandc (generated)" id="1467220803162-59">
+        <createIndex catalogName="betterthanebay" indexName="state_code_uindex" schemaName="public" tableName="state" unique="true">
+            <column name="code"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="yoganandc (generated)" id="1467220803162-60">
         <createIndex catalogName="betterthanebay" indexName="state_id_uindex" schemaName="public" tableName="state" unique="true">
             <column name="id"/>
         </createIndex>
     </changeSet>
-    <changeSet author="yoganandc (generated)" id="1467202420463-60">
+    <changeSet author="yoganandc (generated)" id="1467220803162-61">
+        <createIndex catalogName="betterthanebay" indexName="state_name_uindex" schemaName="public" tableName="state" unique="true">
+            <column name="name"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="yoganandc (generated)" id="1467220803162-62">
         <createIndex catalogName="betterthanebay" indexName="user_address_address_id_uindex" schemaName="public" tableName="user_address" unique="true">
             <column name="address_id"/>
         </createIndex>
     </changeSet>
-    <changeSet author="yoganandc (generated)" id="1467202420463-61">
+    <changeSet author="yoganandc (generated)" id="1467220803162-63">
         <createIndex catalogName="betterthanebay" indexName="user_address_id_uindex" schemaName="public" tableName="user_address" unique="true">
             <column name="id"/>
         </createIndex>
     </changeSet>
-    <changeSet author="yoganandc (generated)" id="1467202420463-62">
+    <changeSet author="yoganandc (generated)" id="1467220803162-64">
         <createIndex catalogName="betterthanebay" indexName="user_id_uindex" schemaName="public" tableName="user" unique="true">
             <column name="id"/>
         </createIndex>
     </changeSet>
-    <changeSet author="yoganandc (generated)" id="1467202420463-63">
+    <changeSet author="yoganandc (generated)" id="1467220803162-65">
         <createIndex catalogName="betterthanebay" indexName="user_username_uindex" schemaName="public" tableName="user" unique="true">
             <column name="username"/>
         </createIndex>
     </changeSet>
-    <changeSet author="yoganandc (generated)" id="1467202420463-64">
+    <changeSet author="yoganandc (generated)" id="1467220803162-66">
         <addForeignKeyConstraint baseColumnNames="state_id" baseTableCatalogName="betterthanebay" baseTableName="address" baseTableSchemaName="public" constraintName="address_state_id_fk" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableCatalogName="betterthanebay" referencedTableName="state" referencedTableSchemaName="public"/>
     </changeSet>
-    <changeSet author="yoganandc (generated)" id="1467202420463-65">
+    <changeSet author="yoganandc (generated)" id="1467220803162-67">
         <addForeignKeyConstraint baseColumnNames="item_id" baseTableCatalogName="betterthanebay" baseTableName="bid" baseTableSchemaName="public" constraintName="bid_item_id_fk" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableCatalogName="betterthanebay" referencedTableName="item" referencedTableSchemaName="public"/>
     </changeSet>
-    <changeSet author="yoganandc (generated)" id="1467202420463-66">
+    <changeSet author="yoganandc (generated)" id="1467220803162-68">
         <addForeignKeyConstraint baseColumnNames="payment_id" baseTableCatalogName="betterthanebay" baseTableName="bid" baseTableSchemaName="public" constraintName="bid_payment_id_fk" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableCatalogName="betterthanebay" referencedTableName="payment" referencedTableSchemaName="public"/>
     </changeSet>
-    <changeSet author="yoganandc (generated)" id="1467202420463-67">
+    <changeSet author="yoganandc (generated)" id="1467220803162-69">
         <addForeignKeyConstraint baseColumnNames="user_id" baseTableCatalogName="betterthanebay" baseTableName="bid" baseTableSchemaName="public" constraintName="bid_user_id_fk" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableCatalogName="betterthanebay" referencedTableName="user" referencedTableSchemaName="public"/>
     </changeSet>
-    <changeSet author="yoganandc (generated)" id="1467202420463-68">
+    <changeSet author="yoganandc (generated)" id="1467220803162-70">
         <addForeignKeyConstraint baseColumnNames="category_id" baseTableCatalogName="betterthanebay" baseTableName="categories" baseTableSchemaName="public" constraintName="categories_category_id_fk" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableCatalogName="betterthanebay" referencedTableName="category" referencedTableSchemaName="public"/>
     </changeSet>
-    <changeSet author="yoganandc (generated)" id="1467202420463-69">
+    <changeSet author="yoganandc (generated)" id="1467220803162-71">
         <addForeignKeyConstraint baseColumnNames="item_id" baseTableCatalogName="betterthanebay" baseTableName="categories" baseTableSchemaName="public" constraintName="categories_item_id_fk" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableCatalogName="betterthanebay" referencedTableName="item" referencedTableSchemaName="public"/>
     </changeSet>
-    <changeSet author="yoganandc (generated)" id="1467202420463-70">
+    <changeSet author="yoganandc (generated)" id="1467220803162-72">
         <addForeignKeyConstraint baseColumnNames="buyer_feedback_id" baseTableCatalogName="betterthanebay" baseTableName="item" baseTableSchemaName="public" constraintName="item_feedback_id_fk" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableCatalogName="betterthanebay" referencedTableName="feedback" referencedTableSchemaName="public"/>
     </changeSet>
-    <changeSet author="yoganandc (generated)" id="1467202420463-71">
+    <changeSet author="yoganandc (generated)" id="1467220803162-73">
         <addForeignKeyConstraint baseColumnNames="seller_feedback_id" baseTableCatalogName="betterthanebay" baseTableName="item" baseTableSchemaName="public" constraintName="item_feedback_id_fk_2" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableCatalogName="betterthanebay" referencedTableName="feedback" referencedTableSchemaName="public"/>
     </changeSet>
-    <changeSet author="yoganandc (generated)" id="1467202420463-72">
+    <changeSet author="yoganandc (generated)" id="1467220803162-74">
         <addForeignKeyConstraint baseColumnNames="user_id" baseTableCatalogName="betterthanebay" baseTableName="item" baseTableSchemaName="public" constraintName="item_user_id_fk" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableCatalogName="betterthanebay" referencedTableName="user" referencedTableSchemaName="public"/>
     </changeSet>
-    <changeSet author="yoganandc (generated)" id="1467202420463-73">
+    <changeSet author="yoganandc (generated)" id="1467220803162-75">
         <addForeignKeyConstraint baseColumnNames="address_id" baseTableCatalogName="betterthanebay" baseTableName="payment" baseTableSchemaName="public" constraintName="payment_address_id_fk" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableCatalogName="betterthanebay" referencedTableName="address" referencedTableSchemaName="public"/>
     </changeSet>
-    <changeSet author="yoganandc (generated)" id="1467202420463-74">
+    <changeSet author="yoganandc (generated)" id="1467220803162-76">
         <addForeignKeyConstraint baseColumnNames="user_id" baseTableCatalogName="betterthanebay" baseTableName="payment" baseTableSchemaName="public" constraintName="payment_user_id_fk" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableCatalogName="betterthanebay" referencedTableName="user" referencedTableSchemaName="public"/>
     </changeSet>
-    <changeSet author="yoganandc (generated)" id="1467202420463-75">
+    <changeSet author="yoganandc (generated)" id="1467220803162-77">
         <addForeignKeyConstraint baseColumnNames="address_id" baseTableCatalogName="betterthanebay" baseTableName="user_address" baseTableSchemaName="public" constraintName="user_address_address_id_fk" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableCatalogName="betterthanebay" referencedTableName="address" referencedTableSchemaName="public"/>
     </changeSet>
-    <changeSet author="yoganandc (generated)" id="1467202420463-76">
+    <changeSet author="yoganandc (generated)" id="1467220803162-78">
         <addForeignKeyConstraint baseColumnNames="user_id" baseTableCatalogName="betterthanebay" baseTableName="user_address" baseTableSchemaName="public" constraintName="user_address_user_id_fk" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableCatalogName="betterthanebay" referencedTableName="user" referencedTableSchemaName="public"/>
     </changeSet>
-    <changeSet author="yoganandc (generated)" id="1467202420463-77">
+    <changeSet author="yoganandc (generated)" id="1467220803162-79">
         <addForeignKeyConstraint baseColumnNames="person_id" baseTableCatalogName="betterthanebay" baseTableName="user" baseTableSchemaName="public" constraintName="user_person_id_fk" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableCatalogName="betterthanebay" referencedTableName="person" referencedTableSchemaName="public"/>
     </changeSet>
 </databaseChangeLog>

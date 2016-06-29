@@ -7,7 +7,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -26,8 +28,9 @@ public class Address {
     @Column(nullable = false)
     private String city;
 
-    @Column(name = "state_id", nullable = false)
-    private Integer state; // enums
+    @OneToOne
+    @JoinColumn(name = "state_id", nullable = false)
+    private State state;
 
     @Column(nullable = false)
     private String zip;
@@ -64,11 +67,11 @@ public class Address {
         this.city = city;
     }
 
-    public Integer getState() {
+    public State getState() {
         return this.state;
     }
 
-    public void setState(Integer state) {
+    public void setState(State state) {
         this.state = state;
     }
 

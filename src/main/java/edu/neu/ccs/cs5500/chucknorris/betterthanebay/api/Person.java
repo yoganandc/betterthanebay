@@ -28,7 +28,7 @@ public class Person {
     @Column(nullable = false)
     private String last;
 
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.DATE)
     private Date birthday;
 
     public Long getId() {

@@ -1,5 +1,9 @@
 package edu.neu.ccs.cs5500.chucknorris.betterthanebay.api;
 
+import org.hibernate.annotations.Generated;
+import org.hibernate.annotations.GenerationTime;
+import org.hibernate.annotations.NaturalId;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,12 +19,13 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+
+import edu.neu.ccs.cs5500.chucknorris.betterthanebay.db.CreatedTimestamp;
+import edu.neu.ccs.cs5500.chucknorris.betterthanebay.db.UpdatedTimestamp;
 
 @Entity
 @Table(name = "`user`")
@@ -51,12 +56,14 @@ public class User {
 
     private Double rating;
 
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
+    @CreatedTimestamp
     private Date created;
 
     @Column(nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
+    @UpdatedTimestamp
     private Date updated;
 
     public Long getId() {
