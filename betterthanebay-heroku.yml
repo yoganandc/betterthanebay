@@ -27,6 +27,8 @@ database:
 
 server:
   type: simple
+  applicationContextPath: /api
+  adminContextPath: /admin
   connector:
     type: http
     port: ${PORT}
