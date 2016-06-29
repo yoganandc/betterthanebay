@@ -1,121 +1,117 @@
 package com.example.helloworld;
 
 import javax.persistence.Column;
-import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.Table;
 
-@Entity
-@Table(name = "users")
-@NamedQueries({@NamedQuery(name = "findAll", query = "select e from User e"),
-    @NamedQuery(name = "findByName", query = "select e from User e "
-        + "where e.firstName like :name " + "or e.lastName like :name")})
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class User {
   /**
    * Entity's unique identifier.
    */
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private long id;
+  @JsonProperty
+  private Long id;
+
   /**
-   * user first name.
+   * user person_id
    */
-  @Column(name = "first_name")
-  private String firstName;
-  /**
-   * user last name.
-   */
-  @Column(name = "last_name")
-  private String lastName;
+  @JsonProperty
+  @Column(name = "person_id")
+  private String person_id;
+
   /**
    * user username.
    */
+  @JsonProperty
+  @Column(name = "username")
   private String username;
   /**
    * user password
    */
+  @JsonProperty
+  @Column(name = "password")
   private String password;
-  /**
-   * user addressId.
-   */
-  private String addressId;
+
   /**
    * user rating.
    */
+  @JsonProperty
+  @Column(name = "rating")
   private String rating;
+
+  /**
+   * user created time stamp.
+   */
+  @JsonProperty
+  @Column(name = "created")
+  private String created;
+
+  /**
+   * user updated time stamp.
+   */
+  @JsonProperty
+  @Column(name = "updated")
+  private String updated;
 
   /**
    * A no-argument constructor.
    */
+
   public User() {}
 
   /**
-   * User Constructor
-   * 
    * @param id
-   * @param firstName
-   * @param lastName
+   * @param person_id
    * @param username
    * @param password
-   * @param addressId
    * @param rating
+   * @param created
+   * @param updated
    */
-  public User(long id, String firstName, String lastName, String username, String password,
-      String addressId, String rating) {
+  public User(Long id, String person_id, String username, String password, String rating,
+      String created, String updated) {
     super();
     this.id = id;
-    this.firstName = firstName;
-    this.lastName = lastName;
+    this.person_id = person_id;
     this.username = username;
     this.password = password;
-    this.addressId = addressId;
     this.rating = rating;
+    this.created = created;
+    this.updated = updated;
   }
 
   /**
    * @return the id
    */
-  public long getId() {
+  public Long getId() {
     return this.id;
   }
 
   /**
    * @param id the id to set
    */
-  public void setId(long id) {
+  public User setId(Long id) {
     this.id = id;
+    return this;
   }
 
   /**
-   * @return the firstName
+   * @return the person_id
    */
-  public String getFirstName() {
-    return this.firstName;
+  public String getPerson_id() {
+    return this.person_id;
   }
 
   /**
-   * @param firstName the firstName to set
+   * @param person_id the person_id to set
    */
-  public void setFirstName(String firstName) {
-    this.firstName = firstName;
-  }
-
-  /**
-   * @return the lastName
-   */
-  public String getLastName() {
-    return this.lastName;
-  }
-
-  /**
-   * @param lastName the lastName to set
-   */
-  public void setLastName(String lastName) {
-    this.lastName = lastName;
+  public User setPerson_id(String person_id) {
+    this.person_id = person_id;
+    return this;
   }
 
   /**
@@ -128,8 +124,9 @@ public class User {
   /**
    * @param username the username to set
    */
-  public void setUsername(String username) {
+  public User setUsername(String username) {
     this.username = username;
+    return this;
   }
 
   /**
@@ -142,22 +139,9 @@ public class User {
   /**
    * @param password the password to set
    */
-  public void setPassword(String password) {
+  public User setPassword(String password) {
     this.password = password;
-  }
-
-  /**
-   * @return the addressId
-   */
-  public String getAddressId() {
-    return this.addressId;
-  }
-
-  /**
-   * @param addressId the addressId to set
-   */
-  public void setAddressId(String addressId) {
-    this.addressId = addressId;
+    return this;
   }
 
   /**
@@ -170,8 +154,39 @@ public class User {
   /**
    * @param rating the rating to set
    */
-  public void setRating(String rating) {
+  public User setRating(String rating) {
     this.rating = rating;
+    return this;
+  }
+
+  /**
+   * @return the created
+   */
+  public String getCreated() {
+    return this.created;
+  }
+
+  /**
+   * @param created the created to set
+   */
+  public User setCreated(String created) {
+    this.created = created;
+    return this;
+  }
+
+  /**
+   * @return the updated
+   */
+  public String getUpdated() {
+    return this.updated;
+  }
+
+  /**
+   * @param updated the updated to set
+   */
+  public User setUpdated(String updated) {
+    this.updated = updated;
+    return this;
   }
 
   /**
@@ -181,12 +196,12 @@ public class User {
   public int hashCode() {
     final int prime = 31;
     int result = 1;
-    result = (prime * result) + ((this.addressId == null) ? 0 : this.addressId.hashCode());
-    result = (prime * result) + ((this.firstName == null) ? 0 : this.firstName.hashCode());
-    result = (prime * result) + (int) (this.id ^ (this.id >>> 32));
-    result = (prime * result) + ((this.lastName == null) ? 0 : this.lastName.hashCode());
+    result = (prime * result) + ((this.created == null) ? 0 : this.created.hashCode());
+    result = (prime * result) + ((this.id == null) ? 0 : this.id.hashCode());
     result = (prime * result) + ((this.password == null) ? 0 : this.password.hashCode());
+    result = (prime * result) + ((this.person_id == null) ? 0 : this.person_id.hashCode());
     result = (prime * result) + ((this.rating == null) ? 0 : this.rating.hashCode());
+    result = (prime * result) + ((this.updated == null) ? 0 : this.updated.hashCode());
     result = (prime * result) + ((this.username == null) ? 0 : this.username.hashCode());
     return result;
   }
@@ -206,28 +221,18 @@ public class User {
       return false;
     }
     User other = (User) obj;
-    if (this.addressId == null) {
-      if (other.addressId != null) {
+    if (this.created == null) {
+      if (other.created != null) {
         return false;
       }
-    } else if (!this.addressId.equals(other.addressId)) {
+    } else if (!this.created.equals(other.created)) {
       return false;
     }
-    if (this.firstName == null) {
-      if (other.firstName != null) {
+    if (this.id == null) {
+      if (other.id != null) {
         return false;
       }
-    } else if (!this.firstName.equals(other.firstName)) {
-      return false;
-    }
-    if (this.id != other.id) {
-      return false;
-    }
-    if (this.lastName == null) {
-      if (other.lastName != null) {
-        return false;
-      }
-    } else if (!this.lastName.equals(other.lastName)) {
+    } else if (!this.id.equals(other.id)) {
       return false;
     }
     if (this.password == null) {
@@ -237,11 +242,25 @@ public class User {
     } else if (!this.password.equals(other.password)) {
       return false;
     }
+    if (this.person_id == null) {
+      if (other.person_id != null) {
+        return false;
+      }
+    } else if (!this.person_id.equals(other.person_id)) {
+      return false;
+    }
     if (this.rating == null) {
       if (other.rating != null) {
         return false;
       }
     } else if (!this.rating.equals(other.rating)) {
+      return false;
+    }
+    if (this.updated == null) {
+      if (other.updated != null) {
+        return false;
+      }
+    } else if (!this.updated.equals(other.updated)) {
       return false;
     }
     if (this.username == null) {
@@ -253,7 +272,5 @@ public class User {
     }
     return true;
   }
-
-
 
 }

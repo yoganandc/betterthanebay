@@ -1,21 +1,27 @@
 template: Hello, %s!
 defaultName: Stranger
 
+server:
+  type: simple
+  connector:
+      type: http
+      port: 8080
+
 database:
   # the name of your JDBC driver
   driverClass: org.postgresql.Driver
 
   # the username
-  user: pg-user
+  user: postgres
 
   # the password
-  password: iAMs00perSecrEET
+  password: 12345
 
   # the JDBC URL
-  url: jdbc:postgresql://db.example.com/db-prod
+  url: jdbc:postgresql://localhost:5432/test
 
   # any properties specific to your JDBC driver:
-  properties:
+  properties: 
     charSet: UTF-8
 
   # the maximum amount of time to wait on an empty pool before throwing an exception
