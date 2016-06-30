@@ -50,12 +50,12 @@ public class User {
   }
 
 
-  public Person getName() {
+  public Person getPerson() {
     return this.name;
   }
 
 
-  public void setName(Person name) {
+  public void setPerson(Person name) {
     this.name = name;
   }
 

@@ -34,6 +34,37 @@ public class Item {
     this.userId = null;
   }
 
+
+  public String getDescription() {
+    return this.description;
+  }
+
+
+  public void setDescription(String description) {
+    this.description = description;
+  }
+
+
+  public Date getCreated() {
+    return this.created;
+  }
+
+
+  public void setCreated(Date created) {
+    this.created = created;
+  }
+
+
+  public Date getUpdated() {
+    return this.updated;
+  }
+
+
+  public void setUpdated(Date updated) {
+    this.updated = updated;
+  }
+
+
   public Long getId() {
     return this.id;
   }
