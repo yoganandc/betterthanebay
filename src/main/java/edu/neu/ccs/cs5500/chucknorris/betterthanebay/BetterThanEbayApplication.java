@@ -2,10 +2,10 @@ package edu.neu.ccs.cs5500.chucknorris.betterthanebay;
 
 import de.thomaskrille.dropwizard_template_config.TemplateConfigBundle;
 
-import edu.neu.ccs.cs5500.chucknorris.betterthanebay.api.Address;
-import edu.neu.ccs.cs5500.chucknorris.betterthanebay.api.Payment;
-import edu.neu.ccs.cs5500.chucknorris.betterthanebay.api.Person;
-import edu.neu.ccs.cs5500.chucknorris.betterthanebay.api.State;
+import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Address;
+import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Payment;
+import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Person;
+import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.State;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.db.UserDAO;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.resources.UserResource;
 import io.dropwizard.Application;
@@ -16,7 +16,7 @@ import io.dropwizard.hibernate.HibernateBundle;
 import io.dropwizard.db.DataSourceFactory;
 import io.dropwizard.migrations.MigrationsBundle;
 
-import edu.neu.ccs.cs5500.chucknorris.betterthanebay.api.User;
+import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.User;
 
 public class BetterThanEbayApplication extends Application<BetterThanEbayConfiguration> {
 

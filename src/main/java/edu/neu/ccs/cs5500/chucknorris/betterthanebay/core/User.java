@@ -1,8 +1,4 @@
-package edu.neu.ccs.cs5500.chucknorris.betterthanebay.api;
-
-import org.hibernate.annotations.Generated;
-import org.hibernate.annotations.GenerationTime;
-import org.hibernate.annotations.NaturalId;
+package edu.neu.ccs.cs5500.chucknorris.betterthanebay.core;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;

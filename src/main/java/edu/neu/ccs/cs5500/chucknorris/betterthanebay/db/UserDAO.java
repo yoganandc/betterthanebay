@@ -1,6 +1,6 @@
 package edu.neu.ccs.cs5500.chucknorris.betterthanebay.db;
 
-import edu.neu.ccs.cs5500.chucknorris.betterthanebay.api.User;
+import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.User;
 import io.dropwizard.hibernate.AbstractDAO;
 import org.hibernate.SessionFactory;
 
