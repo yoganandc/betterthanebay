@@ -3,6 +3,7 @@ package edu.neu.ccs.cs5500.chucknorris.betterthanebay.core;
 import java.util.Date;
 import java.util.Objects;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -36,7 +37,7 @@ public class Payment {
     @Temporal(TemporalType.DATE)
     private Date expiry;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL, optional = false, orphanRemoval = true)
     @JoinColumn(name = "address_id", nullable = false)
     private Address address;
 

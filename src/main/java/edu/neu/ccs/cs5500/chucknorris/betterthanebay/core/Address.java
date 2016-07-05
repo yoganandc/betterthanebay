@@ -2,6 +2,7 @@ package edu.neu.ccs.cs5500.chucknorris.betterthanebay.core;
 
 import java.util.Objects;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -27,7 +28,7 @@ public class Address {
     @Column(nullable = false)
     private String city;
 
-    @OneToOne
+    @OneToOne(optional = false)
     @JoinColumn(name = "state_id", nullable = false)
     private State state;
 
