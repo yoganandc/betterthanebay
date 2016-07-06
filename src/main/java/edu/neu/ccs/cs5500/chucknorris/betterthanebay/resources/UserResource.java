@@ -1,5 +1,6 @@
 package edu.neu.ccs.cs5500.chucknorris.betterthanebay.resources;
 
+import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -9,13 +10,20 @@ import edu.neu.ccs.cs5500.chucknorris.betterthanebay.db.UserDAO;
 import io.dropwizard.hibernate.UnitOfWork;
 import io.dropwizard.jersey.params.LongParam;
 
+import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 
-/**
- * Created by yoganandc on 6/28/16.
- */
+
 @Path("/users")
+@Produces(MediaType.APPLICATION_JSON)
+@Consumes(MediaType.APPLICATION_JSON)
 public class UserResource {
+
+
+    /* TO DO
+     * user authentication for post, put, delete
+     */
 
     private final UserDAO dao;
 
@@ -25,53 +33,49 @@ public class UserResource {
 
     @GET
     @Path("/{userId}")
-    @Produces(MediaType.APPLICATION_JSON)
     @UnitOfWork
     public User getUser(@PathParam("userId") LongParam userId) {
-        User ret = dao.getById(userId.get()).orElseThrow(() -> new NotFoundException("No such user"));
-        return ret;
+        final User user = dao.getById(userId.get());
+        if (user == null) {
+            throw new WebApplicationException(Response.Status.NOT_FOUND);
+        }
+        return user;
     }
 
-//    @GET
-//    @Path("/{userId}")
-//    public User getUser(@PathParam("userId") long userId) {
-//
-//        return dao.getUser(userId);
-//    }
-
-    // query by user name or get all users if query parameter is blank
+    /* query by username or get all users if username parameter is blank */
     @GET
-    public List<User> getUser(@QueryParam("username") String username) {
-        if ((username != null) && !username.isEmpty()) {
-            // return by user
-            return null; //dao.getByUserName(username);
+    public List<User> getUsers(@QueryParam("username") Optional<String> username) {
+        if ((username != null) && username.isPresent()) {
+            /* return by user */
+            return null; //dao.getByUsername(username.get());
         }
-        // return all users
+        /* return all users */
         return null; //dao.getAllUsers();
     }
 
 
     @POST
-    public Response addUser(User user) {
+    public Response addUser(@Valid User user) {
+
+        /* @Valid should test:
+         * user.getUsername() != null
+         * user.getPassword() != null
+         * user.getDetails != null */
+
 
         Response.ResponseBuilder response;
 
-        // FORBIDDEN if already logged in as another user
+        /* TO DO
+         * FORBIDDEN if already logged in as another user ?
+         */
 
-        if ((user.getUsername() == null) || (user.getPassword() != null)
-                || (user.getDetails() != null)) {
+        Long userId = null; //dao.createUser(user);
+
+        if (userId == null) {
             response = Response.status(Response.Status.BAD_REQUEST);
 
-        } else {
-            User createdUser = null; //dao.createUser(user); /// if createUser returns user
-            if (createdUser == null) {
-                response = Response.status(Response.Status.BAD_REQUEST);
-                //
-            } else {
-                response = Response.status(Response.Status.CREATED);
-                // add user data
-            }
-
+        } else {  // if createUser returns valid id
+            response = Response.created(URI.create("/users/" + userId));
         }
 
         return response.build();
@@ -79,11 +83,16 @@ public class UserResource {
 
     @PUT
     @Path("/{userId}")
-    public Response updateUser(@PathParam("userId") long userId, User user) {
+    public Response updateUser(@PathParam("userId") LongParam userId, User user) {
         Response.ResponseBuilder response;
         if (user.getId().equals(userId)) { // validate userId ??
-            response = Response.status(Response.Status.OK);
-            // update data
+            boolean success = false; // dao.updateUser(userId, user);
+            if (success) {
+                response = Response.ok(getUser(userId));
+            } else {
+                response = Response.notModified();
+            }
+
         } else { // userId does not match user
             response = Response.status(Response.Status.UNAUTHORIZED);
         }

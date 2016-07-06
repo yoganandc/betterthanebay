@@ -15,8 +15,10 @@ public class UserDAO extends AbstractDAO<User> {
         super(sessionFactory);
     }
 
-    public Optional<User> getById(Long id) {
+    public User getById(Long id) {
         Optional<User> ret = Optional.ofNullable(get(id));
-        return ret;
+
+        return null;
+        //return ret;
     }
 }
