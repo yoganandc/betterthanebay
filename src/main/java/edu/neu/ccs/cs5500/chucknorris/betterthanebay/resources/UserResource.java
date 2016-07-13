@@ -7,6 +7,7 @@ import javax.ws.rs.core.Response;
 
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.User;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.db.UserDAO;
+import io.dropwizard.auth.Auth;
 import io.dropwizard.hibernate.UnitOfWork;
 import io.dropwizard.jersey.params.IntParam;
 import io.dropwizard.jersey.params.LongParam;
@@ -36,14 +37,12 @@ public class UserResource {
     @GET
     @Path("/{userId}")
     @UnitOfWork
-    public Response getUser(@PathParam("userId") LongParam userId) {
+    public Response getUser(@Auth User loggedInUser, @PathParam("userId") LongParam userId) {
 
-        final Optional<User> user = dao.findById(userId.get());   /// ? Optional
+        final User user = dao.findById(userId.get());
         if (user == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
-
-        // SERVER ERROR
 
         return Response.ok(user).build();
     }
@@ -132,5 +131,35 @@ public class UserResource {
         } else {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build(); // failure
         }
+    }
+
+    // seller feedback by user
+    @GET
+    @Path("/{userId}/feedback/seller")
+    public Response getSellerFeedback(@PathParam("userId") LongParam userId) {
+
+        // if valid user
+        return null; //dao.getSellerFeedback(userId);
+    }
+
+    // buyer feedback by user
+    @GET
+    @Path("/{userId}/feedback/buyer")
+    public Response getBuyerFeedback(@PathParam("userId") LongParam userId) {
+
+        // if valid user id
+        return null; //dao.getBuyerFeedback(userId);
+    }
+
+    @GET
+    @Path("/{userId}/bids")
+    public Response getBidsForUser(@PathParam("userId") LongParam userId) {
+        return null; //return dao.getActiveBids(userId);
+    }
+
+    @GET
+    @Path("/{userId}/items")
+    public Response getItemsForUser(@PathParam("userId") LongParam userId) {
+        return null; //return dao.getItems(userId);
     }
 }

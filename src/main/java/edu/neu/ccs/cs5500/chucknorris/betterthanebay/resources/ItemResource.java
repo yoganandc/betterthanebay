@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.validation.Valid;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -18,55 +19,46 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
+import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Feedback;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Item;
+import edu.neu.ccs.cs5500.chucknorris.betterthanebay.db.BidDAO;
+import edu.neu.ccs.cs5500.chucknorris.betterthanebay.db.FeedbackDAO;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.db.ItemDAO;
 import io.dropwizard.jersey.params.DateTimeParam;
 import io.dropwizard.jersey.params.IntParam;
 import io.dropwizard.jersey.params.LongParam;
 import io.dropwizard.jersey.params.NonEmptyStringParam;
+
+import org.hibernate.SessionFactory;
 import org.joda.time.DateTime;
 
 
 @Path("/items")
 @Produces(MediaType.APPLICATION_JSON)
+@Consumes(MediaType.APPLICATION_JSON)
 public class ItemResource {
 
     private ItemDAO dao;
+    private BidDAO bidDAO;
+    private FeedbackDAO feedbackDAO;
 
-    public ItemResource(ItemDAO dao) {
-        super();
+    public ItemResource(ItemDAO dao, BidDAO bidDAO, FeedbackDAO feedbackDAO) {
         this.dao = dao;
+        this.bidDAO = bidDAO;
+        this.feedbackDAO = feedbackDAO;
     }
 
     @GET
     @Path("/{itemId}")
     public Response getItem(@PathParam("itemId") LongParam itemId) {
 
-        Optional<Item> item = dao.findById(itemId.get());
+        Item item = dao.findById(itemId.get());
         if (item == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
 
         return Response.ok(item).build();
     }
-
-    // all items
-    @GET
-    public List<Item> getItems() {
-
-        List<Item> list;
-
-        return null; //dao.getAllItems();
-    }
-
-    @GET
-    @Path("/users/{userId}/items")
-    public Response getUserItems(@PathParam("userId") LongParam userId) {
-        // validate user id
-        return null; //dao.getUserItems(userId);
-
-    }
-
 
     @GET
     public Response getItems(@QueryParam("name") NonEmptyStringParam name,
@@ -184,9 +176,13 @@ public class ItemResource {
         }
     }
 
-//    @Path("/{itemId}/bids")
-//    public BidResource getBidResource() {
-//        return new BidResource(new BidDAO())
-//    }
+    @Path("/{itemId}/bids")
+    public BidResource getBidResource() {
+        return new BidResource(bidDAO);
+    }
 
+    @Path("/{itemId}/feedback")
+    public FeedbackResource getFeedbackResource() {
+        return new FeedbackResource(feedbackDAO);
+    }
 }

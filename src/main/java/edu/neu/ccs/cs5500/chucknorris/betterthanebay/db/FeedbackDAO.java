@@ -17,8 +17,8 @@ public class FeedbackDAO extends AbstractDAO<Feedback> {
   }
 
   // Find Feedback by ID
-  public Optional<Feedback> findById(Long id) {
-    return Optional.ofNullable(get(id));
+  public Feedback findById(Long id) {
+    return get(id);
   }
 
   // Create new Feedback

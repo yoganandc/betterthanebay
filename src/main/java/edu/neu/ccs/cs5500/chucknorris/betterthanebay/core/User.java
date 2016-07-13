@@ -1,5 +1,6 @@
 package edu.neu.ccs.cs5500.chucknorris.betterthanebay.core;
 
+import java.security.Principal;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Objects;
@@ -14,6 +15,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -25,7 +28,11 @@ import edu.neu.ccs.cs5500.chucknorris.betterthanebay.db.UpdatedTimestamp;
 
 @Entity
 @Table(name = "`user`")
-public class User {
+@NamedQueries(value = {
+        @NamedQuery(name = "edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.User.getByUsername",
+                    query = "SELECT u FROM User u WHERE u.username = :username")
+})
+public class User implements Principal {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -160,7 +167,12 @@ public class User {
         getPayments(), getRating(), getCreated(), getUpdated());
   }
 
-  @Override
+    @Override
+    public String getName() {
+        return this.getUsername();
+    }
+
+    @Override
   public String toString() {
     return "User{" + "id=" + this.id + ", username='" + this.username + '\'' + ", password='"
         + this.password + '\'' + ", details=" + this.details + ", addresses=" + this.addresses

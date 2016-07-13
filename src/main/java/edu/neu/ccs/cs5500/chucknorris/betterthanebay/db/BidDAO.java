@@ -14,8 +14,8 @@ public class BidDAO extends AbstractDAO<Bid> {
   }
 
   // Find Bid by ID
-  public Optional<Bid> findById(Long id) {
-    return Optional.ofNullable(get(id));
+  public Bid findById(Long id) {
+    return get(id);
   }
 
   // Create new Bid
