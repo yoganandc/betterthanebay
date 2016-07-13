@@ -1,8 +1,11 @@
 package edu.neu.ccs.cs5500.chucknorris.betterthanebay.resources;
 
+import java.net.URI;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
+import javax.validation.Valid;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -19,6 +22,7 @@ import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Item;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.db.ItemDAO;
 import io.dropwizard.jersey.params.DateTimeParam;
 import io.dropwizard.jersey.params.IntParam;
+import io.dropwizard.jersey.params.LongParam;
 import io.dropwizard.jersey.params.NonEmptyStringParam;
 import org.joda.time.DateTime;
 
@@ -34,23 +38,30 @@ public class ItemResource {
         this.dao = dao;
     }
 
+    @GET
+    @Path("/{itemId}")
+    public Response getItem(@PathParam("itemId") LongParam itemId) {
+
+        Optional<Item> item = dao.findById(itemId.get());
+        if (item == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+
+        return Response.ok(item).build();
+    }
+
     // all items
     @GET
     public List<Item> getItems() {
+
+        List<Item> list;
 
         return null; //dao.getAllItems();
     }
 
     @GET
-    @Path("/{itemId}")
-    public Item getItem(@PathParam("itemId") long itemId) {
-
-        return null; //dao.getItem(itemId);
-    }
-
-    @GET
     @Path("/users/{userId}/items")
-    public Item getUserItems(@PathParam("userId") long userId) {
+    public Response getUserItems(@PathParam("userId") LongParam userId) {
         // validate user id
         return null; //dao.getUserItems(userId);
 
@@ -127,66 +138,50 @@ public class ItemResource {
 
 
     @POST
-    public Response addItem(Item item) {
-        ResponseBuilder response;
+    public Response addItem(@Valid Item item) {
 
-        if ((item.getName() == null) || (item.getDescription() == null)
-                || (item.getInitialPrice() == null) || (item.getStartDate() == null)
-                || (item.getEndDate() == null)) {
-            response = Response.status(Response.Status.BAD_REQUEST);
+        Item createdItem = dao.create(item);
 
-        } else {
-            Item createdBid = null; //dao.createItem(item);
-            if (createdBid == null) {
-                response = Response.status(Response.Status.BAD_REQUEST); // failure
-                //
-            } else {
-                response = Response.status(Response.Status.CREATED);
-                // response -> add item data
-            }
+        if (createdItem == null) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build(); // failure
         }
-
-        return response.build();
-
+        return Response.created(URI.create("/items/" + createdItem.getId())).entity(createdItem).build();
     }
 
     @PUT
     @Path("/{itemId}")
-    public Response updateItem(@PathParam("itemId") long itemId, Item item) {
-        ResponseBuilder response;
+    public Response updateItem(@PathParam("itemId") LongParam itemId, @Valid Item item) {
+
         // UNAUTHORIZED user
 
-        // if item id exists ---------------
+        if (dao.findById(itemId.get()) == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
 
-        // update data
-        response = Response.status(Response.Status.OK); // successfully updated
-        // else
-        response = Response.status(Response.Status.BAD_REQUEST); // failure || invalid data || not found
+        Item updatedItem = dao.update(item);  // dao.updateItem(bidId, bid);
 
-        return response.build();
+        if (updatedItem == null) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+        return Response.ok(updatedItem).build();
     }
 
     @DELETE
     @Path("/{itemId}")
-    public Response deleteItem(@PathParam("itemId") long itemId) {
-
-        ResponseBuilder response;
+    public Response deleteItem(@PathParam("itemId") LongParam itemId) {
 
         // authenticate user
 
-        Item item = null; //dao.getItem(itemId);
-        if (item == null) {
-            response = Response.status(Response.Status.BAD_REQUEST); // invalid bid id
+        if (dao.findById(itemId.get()) == null) {
+            return Response.status(Response.Status.NOT_FOUND).build(); // item doesn't exist
         }
 
         boolean success = false; // dao.deleteItem(itemId);
         if (success) {
-            response = Response.status(Response.Status.OK); // item successfully deleted
+            return Response.status(Response.Status.NO_CONTENT).build(); // item successfully deleted
         } else {
-            response = Response.status(Response.Status.BAD_REQUEST); // failure
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build(); // failure
         }
-
-        return response.build();
     }
 
 //    @Path("/{itemId}/bids")

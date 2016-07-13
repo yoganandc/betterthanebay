@@ -38,18 +38,16 @@ public class UserResource {
     @UnitOfWork
     public Response getUser(@PathParam("userId") LongParam userId) {
 
-        Long id = userId.get();
-        if (id == null) {
-            return Response.status(Response.Status.BAD_REQUEST).build();
-        }
-        final User user = null; //dao.getById(userId.get());
+        final Optional<User> user = dao.findById(userId.get());   /// ? Optional
         if (user == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
+
+        // SERVER ERROR
+
         return Response.ok(user).build();
     }
 
-    /* query by username or get all users if username parameter is blank */
     @GET
     public Response searchByUsername(@QueryParam("username") NonEmptyStringParam username, @QueryParam("start") IntParam start,
                                @QueryParam("size") IntParam size) {
@@ -71,7 +69,7 @@ public class UserResource {
         }
 
         /* return by user */
-        List<User> list = null; //dao.getByUsername(username.get(), startVal, sizeVal);
+        List<User> list = null; //dao.findByUsername(username.get(), startVal, sizeVal);
 
         if (list == null) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
@@ -84,12 +82,6 @@ public class UserResource {
 
     @POST
     public Response addUser(@Valid User user) {
-
-        /* @Valid should test:
-         * user.getUsername() != null
-         * user.getPassword() != null
-         * user.getDetails != null */
-
 
         Response.ResponseBuilder response;
 
@@ -112,10 +104,13 @@ public class UserResource {
     @PUT
     @Path("/{userId}")
     public Response updateUser(@PathParam("userId") LongParam userId, @Valid User user) {
-        Response.ResponseBuilder response;
 
         if (userId.get() == null) {
             return Response.status(Response.Status.BAD_REQUEST).build();
+        }
+
+        if (dao.findById(userId.get()) == null) {
+            Response.status(Response.Status.NOT_FOUND).build();
         }
 
         User updatedUser = null; // dao.updateUser(userId, user);
@@ -127,8 +122,8 @@ public class UserResource {
     @Path("/{userId}")
     public Response deleteUser(@PathParam("userId") LongParam userId) {
 
-        if (userId.get() == null) {
-            return Response.status(Response.Status.BAD_REQUEST).build(); // invalid user id
+        if (dao.findById(userId.get()) == null) {
+            return Response.status(Response.Status.NOT_FOUND).build(); // userId doesn't exist
         }
 
         boolean success = false; // dao.deleteUser(userId);

@@ -7,9 +7,6 @@ import org.hibernate.SessionFactory;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Bid;
 import io.dropwizard.hibernate.AbstractDAO;
 
-/**
- * Created by alesyatrubchik on 6/29/16.
- */
 public class BidDAO extends AbstractDAO<Bid> {
 
   public BidDAO(SessionFactory sessionFactory) {

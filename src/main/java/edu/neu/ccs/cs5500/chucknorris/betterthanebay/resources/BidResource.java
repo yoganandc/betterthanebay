@@ -36,16 +36,14 @@ public class BidResource {
     @Path("/{bidId}")
     public Response getBid(@PathParam("bidId") LongParam bidId) {
 
-        Long id = bidId.get();
-        if (id == null) {
-            return Response.status(Response.Status.BAD_REQUEST).build();
-        }
-        final Bid bid = null; //dao.getById(bidId.get());
+        final Bid bid = null; //dao.findtById(bidId.get());
         if (bid == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
-        return Response.ok(bid).build();
 
+        // SERVER ERROR
+
+        return Response.ok(bid).build();
     }
 
     // all bids
@@ -86,7 +84,7 @@ public class BidResource {
     public Response addBid(@Valid Bid bid) {
         ResponseBuilder response;
 
-        Bid createdBid = null; //dao.createBid(bid);
+        Bid createdBid = dao.create(bid);
         if (createdBid == null) {
             response = Response.status(Response.Status.INTERNAL_SERVER_ERROR); // failure
         } else {
@@ -97,43 +95,39 @@ public class BidResource {
 
     @PUT
     @Path("/{bidId}")
-    public Response updateBid(@PathParam("bidId") LongParam bidId, Bid bid) {
-        ResponseBuilder response;
+    public Response updateBid(@PathParam("bidId") LongParam bidId, @Valid Bid bid) {
+
         // UNAUTHORIZED user
 
-        // if bid id exists ---------------
+        if (dao.findById(bidId.get()) == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
 
-        // update data
-        response = Response.status(Response.Status.OK); // successfully updated
-        // else
-        response = Response.status(Response.Status.BAD_REQUEST); // failure || invalid data || not found
+        Bid updatedBid = dao.update(bid);  // dao.updateBid(bidId, bid);
 
-        return response.build();
-
+        if (updatedBid == null) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+        return Response.ok(updatedBid).build();
     }
 
     @DELETE
     @Path("/{bidId}")
-    public Response deleteBid(@PathParam("bidId") long bidId) {
-        ResponseBuilder response;
+    public Response deleteBid(@PathParam("bidId") LongParam bidId) {
 
-        // authenticate user
-        // when can the user delete a bid
+        /* TO DO
+        FORBIDDEN
+        UNAUTHORIZED */
 
-        Bid bid = null; //dao.getBid(bidId);
-        if (bid == null) {
-            response = Response.status(Response.Status.BAD_REQUEST); // invalid bid id
+        if (dao.findById(bidId.get()) == null) {
+            return Response.status(Response.Status.NOT_FOUND).build(); // bidId doesn't exist
         }
 
         boolean success = false; //dao.deleteBid(bidId);
         if (success) {
-            response = Response.status(Response.Status.OK); // bid successfully deleted
+            return Response.status(Response.Status.NO_CONTENT).build(); // bid successfully deleted
         } else {
-            response = Response.status(Response.Status.BAD_REQUEST); // failure
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build(); // failure
         }
-
-        return response.build();
-
     }
-
 }
