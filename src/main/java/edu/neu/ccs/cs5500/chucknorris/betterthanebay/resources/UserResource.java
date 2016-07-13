@@ -8,7 +8,9 @@ import javax.ws.rs.core.Response;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.User;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.db.UserDAO;
 import io.dropwizard.hibernate.UnitOfWork;
+import io.dropwizard.jersey.params.IntParam;
 import io.dropwizard.jersey.params.LongParam;
+import io.dropwizard.jersey.params.NonEmptyStringParam;
 
 import java.net.URI;
 import java.util.List;
@@ -34,23 +36,49 @@ public class UserResource {
     @GET
     @Path("/{userId}")
     @UnitOfWork
-    public User getUser(@PathParam("userId") LongParam userId) {
+    public Response getUser(@PathParam("userId") LongParam userId) {
+        Response.ResponseBuilder response;
+        Long id = userId.get();
+        if (id == null) {
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
         final User user = dao.getById(userId.get());
         if (user == null) {
-            throw new WebApplicationException(Response.Status.NOT_FOUND);
+            return Response.status(Response.Status.NOT_FOUND).build();
         }
-        return user;
+        return Response.ok(user).build();
     }
 
     /* query by username or get all users if username parameter is blank */
     @GET
-    public List<User> getUsers(@QueryParam("username") Optional<String> username) {
-        if ((username != null) && username.isPresent()) {
-            /* return by user */
-            return null; //dao.getByUsername(username.get());
+    public Response searchByUsername(@QueryParam("username") NonEmptyStringParam username, @QueryParam("start") IntParam start,
+                               @QueryParam("size") IntParam size) {
+        if(username == null) {
+            return Response.status(Response.Status.BAD_REQUEST).build();
         }
-        /* return all users */
-        return null; //dao.getAllUsers();
+        int startVal;
+        if (start == null) {
+            startVal = 0;
+        } else {
+            startVal = start.get();
+        }
+
+        int sizeVal;
+        if (size == null) {
+            sizeVal = 20;
+        } else {
+            sizeVal = size.get();
+        }
+
+        /* return by user */
+        List<User> list = null; //dao.getByUsername(username.get(), startVal, sizeVal);
+
+        if (list == null) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        } else if (list.isEmpty()) {
+            return Response.status(Response.Status.NO_CONTENT).build();
+        }
+        return Response.ok(list).build();
     }
 
 
@@ -69,13 +97,13 @@ public class UserResource {
          * FORBIDDEN if already logged in as another user ?
          */
 
-        Long userId = null; //dao.createUser(user);
+        User createdUser = null; //dao.createUser(user);
 
-        if (userId == null) {
-            response = Response.status(Response.Status.BAD_REQUEST);
+        if (createdUser == null) {
+            response = Response.status(Response.Status.INTERNAL_SERVER_ERROR);
 
         } else {  // if createUser returns valid id
-            response = Response.created(URI.create("/users/" + userId));
+            response = Response.created(URI.create("/users/" + createdUser.getId())).entity(user);
         }
 
         return response.build();
@@ -83,42 +111,31 @@ public class UserResource {
 
     @PUT
     @Path("/{userId}")
-    public Response updateUser(@PathParam("userId") LongParam userId, User user) {
+    public Response updateUser(@PathParam("userId") LongParam userId, @Valid User user) {
         Response.ResponseBuilder response;
-        if (user.getId().equals(userId)) { // validate userId ??
-            boolean success = false; // dao.updateUser(userId, user);
-            if (success) {
-                response = Response.ok(getUser(userId));
-            } else {
-                response = Response.notModified();
-            }
 
-        } else { // userId does not match user
-            response = Response.status(Response.Status.UNAUTHORIZED);
+        if (userId.get() == null) {
+            return Response.status(Response.Status.BAD_REQUEST).build();
         }
 
-        return response.build();
+        User updatedUser = null; // dao.updateUser(userId, user);
+
+        return Response.ok(updatedUser).build();
     }
 
     @DELETE
     @Path("/{userId}")
-    public Response deleteUser(@PathParam("userId") long userId) {
+    public Response deleteUser(@PathParam("userId") LongParam userId) {
 
-        // authenticate user --> UNAUTHORIZED
-
-        Response.ResponseBuilder response;
-        User user = null; // dao.getUser(userId);
-        if (user == null) {
-            response = Response.status(Response.Status.BAD_REQUEST); // invalid user id
+        if (userId.get() == null) {
+            return Response.status(Response.Status.BAD_REQUEST).build(); // invalid user id
         }
 
         boolean success = false; // dao.deleteUser(userId);
         if (success) {
-            response = Response.status(Response.Status.OK); // user account successfully deleted
+            return Response.status(Response.Status.NO_CONTENT).build(); // user account successfully deleted
         } else {
-            response = Response.status(Response.Status.BAD_REQUEST); // failure
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build(); // failure
         }
-
-        return response.build();
     }
 }
