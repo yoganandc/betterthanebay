@@ -2,6 +2,7 @@ package edu.neu.ccs.cs5500.chucknorris.betterthanebay.resources;
 
 import java.util.List;
 
+import javax.validation.Valid;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -21,159 +22,137 @@ import edu.neu.ccs.cs5500.chucknorris.betterthanebay.db.FeedbackDAO;
 @Produces(MediaType.APPLICATION_JSON)
 public class FeedbackResource {
 
-   private FeedbackDAO dao;
+    private FeedbackDAO dao;
 
-   public FeedbackResource(FeedbackDAO dao) {
-   super();
-   this.dao = dao;
-   }
-
-  // all feedback
-  @GET
-  public List<Feedback> getFeedback() {
-    return null; //dao.getAllFeedback();
-
-  }
-
-  // feedback by id
-  @GET
-  @Path("/{feedbackId}")
-  public Feedback getFeedback(@PathParam("feedbackId") long feedbackId) {
-    return null; // dao.getFeedback(feedbackId);
-
-  }
-
-  // seller feedback by user
-  @GET
-  @Path("/users/{userId}/feedback/seller")
-  public List<Feedback> getSellerFeedback(@PathParam("userId") long userId) {
-
-    // if valid user
-    return null; //dao.getSellerFeedback(userId);
-  }
-
-  // buyer feedback by user
-  @GET
-  @Path("/users/{userId}/feedback/buyer")
-  public List<Feedback> getBuyerFeedback(@PathParam("userId") long userId) {
-
-    // if valid user id
-    return null; //dao.getBuyerFeedback(userId);
-  }
-
-  // feedback by item
-  @GET
-  @Path("/items/{itemId}/feedback")
-  public List<Feedback> getFeedback(Item item) {
-
-    // if item == null or feedback id does not exist ---- BAD REQUEST
-
-    long itemId = item.getId();
-    // if id exists --------
-    return null; //dao.getFeedback(item);
-
-  }
-
-  // seller feedback by item
-  @GET
-  @Path("/items/{itemId}/feedback/seller")
-  public List<Feedback> getSellerFeedback(Item item) {
-
-    // if item == null or feedback id does not exist ---- BAD REQUEST
-
-
-    long itemId = item.getId();
-    // if id exists --------
-    return null; //dao.getSellerFeedback(item);
-
-  }
-
-  // buyer feedback by item
-  @GET
-  @Path("/items/{itemId}/feedback/buyer")
-  public List<Feedback> getBuyerFeedback(Item item) {
-
-    // if item == null or feedback id does not exist ---- BAD REQUEST
-
-    long itemId = item.getId();
-    // if id exists --------
-    return null; //dao.getBuyerFeedback(item);
-
-  }
-
-
-  @POST
-  public Response addFeedback(Feedback feedback) {
-
-    ResponseBuilder response;
-
-    if (feedback.getRating() == null) {
-      response = Response.status(Response.Status.BAD_REQUEST);
-
-    } else {
-      Feedback createdFeedback = null; //dao.createFeedback(feedback);
-      if (createdFeedback == null) {
-        response = Response.status(Response.Status.BAD_REQUEST); // failure
-        //
-      } else {
-        response = Response.status(Response.Status.CREATED);
-        // response -> add feedback data
-        // update user rating
-      }
+    public FeedbackResource(FeedbackDAO dao) {
+        super();
+        this.dao = dao;
     }
 
-    return response.build();
-  }
+    // feedback by id
+    @GET
+    @Path("/{feedbackId}")
+    public Feedback getFeedback(@PathParam("feedbackId") long feedbackId) {
+        return null; // dao.getFeedback(feedbackId);
 
-  @PUT
-  @Path("/item/{itemId}/feedback/seller")
-  public Response updateSellerFeedback(@PathParam("feedbackId") long bidId, Feedback feedback) {
-    ResponseBuilder response;
-
-    // authenticate seller
-
-    response = Response.status(Response.Status.OK); // successfully updated
-    // else
-    response = Response.status(Response.Status.BAD_REQUEST); // failure || invalid data || not found
-
-    return response.build();
-  }
-
-  @PUT
-  @Path("/item/{itemId}/feedback/buyer")
-  public Response updateBuyerFeedback(@PathParam("feedbackId") long bidId, Feedback feedback) {
-    ResponseBuilder response;
-
-    // authenticate buyer
-
-    response = Response.status(Response.Status.OK); // successfully updated
-    // else
-    response = Response.status(Response.Status.BAD_REQUEST); // failure || invalid data || not found
-
-    return response.build();
-  }
-
-  @DELETE
-  @Path("/{feedbackId}")
-  public Response deleteFeedback(@PathParam("feedbackId") long feedbackId) {
-
-    // authenticate seller || buyer
-
-    ResponseBuilder response;
-
-    Feedback feedback = null; //dao.getFeedback(feedbackId);
-    if (feedback == null) {
-      response = Response.status(Response.Status.BAD_REQUEST); // invalid bid id
     }
 
-    boolean success = false; //dao.deleteFeedback(feedbackId);
-    if (success) {
-      response = Response.status(Response.Status.OK); // feedback successfully deleted
-    } else {
-      response = Response.status(Response.Status.BAD_REQUEST); // failure
+    @POST
+    public Response addFeedback(@Valid Feedback feedback) {
+
+        ResponseBuilder response;
+
+        if (feedback.getRating() == null) {
+            response = Response.status(Response.Status.BAD_REQUEST);
+
+        } else {
+            Feedback createdFeedback = null; //dao.createFeedback(feedback);
+            if (createdFeedback == null) {
+                response = Response.status(Response.Status.BAD_REQUEST); // failure
+                //
+            } else {
+                response = Response.status(Response.Status.CREATED);
+                // response -> add feedback data
+                // update user rating
+            }
+        }
+
+        return response.build();
     }
 
-    return response.build();
+    @PUT
+    @Path("/{feedbackId}")
+    public Response updateFeedback(@PathParam("feedbackId") long bidId, @Valid Feedback feedback) {
+        ResponseBuilder response;
 
-  }
+        // authenticate seller
+
+        response = Response.status(Response.Status.OK); // successfully updated
+        // else
+        response = Response.status(Response.Status.BAD_REQUEST); // failure || invalid data || not found
+
+        return response.build();
+    }
+
+    @DELETE
+    @Path("/{feedbackId}")
+    public Response deleteFeedback(@PathParam("feedbackId") long feedbackId) {
+
+        // authenticate seller || buyer
+
+        ResponseBuilder response;
+
+        Feedback feedback = null; //dao.getFeedback(feedbackId);
+        if (feedback == null) {
+            response = Response.status(Response.Status.BAD_REQUEST); // invalid bid id
+        }
+
+        boolean success = false; //dao.deleteFeedback(feedbackId);
+        if (success) {
+            response = Response.status(Response.Status.OK); // feedback successfully deleted
+        } else {
+            response = Response.status(Response.Status.BAD_REQUEST); // failure
+        }
+
+        return response.build();
+
+    }
+
+    // seller feedback by user
+    @GET
+    @Path("/users/{userId}/sellerFeedback")
+    public List<Feedback> getSellerFeedback(@PathParam("userId") long userId) {
+
+        // if valid user
+        return null; //dao.getSellerFeedback(userId);
+    }
+
+    // buyer feedback by user
+    @GET
+    @Path("/users/{userId}/buyerFeedback")
+    public List<Feedback> getBuyerFeedback(@PathParam("userId") long userId) {
+
+        // if valid user id
+        return null; //dao.getBuyerFeedback(userId);
+    }
+
+    // feedback by item
+    @GET
+    @Path("/items/{itemId}/feedback")
+    public List<Feedback> getFeedback(Item item) {
+
+        // if item == null or feedback id does not exist ---- BAD REQUEST
+
+        long itemId = item.getId();
+        // if id exists --------
+        return null; //dao.getFeedback(item);
+
+    }
+
+    // seller feedback by item
+    @GET
+    @Path("/items/{itemId}/feedback/seller")
+    public List<Feedback> getSellerFeedback(Item item) {
+
+        // if item == null or feedback id does not exist ---- BAD REQUEST
+
+
+        long itemId = item.getId();
+        // if id exists --------
+        return null; //dao.getSellerFeedback(item);
+
+    }
+
+    // buyer feedback by item
+    @GET
+    @Path("/items/{itemId}/feedback/buyer")
+    public List<Feedback> getBuyerFeedback(Item item) {
+
+        // if item == null or feedback id does not exist ---- BAD REQUEST
+
+        long itemId = item.getId();
+        // if id exists --------
+        return null; //dao.getBuyerFeedback(item);
+
+    }
 }

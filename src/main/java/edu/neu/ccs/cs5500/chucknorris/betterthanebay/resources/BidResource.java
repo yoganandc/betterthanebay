@@ -2,6 +2,7 @@ package edu.neu.ccs.cs5500.chucknorris.betterthanebay.resources;
 
 import java.util.List;
 
+import javax.validation.Valid;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -17,6 +18,7 @@ import edu.neu.ccs.cs5500.chucknorris.betterthanebay.db.BidDAO;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Bid;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Item;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.User;
+import io.dropwizard.jersey.params.LongParam;
 
 @Path("/bids")
 @Produces(MediaType.APPLICATION_JSON)
@@ -29,51 +31,50 @@ public class BidResource {
         this.dao = dao;
     }
 
-    // all bids
-    @GET
-    public List<Bid> getBids() {
-
-        return null; //dao.getAllBids();
-    }
-
-    // bid by id
     @GET
     @Path("/{bidId}")
-    public Bid getBid(@PathParam("bidId") long bidId) {
+    public Bid getBid(@PathParam("bidId") LongParam bidId) {
 
         return null; //dao.getBid(bidId);
 
     }
 
+    // all bids
+//    @GET
+//    public List<Bid> getBids() {
+//
+//        return null; //dao.getAllBids();
+//    }
+
     // bids by item
-    @GET
-    @Path("/items/{itemId}/bids") /// remove path before class name?
-    public List<Bid> getBids(Item item) {
-        // if item == null or bid id does not exist ----
-        long itemId = item.getId();
-
-        // if id exists --------
-        return null; //dao.getBids(item);
-
-    }
+//    @GET
+//    @Path("/items/{itemId}/bids") /// remove path before class name?
+//    public List<Bid> getBids(Item item) {
+//        // if item == null or bid id does not exist ----
+//        long itemId = item.getId();
+//
+//        // if id exists --------
+//        return null; //dao.getBids(item);
+//
+//    }
 
     // bids by user
-    @GET
-    @Path("/users/{userId}/bids")
-    public List<Bid> getBids(User user) {
-        // if user == null or user id does not exist ----
-
-        long userId = user.getId();
-
-        // if id exists ------------------
-        return null; //bidDAO.getBids(user);
-    }
+//    @GET
+//    @Path("/users/{userId}/bids")
+//    public List<Bid> getBids(User user) {
+//        // if user == null or user id does not exist ----
+//
+//        long userId = user.getId();
+//
+//        // if id exists ------------------
+//        return null; //bidDAO.getBids(user);
+//    }
 
     // all bids by user for a specific item
     // "/users/{userId}/items/{itemId}/bids"
 
     @POST
-    public Response addBid(Bid bid) {
+    public Response addBid(@Valid Bid bid) {
         ResponseBuilder response;
 
         if ((bid.getItemId() == null) || (bid.getUserId() != null) || (bid.getAmount() != null)
@@ -96,7 +97,7 @@ public class BidResource {
 
     @PUT
     @Path("/{bidId}")
-    public Response updateBid(@PathParam("bidId") long bidId, Bid bid) {
+    public Response updateBid(@PathParam("bidId") LongParam bidId, Bid bid) {
         ResponseBuilder response;
         // UNAUTHORIZED user
 
