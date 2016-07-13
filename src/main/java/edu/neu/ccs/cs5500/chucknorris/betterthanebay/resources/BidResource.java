@@ -1,5 +1,6 @@
 package edu.neu.ccs.cs5500.chucknorris.betterthanebay.resources;
 
+import java.net.URI;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -33,9 +34,17 @@ public class BidResource {
 
     @GET
     @Path("/{bidId}")
-    public Bid getBid(@PathParam("bidId") LongParam bidId) {
+    public Response getBid(@PathParam("bidId") LongParam bidId) {
 
-        return null; //dao.getBid(bidId);
+        Long id = bidId.get();
+        if (id == null) {
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
+        final Bid bid = null; //dao.getById(bidId.get());
+        if (bid == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        return Response.ok(bid).build();
 
     }
 
@@ -77,21 +86,12 @@ public class BidResource {
     public Response addBid(@Valid Bid bid) {
         ResponseBuilder response;
 
-        if ((bid.getItemId() == null) || (bid.getUserId() != null) || (bid.getAmount() != null)
-                || (bid.getPaymentId() == null)) {
-            response = Response.status(Response.Status.BAD_REQUEST);
-
+        Bid createdBid = null; //dao.createBid(bid);
+        if (createdBid == null) {
+            response = Response.status(Response.Status.INTERNAL_SERVER_ERROR); // failure
         } else {
-            Bid createdBid = null; //dao.createBid(bid);
-            if (createdBid == null) {
-                response = Response.status(Response.Status.BAD_REQUEST); // failure
-                //
-            } else {
-                response = Response.status(Response.Status.CREATED);
-                // response -> add bid data
-            }
+            response = Response.created(URI.create("/bids/" + createdBid.getId())).entity(createdBid);
         }
-
         return response.build();
     }
 

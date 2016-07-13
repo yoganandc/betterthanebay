@@ -37,12 +37,12 @@ public class UserResource {
     @Path("/{userId}")
     @UnitOfWork
     public Response getUser(@PathParam("userId") LongParam userId) {
-        Response.ResponseBuilder response;
+
         Long id = userId.get();
         if (id == null) {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
-        final User user = dao.getById(userId.get());
+        final User user = null; //dao.getById(userId.get());
         if (user == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
@@ -102,8 +102,8 @@ public class UserResource {
         if (createdUser == null) {
             response = Response.status(Response.Status.INTERNAL_SERVER_ERROR);
 
-        } else {  // if createUser returns valid id
-            response = Response.created(URI.create("/users/" + createdUser.getId())).entity(user);
+        } else { // user successfully created
+            response = Response.created(URI.create("/users/" + createdUser.getId())).entity(createdUser);
         }
 
         return response.build();
