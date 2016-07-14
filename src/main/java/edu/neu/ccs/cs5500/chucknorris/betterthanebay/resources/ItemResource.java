@@ -21,9 +21,11 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Feedback;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Item;
+import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.User;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.db.BidDAO;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.db.FeedbackDAO;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.db.ItemDAO;
+import io.dropwizard.auth.Auth;
 import io.dropwizard.jersey.params.DateTimeParam;
 import io.dropwizard.jersey.params.IntParam;
 import io.dropwizard.jersey.params.LongParam;
@@ -50,7 +52,7 @@ public class ItemResource {
 
     @GET
     @Path("/{itemId}")
-    public Response getItem(@PathParam("itemId") LongParam itemId) {
+    public Response getItem(@PathParam("itemId") LongParam itemId, @Auth User loggedInUser) {
 
         Item item = dao.findById(itemId.get());
         if (item == null) {
@@ -64,7 +66,8 @@ public class ItemResource {
     public Response getItems(@QueryParam("name") NonEmptyStringParam name,
                              @QueryParam("category") IntParam category, @QueryParam("dateFrom") DateTimeParam dateFrom,
                              @QueryParam("dateTo") DateTimeParam dateTo, @QueryParam("priceFrom") IntParam priceFrom,
-                             @QueryParam("priceTo") IntParam priceTo, @QueryParam("start") IntParam start, @QueryParam("size") IntParam size) {
+                             @QueryParam("priceTo") IntParam priceTo, @QueryParam("start") IntParam start,
+                             @QueryParam("size") IntParam size, @Auth User loggedInUser) {
         if (name == null || !name.get().isPresent()) {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
@@ -130,7 +133,7 @@ public class ItemResource {
 
 
     @POST
-    public Response addItem(@Valid Item item) {
+    public Response addItem(@Valid Item item, @Auth User loggedInUser) {
 
         Item createdItem = dao.create(item);
 
@@ -142,7 +145,7 @@ public class ItemResource {
 
     @PUT
     @Path("/{itemId}")
-    public Response updateItem(@PathParam("itemId") LongParam itemId, @Valid Item item) {
+    public Response updateItem(@PathParam("itemId") LongParam itemId, @Valid Item item, @Auth User loggedInUser) {
 
         // UNAUTHORIZED user
 
@@ -160,7 +163,7 @@ public class ItemResource {
 
     @DELETE
     @Path("/{itemId}")
-    public Response deleteItem(@PathParam("itemId") LongParam itemId) {
+    public Response deleteItem(@PathParam("itemId") LongParam itemId, @Auth User loggedInUser) {
 
         // authenticate user
 

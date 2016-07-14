@@ -37,7 +37,7 @@ public class UserResource {
     @GET
     @Path("/{userId}")
     @UnitOfWork
-    public Response getUser(@Auth User loggedInUser, @PathParam("userId") LongParam userId) {
+    public Response getUser(@PathParam("userId") LongParam userId, @Auth User loggedInUser) {
 
         final User user = dao.findById(userId.get());
         if (user == null) {
@@ -49,7 +49,7 @@ public class UserResource {
 
     @GET
     public Response searchByUsername(@QueryParam("username") NonEmptyStringParam username, @QueryParam("start") IntParam start,
-                               @QueryParam("size") IntParam size) {
+                               @QueryParam("size") IntParam size, @Auth User loggedInUser) {
         if(username == null || !username.get().isPresent()) {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
@@ -102,7 +102,7 @@ public class UserResource {
 
     @PUT
     @Path("/{userId}")
-    public Response updateUser(@PathParam("userId") LongParam userId, @Valid User user) {
+    public Response updateUser(@PathParam("userId") LongParam userId, @Valid User user, @Auth User loggedInUser) {
 
         if (userId.get() == null) {
             return Response.status(Response.Status.BAD_REQUEST).build();
@@ -119,7 +119,7 @@ public class UserResource {
 
     @DELETE
     @Path("/{userId}")
-    public Response deleteUser(@PathParam("userId") LongParam userId) {
+    public Response deleteUser(@PathParam("userId") LongParam userId, @Auth User loggedInUser) {
 
         if (dao.findById(userId.get()) == null) {
             return Response.status(Response.Status.NOT_FOUND).build(); // userId doesn't exist
@@ -137,7 +137,7 @@ public class UserResource {
     @GET
     @Path("/{userId}/feedback/{feedbackId}")
     public Response getSellerFeedback(@PathParam("userId") LongParam userId,
-                                      @PathParam("feedbackId") NonEmptyStringParam feedbackId) {
+                                      @PathParam("feedbackId") NonEmptyStringParam feedbackId, @Auth User loggedInUser) {
 
         // if valid user
         return null; //dao.getSellerFeedback(userId);
@@ -145,13 +145,13 @@ public class UserResource {
 
     @GET
     @Path("/{userId}/bids")
-    public Response getBidsForUser(@PathParam("userId") LongParam userId) {
+    public Response getBidsForUser(@PathParam("userId") LongParam userId, @Auth User loggedInUser) {
         return null; //return dao.getActiveBids(userId);
     }
 
     @GET
     @Path("/{userId}/items")
-    public Response getItemsForUser(@PathParam("userId") LongParam userId) {
+    public Response getItemsForUser(@PathParam("userId") LongParam userId, @Auth User loggedInUser) {
         return null; //return dao.getItems(userId);
     }
 }
