@@ -20,6 +20,7 @@ import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Feedback;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Item;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.db.FeedbackDAO;
 import io.dropwizard.jersey.params.LongParam;
+import io.dropwizard.jersey.params.NonEmptyStringParam;
 
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
@@ -35,9 +36,9 @@ public class FeedbackResource {
     // feedback by id
     @GET
     @Path("/{feedbackId}")
-    public Response getFeedback(@PathParam("itemId") LongParam itemId, @PathParam("feedbackId") LongParam feedbackId) {
+    public Response getFeedback(@PathParam("itemId") LongParam itemId, @PathParam("feedbackId") NonEmptyStringParam feedbackId) {
 
-        Feedback feedback = dao.findById(feedbackId.get());
+        Feedback feedback = dao.findById(feedbackId.get().get());
 
         if (feedback == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
@@ -71,7 +72,7 @@ public class FeedbackResource {
 
     @PUT
     @Path("/{feedbackId}")
-    public Response updateFeedback(@PathParam("itemId") LongParam itemId, @PathParam("feedbackId") LongParam bidId, @Valid Feedback feedback) {
+    public Response updateFeedback(@PathParam("itemId") LongParam itemId, @PathParam("feedbackId") NonEmptyStringParam bidId, @Valid Feedback feedback) {
         ResponseBuilder response;
 
         // authenticate seller
@@ -85,7 +86,7 @@ public class FeedbackResource {
 
     @DELETE
     @Path("/{feedbackId}")
-    public Response deleteFeedback(@PathParam("itemId") LongParam itemId, @PathParam("feedbackId") LongParam feedbackId) {
+    public Response deleteFeedback(@PathParam("itemId") LongParam itemId, @PathParam("feedbackId") NonEmptyStringParam feedbackId) {
 
         // authenticate seller || buyer
 

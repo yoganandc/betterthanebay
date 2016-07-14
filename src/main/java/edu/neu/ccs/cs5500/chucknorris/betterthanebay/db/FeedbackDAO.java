@@ -17,7 +17,7 @@ public class FeedbackDAO extends AbstractDAO<Feedback> {
   }
 
   // Find Feedback by ID
-  public Feedback findById(Long id) {
+  public Feedback findById(String id) {
     return get(id);
   }
 

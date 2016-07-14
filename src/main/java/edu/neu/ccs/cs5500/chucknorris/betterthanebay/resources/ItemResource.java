@@ -65,7 +65,7 @@ public class ItemResource {
                              @QueryParam("category") IntParam category, @QueryParam("dateFrom") DateTimeParam dateFrom,
                              @QueryParam("dateTo") DateTimeParam dateTo, @QueryParam("priceFrom") IntParam priceFrom,
                              @QueryParam("priceTo") IntParam priceTo, @QueryParam("start") IntParam start, @QueryParam("size") IntParam size) {
-        if (name == null) {
+        if (name == null || !name.get().isPresent()) {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
 

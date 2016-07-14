@@ -50,7 +50,7 @@ public class UserResource {
     @GET
     public Response searchByUsername(@QueryParam("username") NonEmptyStringParam username, @QueryParam("start") IntParam start,
                                @QueryParam("size") IntParam size) {
-        if(username == null) {
+        if(username == null || !username.get().isPresent()) {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
         int startVal;
@@ -135,20 +135,12 @@ public class UserResource {
 
     // seller feedback by user
     @GET
-    @Path("/{userId}/feedback/seller")
-    public Response getSellerFeedback(@PathParam("userId") LongParam userId) {
+    @Path("/{userId}/feedback/{feedbackId}")
+    public Response getSellerFeedback(@PathParam("userId") LongParam userId,
+                                      @PathParam("feedbackId") NonEmptyStringParam feedbackId) {
 
         // if valid user
         return null; //dao.getSellerFeedback(userId);
-    }
-
-    // buyer feedback by user
-    @GET
-    @Path("/{userId}/feedback/buyer")
-    public Response getBuyerFeedback(@PathParam("userId") LongParam userId) {
-
-        // if valid user id
-        return null; //dao.getBuyerFeedback(userId);
     }
 
     @GET
