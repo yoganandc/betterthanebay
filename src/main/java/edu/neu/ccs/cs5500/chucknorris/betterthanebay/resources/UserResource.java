@@ -15,7 +15,6 @@ import io.dropwizard.jersey.params.NonEmptyStringParam;
 
 import java.net.URI;
 import java.util.List;
-import java.util.Optional;
 
 
 @Path("/users")

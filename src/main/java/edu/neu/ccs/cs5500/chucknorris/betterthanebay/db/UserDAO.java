@@ -14,6 +14,8 @@ import io.dropwizard.hibernate.AbstractDAO;
  */
 public class UserDAO extends AbstractDAO<User> {
 
+    PasswordUtil util = new PasswordUtil();
+
     public UserDAO(SessionFactory sessionFactory) {
         super(sessionFactory);
     }
@@ -38,7 +40,6 @@ public class UserDAO extends AbstractDAO<User> {
                 .setParameter("username", username);
         User user = super.uniqueResult(userQuery);
 
-        PasswordUtil util = new PasswordUtil();
         if (user != null && util.authenticate(password.toCharArray(), user.getPassword())) {
             return user;
         }

@@ -15,6 +15,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.Valid;
 
 @Entity
 @Table(name = "payment")
@@ -39,6 +40,7 @@ public class Payment {
 
     @OneToOne(cascade = CascadeType.ALL, optional = false, orphanRemoval = true)
     @JoinColumn(name = "address_id", nullable = false)
+    @Valid
     private Address address;
 
     @Column(nullable = false)

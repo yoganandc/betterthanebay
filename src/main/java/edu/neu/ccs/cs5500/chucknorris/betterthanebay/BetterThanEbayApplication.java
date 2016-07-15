@@ -1,17 +1,13 @@
 package edu.neu.ccs.cs5500.chucknorris.betterthanebay;
 
-import de.thomaskrille.dropwizard_template_config.TemplateConfigBundle;
-
 import org.hibernate.SessionFactory;
-
+import de.thomaskrille.dropwizard_template_config.TemplateConfigBundle;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.auth.BetterThanEbayAuthenticator;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.*;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.db.BidDAO;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.db.FeedbackDAO;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.db.ItemDAO;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.db.UserDAO;
-import edu.neu.ccs.cs5500.chucknorris.betterthanebay.resources.BidResource;
-import edu.neu.ccs.cs5500.chucknorris.betterthanebay.resources.FeedbackResource;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.resources.ItemResource;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.resources.UserResource;
 import io.dropwizard.Application;
@@ -21,11 +17,9 @@ import io.dropwizard.auth.basic.BasicCredentialAuthFilter;
 import io.dropwizard.hibernate.UnitOfWorkAwareProxyFactory;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
-
 import io.dropwizard.hibernate.HibernateBundle;
 import io.dropwizard.db.DataSourceFactory;
 import io.dropwizard.migrations.MigrationsBundle;
-
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.User;
 
 public class BetterThanEbayApplication extends Application<BetterThanEbayConfiguration> {
