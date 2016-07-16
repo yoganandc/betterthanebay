@@ -61,11 +61,10 @@ public class BetterThanEbayApplication extends Application<BetterThanEbayConfigu
         SessionFactory sf = db.getSessionFactory();
 
         UserDAO userDAO = new UserDAO(sf);
-        UserResource userResource = new UserResource(userDAO);
-
         ItemDAO itemDAO = new ItemDAO(sf);
         BidDAO bidDAO = new BidDAO(sf);
         FeedbackDAO feedbackDAO = new FeedbackDAO(sf);
+        UserResource userResource = new UserResource(userDAO, itemDAO, bidDAO, feedbackDAO);
         ItemResource itemResource = new ItemResource(itemDAO, bidDAO, feedbackDAO);
 
         BetterThanEbayAuthenticator auth = new UnitOfWorkAwareProxyFactory(db).create(BetterThanEbayAuthenticator.class,

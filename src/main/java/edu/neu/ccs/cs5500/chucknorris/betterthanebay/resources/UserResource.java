@@ -5,7 +5,12 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Bid;
+import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Feedback;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.User;
+import edu.neu.ccs.cs5500.chucknorris.betterthanebay.db.BidDAO;
+import edu.neu.ccs.cs5500.chucknorris.betterthanebay.db.FeedbackDAO;
+import edu.neu.ccs.cs5500.chucknorris.betterthanebay.db.ItemDAO;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.db.UserDAO;
 import io.dropwizard.auth.Auth;
 import io.dropwizard.hibernate.UnitOfWork;
@@ -28,9 +33,15 @@ public class UserResource {
      */
 
     private final UserDAO dao;
+    private final ItemDAO itemDAO;
+    private final BidDAO bidDAO;
+    private final FeedbackDAO feedbackDAO;
 
-    public UserResource(UserDAO dao) {
+    public UserResource(UserDAO dao, ItemDAO itemDAO, BidDAO bidDAO, FeedbackDAO feedbackDAO) {
         this.dao = dao;
+        this.itemDAO = itemDAO;
+        this.bidDAO = bidDAO;
+        this.feedbackDAO = feedbackDAO;
     }
 
     @GET
@@ -139,18 +150,18 @@ public class UserResource {
                                       @PathParam("feedbackId") NonEmptyStringParam feedbackId, @Auth User loggedInUser) {
 
         // if valid user
-        return null; //dao.getSellerFeedback(userId);
+        return null; //feedbackDAO.getSellerFeedback(userId);
     }
 
     @GET
     @Path("/{userId}/bids")
     public Response getBidsForUser(@PathParam("userId") LongParam userId, @Auth User loggedInUser) {
-        return null; //return dao.getActiveBids(userId);
+        return null; //return bidDAO.getActiveBids(userId);
     }
 
     @GET
     @Path("/{userId}/items")
     public Response getItemsForUser(@PathParam("userId") LongParam userId, @Auth User loggedInUser) {
-        return null; //return dao.getItems(userId);
+        return null; //return itemDAO.getItems(userId);
     }
 }
