@@ -29,7 +29,8 @@ import edu.neu.ccs.cs5500.chucknorris.betterthanebay.db.UpdatedTimestamp;
 @Table(name = "item")
 @NamedQueries(value = {
     @NamedQuery(name = "edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Item.getItemsForUser",
-        query = "SELECT i FROM Item i WHERE i.userId = :user_id")})
+                query = "SELECT i FROM Item i WHERE i.userId = :user_id")
+})
 public class Item {
 
   @Id
