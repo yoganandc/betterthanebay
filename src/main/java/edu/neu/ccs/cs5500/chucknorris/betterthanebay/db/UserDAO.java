@@ -1,5 +1,7 @@
 package edu.neu.ccs.cs5500.chucknorris.betterthanebay.db;
 
+import java.util.List;
+
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 
@@ -45,4 +47,24 @@ public class UserDAO extends AbstractDAO<User> {
 
     return null;
   }
+
+  public List<User> searchByUsername(String optional, int start, int size) {
+    Query query = super.namedQuery(
+        "edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.User.searchByUsername");
+    query.setParameter("username", "%" + optional.toString() + "%");
+    return list(query);
+  }
+
+  public boolean deleteUser(Long id) {
+    Query query =
+        super.namedQuery("edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.User.deleteUser");
+    query.setParameter("id", id).executeUpdate();
+    return true;
+  }
+
+  // public boolean deleteUser(Long id) {
+  // currentSession().delete(this.get(id));
+  // return true;
+  // }
+
 }

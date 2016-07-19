@@ -39,150 +39,153 @@ public class UserResource {
    * TO DO user authentication for post, put, delete
    */
 
-    private final UserDAO dao;
-    private final ItemDAO itemDAO;
-    private final BidDAO bidDAO;
-    private final FeedbackDAO feedbackDAO;
+  private final UserDAO dao;
+  private final ItemDAO itemDAO;
+  private final BidDAO bidDAO;
+  private final FeedbackDAO feedbackDAO;
 
-    public UserResource(UserDAO dao, ItemDAO itemDAO, BidDAO bidDAO, FeedbackDAO feedbackDAO) {
-        this.dao = dao;
-        this.itemDAO = itemDAO;
-        this.bidDAO = bidDAO;
-        this.feedbackDAO = feedbackDAO;
+  public UserResource(UserDAO dao, ItemDAO itemDAO, BidDAO bidDAO, FeedbackDAO feedbackDAO) {
+    this.dao = dao;
+    this.itemDAO = itemDAO;
+    this.bidDAO = bidDAO;
+    this.feedbackDAO = feedbackDAO;
+  }
+
+  @GET
+  @Path("/{userId}")
+  @UnitOfWork
+  public Response getUser(@PathParam("userId") LongParam userId, @Auth User loggedInUser) {
+
+    final User user = this.dao.findById(userId.get());
+    if (user == null) {
+      return Response.status(Response.Status.NOT_FOUND).build();
     }
 
-    @GET
-    @Path("/{userId}")
-    @UnitOfWork
-    public Response getUser(@PathParam("userId") LongParam userId, @Auth User loggedInUser) {
+    return Response.ok(user).build();
+  }
 
-        final User user = this.dao.findById(userId.get());
-        if (user == null) {
-            return Response.status(Response.Status.NOT_FOUND).build();
-        }
+  @GET
+  @UnitOfWork
+  public Response searchByUsername(@QueryParam("username") String username,
+      @QueryParam("start") IntParam start, @QueryParam("size") IntParam size,
+      @Auth User loggedInUser) {
 
-        return Response.ok(user).build();
+    if (username == null) {
+      return Response.status(Response.Status.BAD_REQUEST).build();
+    }
+    int startVal;
+    if (start == null) {
+      startVal = 0;
+    } else {
+      startVal = start.get();
     }
 
-    @GET
-    public Response searchByUsername(@QueryParam("username") NonEmptyStringParam username,
-                                     @QueryParam("start") IntParam start, @QueryParam("size") IntParam size,
-                                     @Auth User loggedInUser) {
-        if ((username == null) || !username.get().isPresent()) {
-            return Response.status(Response.Status.BAD_REQUEST).build();
-        }
-        int startVal;
-        if (start == null) {
-            startVal = 0;
-        } else {
-            startVal = start.get();
-        }
-
-        int sizeVal;
-        if (size == null) {
-            sizeVal = 20;
-        } else {
-            sizeVal = size.get();
-        }
-
-    /* return by user */
-        List<User> list = null; // dao.findByUsername(username.get(), startVal, sizeVal);
-
-        if (list == null) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
-        } else if (list.isEmpty()) {
-            return Response.status(Response.Status.NO_CONTENT).build();
-        }
-        return Response.ok(list).build();
+    int sizeVal;
+    if (size == null) {
+      sizeVal = 20;
+    } else {
+      sizeVal = size.get();
     }
 
+    List<User> list = this.dao.searchByUsername(username, startVal, sizeVal);
 
-    @POST
-    public Response addUser(@Valid User user) {
+    if (list == null) {
+      return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+    } else if (list.isEmpty()) {
+      return Response.status(Response.Status.NO_CONTENT).build();
+    }
+    return Response.ok(list).build();
+  }
 
-        Response.ResponseBuilder response;
+
+  @POST
+  public Response addUser(@Valid User user) {
+
+    Response.ResponseBuilder response;
 
     /*
      * TO DO FORBIDDEN if already logged in as another user ?
      */
 
-        User createdUser = null; // dao.createUser(user);
+    User createdUser = null; // dao.createUser(user);
 
-        if (createdUser == null) {
-            response = Response.status(Response.Status.INTERNAL_SERVER_ERROR);
+    if (createdUser == null) {
+      response = Response.status(Response.Status.INTERNAL_SERVER_ERROR);
 
-        } else { // user successfully created
-            response = Response.created(URI.create("/users/" + createdUser.getId())).entity(createdUser);
-        }
-
-        return response.build();
+    } else { // user successfully created
+      response = Response.created(URI.create("/users/" + createdUser.getId())).entity(createdUser);
     }
 
-    @PUT
-    @Path("/{userId}")
-    public Response updateUser(@PathParam("userId") LongParam userId, @Valid User user,
-                               @Auth User loggedInUser) {
+    return response.build();
+  }
 
-        if (userId.get() == null) {
-            return Response.status(Response.Status.BAD_REQUEST).build();
-        }
+  @PUT
+  @Path("/{userId}")
+  @UnitOfWork
+  public Response updateUser(@PathParam("userId") LongParam userId, @Valid User user,
+      @Auth User loggedInUser) {
 
-        if (this.dao.findById(userId.get()) == null) {
-            Response.status(Response.Status.NOT_FOUND).build();
-        }
-
-        User updatedUser = null; // dao.updateUser(userId, user);
-
-        return Response.ok(updatedUser).build();
+    if (userId.get() == null) {
+      return Response.status(Response.Status.BAD_REQUEST).build();
     }
 
-    @DELETE
-    @Path("/{userId}")
-    public Response deleteUser(@PathParam("userId") LongParam userId, @Auth User loggedInUser) {
-
-        if (this.dao.findById(userId.get()) == null) {
-            return Response.status(Response.Status.NOT_FOUND).build(); // userId doesn't exist
-        }
-
-        boolean success = false; // dao.deleteUser(userId);
-        if (success) {
-            return Response.status(Response.Status.NO_CONTENT).build(); // user account successfully
-            // deleted
-        } else {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build(); // failure
-        }
+    if (this.dao.findById(userId.get()) == null) {
+      Response.status(Response.Status.NOT_FOUND).build();
     }
 
-    // seller feedback by user
-    @GET
-    @Path("/{userId}/feedback/{feedbackId}")
-    public Response getSellerFeedback(@PathParam("userId") LongParam userId,
-                                      @PathParam("feedbackId") NonEmptyStringParam feedbackId, @Auth User loggedInUser) {
+    User updatedUser = null; // dao.updateUser(userId, user);
 
-        // if valid user
-        return null; // feedbackDAO.getSellerFeedback(userId);
+    return Response.ok(updatedUser).build();
+  }
+
+  @DELETE
+  @Path("/{userId}")
+  @UnitOfWork
+  public Response deleteUser(@PathParam("userId") Long userId, @Auth User loggedInUser) {
+
+    if (this.dao.findById(userId) == null) {
+      return Response.status(Response.Status.NOT_FOUND).build(); // userId doesn't exist
     }
 
-    @GET
-    @Path("/{userId}/bids")
-    public Response getBidsForUser(@PathParam("userId") LongParam userId, @Auth User loggedInUser) {
-        return null; // return bidDAO.getActiveBids(userId);
+    boolean success = this.dao.deleteUser(userId);
+    if (success) {
+      return Response.status(Response.Status.NO_CONTENT).build(); // user account successfully
+      // deleted
+    } else {
+      return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build(); // failure
+    }
+  }
+
+  // seller feedback by user
+  @GET
+  @Path("/{userId}/feedback/{feedbackId}")
+  public Response getSellerFeedback(@PathParam("userId") LongParam userId,
+      @PathParam("feedbackId") NonEmptyStringParam feedbackId, @Auth User loggedInUser) {
+
+    // if valid user
+    return null; // feedbackDAO.getSellerFeedback(userId);
+  }
+
+  @GET
+  @Path("/{userId}/bids")
+  public Response getBidsForUser(@PathParam("userId") LongParam userId, @Auth User loggedInUser) {
+    return null; // return bidDAO.getActiveBids(userId);
+  }
+
+  @GET
+  @Path("/{userId}/items")
+  @UnitOfWork
+  public Response getItemsForUser(@PathParam("userId") LongParam userId, @Auth User loggedInUser) {
+
+    final List<Item> items = this.itemDAO.getItems(userId.get());
+
+    if (items == null) {
+      return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+    }
+    if (items.isEmpty()) {
+      return Response.status(Response.Status.NO_CONTENT).build();
     }
 
-    @GET
-    @Path("/{userId}/items")
-    @UnitOfWork
-    public Response getItemsForUser(@PathParam("userId") LongParam userId, @Auth User loggedInUser) {
-
-        final List<Item> items = this.itemDAO.getItems(userId.get());
-
-        if (items == null) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
-        }
-        if(items.isEmpty()) {
-            return Response.status(Response.Status.NO_CONTENT).build();
-        }
-
-        return Response.ok(items).build();
-    }
+    return Response.ok(items).build();
+  }
 }
