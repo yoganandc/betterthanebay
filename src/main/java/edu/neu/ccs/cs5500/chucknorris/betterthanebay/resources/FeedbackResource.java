@@ -72,16 +72,24 @@ public class FeedbackResource {
 
     @PUT
     @Path("/{feedbackId}")
-    public Response updateFeedback(@PathParam("itemId") LongParam itemId, @PathParam("feedbackId") NonEmptyStringParam bidId, @Valid Feedback feedback) {
+    public Response updateFeedback(@PathParam("itemId") LongParam itemId, @PathParam("feedbackId") NonEmptyStringParam feedbackId, @Valid Feedback feedback) {
         ResponseBuilder response;
 
         // authenticate seller
 
-        response = Response.status(Response.Status.OK); // successfully updated
-        // else
-        response = Response.status(Response.Status.BAD_REQUEST); // failure || invalid data || not found
+        if(feedbackId.get().isPresent()) {
+            Feedback feedback1;// = dao.findById(itemId, feedbackId.get().get()); // check if equals "buyer" or "seller"
+        }
+        if (dao.findById(feedbackId.get().get()) == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
 
-        return response.build();
+        Feedback updatedFeedback = dao.update(feedback);
+
+        if (updatedFeedback == null) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+        return Response.ok(updatedFeedback).build();
     }
 
     @DELETE
