@@ -19,10 +19,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Address;
-import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Item;
-import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Payment;
-import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.User;
+import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.*;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.db.BidDAO;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.db.FeedbackDAO;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.db.ItemDAO;
@@ -210,9 +207,9 @@ public class UserResource {
     public Response getItemsForUser(@PathParam("userId") LongParam userId, @Auth User loggedInUser) {
         final List<Item> items = null;
         if (loggedInUser.getId() == userId.get()) {
-            //items = this.itemDAO.getAllItems(userId.get());   //***** update User DAO
+            //items = this.itemDAO.getAllItems(userId.get());   //***** update Item DAO
         } else {
-            //items = this.itemDAO.getActiveItems(userId.get());  // **** update User DAO
+            //items = this.itemDAO.getActiveItems(userId.get());  // **** update Item DAO
         }
 
         if (items == null) {
@@ -228,7 +225,13 @@ public class UserResource {
     @GET
     @Path("/{userId}/bids")
     @UnitOfWork
+    @ApiOperation(
+            value = "Finds the user's bids",
+            notes = "Returns all user bids",
+            response = Bid.class)
     public Response getBidsForUser(@PathParam("userId") LongParam userId, @Auth User loggedInUser) {
+
+        /* TODO */
         return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
     }
 
@@ -236,9 +239,13 @@ public class UserResource {
     @GET
     @Path("/{userId}/feedback/{feedbackId}")
     @UnitOfWork
+    @ApiOperation(
+            value = "Finds the user's feedback",
+            notes = "Returns all user feedback",
+            response = Feedback.class)
     public Response getSellerFeedback(@PathParam("userId") LongParam userId,
                                       @PathParam("feedbackId") NonEmptyStringParam feedbackId, @Auth User loggedInUser) {
-
+         /* TODO */
         return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
     }
 }

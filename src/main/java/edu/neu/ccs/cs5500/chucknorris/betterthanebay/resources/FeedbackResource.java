@@ -16,11 +16,14 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
+import com.wordnik.swagger.annotations.ApiOperation;
+import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Bid;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Feedback;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Item;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.User;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.db.FeedbackDAO;
 import io.dropwizard.auth.Auth;
+import io.dropwizard.hibernate.UnitOfWork;
 import io.dropwizard.jersey.params.LongParam;
 import io.dropwizard.jersey.params.NonEmptyStringParam;
 
@@ -35,9 +38,13 @@ public class FeedbackResource {
         this.dao = dao;
     }
 
-    // feedback by id
     @GET
     @Path("/{feedbackId}")
+    @UnitOfWork
+    @ApiOperation(
+            value = "Find feedback with given id",
+            notes = "If {feedbackId} exists, returns the corresponding feedback object",
+            response = Feedback.class)
     public Response getFeedback(@PathParam("itemId") LongParam itemId, @PathParam("feedbackId") NonEmptyStringParam feedbackId,
                                 @Auth User loggedInUser) {
 
@@ -51,6 +58,11 @@ public class FeedbackResource {
     }
 
     @POST
+    @UnitOfWork
+    @ApiOperation(
+            value = "Creates a new feedback",
+            notes = "Adds the given feedback to the given item's details",
+            response = Feedback.class)
     public Response addFeedback(@PathParam("itemId") LongParam itemId, @Valid Feedback feedback, @Auth User loggedInUser) {
 
         ResponseBuilder response;
@@ -75,6 +87,11 @@ public class FeedbackResource {
 
     @PUT
     @Path("/{feedbackId}")
+    @UnitOfWork
+    @ApiOperation(
+            value = "Updates feedback details",
+            notes = "Updates the given feedback's details for the logged in user",
+            response = Feedback.class)
     public Response updateFeedback(@PathParam("itemId") LongParam feedbackId, @PathParam("feedbackId") NonEmptyStringParam bidId,
                                    @Valid Feedback feedback, @Auth User loggedInUser) {
 //        ResponseBuilder response;
@@ -99,6 +116,10 @@ public class FeedbackResource {
 
     @DELETE
     @Path("/{feedbackId}")
+    @UnitOfWork
+    @ApiOperation(
+            value = "Deletes feedback",
+            notes = "Deletes the feedback with given feedback ID and corresponding item ID")
     public Response deleteFeedback(@PathParam("itemId") LongParam itemId, @PathParam("feedbackId") NonEmptyStringParam feedbackId,
                                    @Auth User loggedInUser) {
 

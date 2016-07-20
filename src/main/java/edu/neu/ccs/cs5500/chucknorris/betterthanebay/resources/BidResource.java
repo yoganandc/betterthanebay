@@ -16,11 +16,13 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
+import com.wordnik.swagger.annotations.ApiOperation;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.db.BidDAO;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Bid;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Item;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.User;
 import io.dropwizard.auth.Auth;
+import io.dropwizard.hibernate.UnitOfWork;
 import io.dropwizard.jersey.params.LongParam;
 
 @Produces(MediaType.APPLICATION_JSON)
@@ -36,6 +38,11 @@ public class BidResource {
 
     @GET
     @Path("/{bidId}")
+    @UnitOfWork
+    @ApiOperation(
+            value = "Find bid with given id",
+            notes = "If {bidId} exists, returns the corresponding bid object",
+            response = Bid.class)
     public Response getBid(@PathParam("itemId") LongParam itemId, @PathParam("bidId") LongParam bidId, @Auth User loggedInUser) {
 
         final Bid bid = dao.findById(bidId.get());
@@ -47,6 +54,12 @@ public class BidResource {
     }
 
     @GET
+    @UnitOfWork
+    @ApiOperation(
+            value = "Find all bids for the user",
+            notes = "Returns a list of all bids for the logged in user",
+            response = Bid.class,
+            responseContainer = "List")
     public Response getAllBids(@PathParam("itemId") LongParam itemId, @Auth User loggedInUser) {
 
         final List<Bid> bids = null; //dao.findBidsForId(itemId.get());
@@ -58,6 +71,11 @@ public class BidResource {
     }
 
     @POST
+    @UnitOfWork
+    @ApiOperation(
+            value = "Creates a new bid",
+            notes = "Places the given bid for the given item's auction",
+            response = Bid.class)
     public Response addBid(@PathParam("itemId") LongParam itemId, @Valid Bid bid, @Auth User loggedInUser) {
         ResponseBuilder response;
 
@@ -72,10 +90,13 @@ public class BidResource {
 
     @PUT
     @Path("/{bidId}")
+    @UnitOfWork
+    @ApiOperation(
+            value = "Updates bid details",
+            notes = "Updates the given bid's details for the logged in user",
+            response = Bid.class)
     public Response updateBid(@PathParam("itemId") LongParam itemId, @PathParam("bidId") LongParam bidId, @Valid Bid bid,
                               @Auth User loggedInUser) {
-
-        // UNAUTHORIZED user
 
         if (dao.findById(bidId.get()) == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
@@ -91,6 +112,10 @@ public class BidResource {
 
     @DELETE
     @Path("/{bidId}")
+    @UnitOfWork
+    @ApiOperation(
+            value = "Deletes bid",
+            notes = "Deletes the bid with given bid ID")
     public Response deleteBid(@PathParam("itemId") LongParam itemId, @PathParam("bidId") LongParam bidId,
                               @Auth User loggedInUser) {
 
