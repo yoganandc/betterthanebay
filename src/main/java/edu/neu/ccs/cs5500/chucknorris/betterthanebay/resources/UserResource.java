@@ -1,5 +1,7 @@
 package edu.neu.ccs.cs5500.chucknorris.betterthanebay.resources;
 
+import com.wordnik.swagger.annotations.ApiOperation;
+
 import java.net.URI;
 import java.util.List;
 

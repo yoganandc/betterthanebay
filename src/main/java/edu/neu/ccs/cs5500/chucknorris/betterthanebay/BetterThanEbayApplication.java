@@ -21,6 +21,8 @@ import io.dropwizard.hibernate.HibernateBundle;
 import io.dropwizard.db.DataSourceFactory;
 import io.dropwizard.migrations.MigrationsBundle;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.User;
+import io.federecio.dropwizard.swagger.SwaggerBundle;
+import io.federecio.dropwizard.swagger.SwaggerBundleConfiguration;
 
 public class BetterThanEbayApplication extends Application<BetterThanEbayConfiguration> {
 
@@ -45,6 +47,12 @@ public class BetterThanEbayApplication extends Application<BetterThanEbayConfigu
     @Override
     public void initialize(final Bootstrap<BetterThanEbayConfiguration> bootstrap) {
         bootstrap.addBundle(new TemplateConfigBundle());
+        bootstrap.addBundle(new SwaggerBundle<BetterThanEbayConfiguration>() {
+            @Override
+            protected SwaggerBundleConfiguration getSwaggerBundleConfiguration(BetterThanEbayConfiguration configuration) {
+                return configuration.swaggerBundleConfiguration;
+            }
+        });
         bootstrap.addBundle(db);
         bootstrap.addBundle(new MigrationsBundle<BetterThanEbayConfiguration>() {
             @Override
