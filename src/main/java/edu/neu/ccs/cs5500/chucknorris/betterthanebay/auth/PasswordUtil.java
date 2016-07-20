@@ -42,8 +42,7 @@ public class PasswordUtil {
 
     private final int cost;
 
-    public PasswordUtil()
-    {
+    public PasswordUtil() {
         this(DEFAULT_COST);
     }
 
@@ -52,15 +51,13 @@ public class PasswordUtil {
      *
      * @param cost the exponential computational cost of hashing a password, 0 to 30
      */
-    public PasswordUtil(int cost)
-    {
+    public PasswordUtil(int cost) {
         iterations(cost); /* Validate cost */
         this.cost = cost;
         this.random = new SecureRandom();
     }
 
-    private static int iterations(int cost)
-    {
+    private static int iterations(int cost) {
         if ((cost & ~0x1F) != 0)
             throw new IllegalArgumentException("cost: " + cost);
         return 1 << cost;
@@ -69,10 +66,10 @@ public class PasswordUtil {
     /**
      * Hash a password for storage.
      *
+     * @param password The password to be hashed
      * @return a secure authentication token to be stored for later authentication
      */
-    public String hash(char[] password)
-    {
+    public String hash(char[] password) {
         byte[] salt = new byte[SIZE / 8];
         random.nextBytes(salt);
         byte[] dk = pbkdf2(password, salt, 1 << cost);
@@ -86,10 +83,11 @@ public class PasswordUtil {
     /**
      * Authenticate with a password and a stored password token.
      *
+     * @param password The password to be checked
+     * @param token    The hashed value stored already
      * @return true if the password and token match
      */
-    public boolean authenticate(char[] password, String token)
-    {
+    public boolean authenticate(char[] password, String token) {
         Matcher m = layout.matcher(token);
         if (!m.matches())
             throw new IllegalArgumentException("Invalid token format");
@@ -103,17 +101,14 @@ public class PasswordUtil {
         return zero == 0;
     }
 
-    private static byte[] pbkdf2(char[] password, byte[] salt, int iterations)
-    {
+    private static byte[] pbkdf2(char[] password, byte[] salt, int iterations) {
         KeySpec spec = new PBEKeySpec(password, salt, iterations, SIZE);
         try {
             SecretKeyFactory f = SecretKeyFactory.getInstance(ALGORITHM);
             return f.generateSecret(spec).getEncoded();
-        }
-        catch (NoSuchAlgorithmException ex) {
+        } catch (NoSuchAlgorithmException ex) {
             throw new IllegalStateException("Missing algorithm: " + ALGORITHM, ex);
-        }
-        catch (InvalidKeySpecException ex) {
+        } catch (InvalidKeySpecException ex) {
             throw new IllegalStateException("Invalid SecretKeyFactory", ex);
         }
     }

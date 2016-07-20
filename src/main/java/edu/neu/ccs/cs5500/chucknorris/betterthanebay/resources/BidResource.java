@@ -20,6 +20,7 @@ import edu.neu.ccs.cs5500.chucknorris.betterthanebay.db.BidDAO;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Bid;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Item;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.User;
+import io.dropwizard.auth.Auth;
 import io.dropwizard.jersey.params.LongParam;
 
 @Produces(MediaType.APPLICATION_JSON)
@@ -35,7 +36,7 @@ public class BidResource {
 
     @GET
     @Path("/{bidId}")
-    public Response getBid(@PathParam("itemId") LongParam itemId, @PathParam("bidId") LongParam bidId) {
+    public Response getBid(@PathParam("itemId") LongParam itemId, @PathParam("bidId") LongParam bidId, @Auth User loggedInUser) {
 
         final Bid bid = dao.findById(bidId.get());
         if (bid == null) {
@@ -46,7 +47,7 @@ public class BidResource {
     }
 
     @GET
-    public Response getAllBids(@PathParam("itemId") LongParam itemId) {
+    public Response getAllBids(@PathParam("itemId") LongParam itemId, @Auth User loggedInUser) {
 
         final List<Bid> bids = null; //dao.findBidsForId(itemId.get());
         if (bids == null) {
@@ -57,7 +58,7 @@ public class BidResource {
     }
 
     @POST
-    public Response addBid(@PathParam("itemId") LongParam itemId, @Valid Bid bid) {
+    public Response addBid(@PathParam("itemId") LongParam itemId, @Valid Bid bid, @Auth User loggedInUser) {
         ResponseBuilder response;
 
         Bid createdBid = dao.create(bid);
@@ -71,7 +72,8 @@ public class BidResource {
 
     @PUT
     @Path("/{bidId}")
-    public Response updateBid(@PathParam("itemId") LongParam itemId, @PathParam("bidId") LongParam bidId, @Valid Bid bid) {
+    public Response updateBid(@PathParam("itemId") LongParam itemId, @PathParam("bidId") LongParam bidId, @Valid Bid bid,
+                              @Auth User loggedInUser) {
 
         // UNAUTHORIZED user
 
@@ -89,7 +91,8 @@ public class BidResource {
 
     @DELETE
     @Path("/{bidId}")
-    public Response deleteBid(@PathParam("itemId") LongParam itemId, @PathParam("bidId") LongParam bidId) {
+    public Response deleteBid(@PathParam("itemId") LongParam itemId, @PathParam("bidId") LongParam bidId,
+                              @Auth User loggedInUser) {
 
         /* TO DO
         FORBIDDEN

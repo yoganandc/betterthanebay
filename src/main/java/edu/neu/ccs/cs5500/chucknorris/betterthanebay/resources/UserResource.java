@@ -1,11 +1,31 @@
 package edu.neu.ccs.cs5500.chucknorris.betterthanebay.resources;
 
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
+
+import java.net.URI;
+import java.util.List;
+
 import javax.validation.Valid;
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Address;
+import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Item;
+import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Payment;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.User;
+import edu.neu.ccs.cs5500.chucknorris.betterthanebay.db.BidDAO;
+import edu.neu.ccs.cs5500.chucknorris.betterthanebay.db.FeedbackDAO;
+import edu.neu.ccs.cs5500.chucknorris.betterthanebay.db.ItemDAO;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.db.UserDAO;
 import io.dropwizard.auth.Auth;
 import io.dropwizard.hibernate.UnitOfWork;
@@ -13,33 +33,40 @@ import io.dropwizard.jersey.params.IntParam;
 import io.dropwizard.jersey.params.LongParam;
 import io.dropwizard.jersey.params.NonEmptyStringParam;
 
-import java.net.URI;
-import java.util.List;
-import java.util.Optional;
-
 
 @Path("/users")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
+@Api(value = "/users", description = "Users")
 public class UserResource {
 
 
-    /* TO DO
-     * user authentication for post, put, delete
-     */
+  /*
+   * TO DO user authentication for post, put, delete
+   */
 
     private final UserDAO dao;
+    private final ItemDAO itemDAO;
+    private final BidDAO bidDAO;
+    private final FeedbackDAO feedbackDAO;
 
-    public UserResource(UserDAO dao) {
+    public UserResource(UserDAO dao, ItemDAO itemDAO, BidDAO bidDAO, FeedbackDAO feedbackDAO) {
         this.dao = dao;
+        this.itemDAO = itemDAO;
+        this.bidDAO = bidDAO;
+        this.feedbackDAO = feedbackDAO;
     }
 
     @GET
     @Path("/{userId}")
     @UnitOfWork
-    public Response getUser(@Auth User loggedInUser, @PathParam("userId") LongParam userId) {
+    @ApiOperation(
+            value = "The user object",
+            notes = "Returns the user with id {userId}",
+            response = User.class)
+    public Response getUser(@PathParam("userId") LongParam userId, @Auth User loggedInUser) {
 
-        final User user = dao.findById(userId.get());
+        final User user = this.dao.findById(userId.get());
         if (user == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
@@ -48,9 +75,12 @@ public class UserResource {
     }
 
     @GET
-    public Response searchByUsername(@QueryParam("username") NonEmptyStringParam username, @QueryParam("start") IntParam start,
-                               @QueryParam("size") IntParam size) {
-        if(username == null || !username.get().isPresent()) {
+    @UnitOfWork
+    public Response searchByUsername(@QueryParam("username") String username,
+                                     @QueryParam("start") IntParam start, @QueryParam("size") IntParam size,
+                                     @Auth User loggedInUser) {
+
+        if (username == null) {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
         int startVal;
@@ -67,8 +97,7 @@ public class UserResource {
             sizeVal = size.get();
         }
 
-        /* return by user */
-        List<User> list = null; //dao.findByUsername(username.get(), startVal, sizeVal);
+        List<User> list = this.dao.searchByUsername(username, startVal, sizeVal);
 
         if (list == null) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
@@ -80,15 +109,22 @@ public class UserResource {
 
 
     @POST
+    @UnitOfWork
     public Response addUser(@Valid User user) {
 
         Response.ResponseBuilder response;
 
-        /* TO DO
-         * FORBIDDEN if already logged in as another user ?
-         */
+        // NULL OUT ALL IDs
+//        user.setId(null);
+//        for(Address address : user.getAddresses()) {
+//            address.setId(null);
+//        }
+//        for(Payment payment : user.getPayments()) {
+//            payment.setId(null);
+//            payment.getAddress().setId(null);
+//        }
 
-        User createdUser = null; //dao.createUser(user);
+        User createdUser = dao.create(user);
 
         if (createdUser == null) {
             response = Response.status(Response.Status.INTERNAL_SERVER_ERROR);
@@ -102,56 +138,83 @@ public class UserResource {
 
     @PUT
     @Path("/{userId}")
-    public Response updateUser(@PathParam("userId") LongParam userId, @Valid User user) {
+    @UnitOfWork
+    public Response updateUser(@PathParam("userId") LongParam userId, @Valid User user,
+                               @Auth User loggedInUser) {
 
-        if (userId.get() == null) {
+        // FORBIDDEN TO UPDATE IF USER LOGGED IN IS NOT THE SAME
+        if(userId.get() != loggedInUser.getId()) {
+            return Response.status(Response.Status.FORBIDDEN).build();
+        }
+
+        // BAD REQUEST IF ENTITY OBJECT'S ID DOES NOT MATCH PATH ID
+        if(userId.get() != user.getId()) {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
 
-        if (dao.findById(userId.get()) == null) {
+        // NOT FOUND
+        if (this.dao.findById(userId.get()) == null) {
             Response.status(Response.Status.NOT_FOUND).build();
         }
 
-        User updatedUser = null; // dao.updateUser(userId, user);
+        User updatedUser = dao.update(user);
 
         return Response.ok(updatedUser).build();
     }
 
     @DELETE
     @Path("/{userId}")
-    public Response deleteUser(@PathParam("userId") LongParam userId) {
+    @UnitOfWork
+    public Response deleteUser(@PathParam("userId") LongParam userId, @Auth User loggedInUser) {
 
-        if (dao.findById(userId.get()) == null) {
+        // FORBIDDEN TO DELETE IF USER LOGGED IN IS NOT THE SAME
+        if(userId.get() != loggedInUser.getId()) {
+            return Response.status(Response.Status.FORBIDDEN).build();
+        }
+
+        if (this.dao.findById(userId.get()) == null) {
             return Response.status(Response.Status.NOT_FOUND).build(); // userId doesn't exist
         }
 
-        boolean success = false; // dao.deleteUser(userId);
+        boolean success = this.dao.deleteUser(userId.get());
         if (success) {
-            return Response.status(Response.Status.NO_CONTENT).build(); // user account successfully deleted
+            return Response.status(Response.Status.NO_CONTENT).build(); // user account successfully
         } else {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build(); // failure
         }
     }
 
-    // seller feedback by user
     @GET
-    @Path("/{userId}/feedback/{feedbackId}")
-    public Response getSellerFeedback(@PathParam("userId") LongParam userId,
-                                      @PathParam("feedbackId") NonEmptyStringParam feedbackId) {
+    @Path("/{userId}/items")
+    @UnitOfWork
+    public Response getItemsForUser(@PathParam("userId") LongParam userId, @Auth User loggedInUser) {
 
-        // if valid user
-        return null; //dao.getSellerFeedback(userId);
+        final List<Item> items = this.itemDAO.getItems(userId.get());
+
+        if (items == null) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+        if (items.isEmpty()) {
+            return Response.status(Response.Status.NO_CONTENT).build();
+        }
+
+        return Response.ok(items).build();
     }
 
     @GET
     @Path("/{userId}/bids")
-    public Response getBidsForUser(@PathParam("userId") LongParam userId) {
-        return null; //return dao.getActiveBids(userId);
+    @UnitOfWork
+    public Response getBidsForUser(@PathParam("userId") LongParam userId, @Auth User loggedInUser) {
+        return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
     }
 
+    // seller feedback by user
     @GET
-    @Path("/{userId}/items")
-    public Response getItemsForUser(@PathParam("userId") LongParam userId) {
-        return null; //return dao.getItems(userId);
+    @Path("/{userId}/feedback/{feedbackId}")
+    @UnitOfWork
+    public Response getSellerFeedback(@PathParam("userId") LongParam userId,
+                                      @PathParam("feedbackId") NonEmptyStringParam feedbackId, @Auth User loggedInUser) {
+
+        return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
     }
 }

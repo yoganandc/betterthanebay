@@ -1,17 +1,13 @@
 package edu.neu.ccs.cs5500.chucknorris.betterthanebay;
 
-import de.thomaskrille.dropwizard_template_config.TemplateConfigBundle;
-
 import org.hibernate.SessionFactory;
-
+import de.thomaskrille.dropwizard_template_config.TemplateConfigBundle;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.auth.BetterThanEbayAuthenticator;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.*;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.db.BidDAO;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.db.FeedbackDAO;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.db.ItemDAO;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.db.UserDAO;
-import edu.neu.ccs.cs5500.chucknorris.betterthanebay.resources.BidResource;
-import edu.neu.ccs.cs5500.chucknorris.betterthanebay.resources.FeedbackResource;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.resources.ItemResource;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.resources.UserResource;
 import io.dropwizard.Application;
@@ -21,12 +17,12 @@ import io.dropwizard.auth.basic.BasicCredentialAuthFilter;
 import io.dropwizard.hibernate.UnitOfWorkAwareProxyFactory;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
-
 import io.dropwizard.hibernate.HibernateBundle;
 import io.dropwizard.db.DataSourceFactory;
 import io.dropwizard.migrations.MigrationsBundle;
-
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.User;
+import io.federecio.dropwizard.swagger.SwaggerBundle;
+import io.federecio.dropwizard.swagger.SwaggerBundleConfiguration;
 
 public class BetterThanEbayApplication extends Application<BetterThanEbayConfiguration> {
 
@@ -51,6 +47,12 @@ public class BetterThanEbayApplication extends Application<BetterThanEbayConfigu
     @Override
     public void initialize(final Bootstrap<BetterThanEbayConfiguration> bootstrap) {
         bootstrap.addBundle(new TemplateConfigBundle());
+        bootstrap.addBundle(new SwaggerBundle<BetterThanEbayConfiguration>() {
+            @Override
+            protected SwaggerBundleConfiguration getSwaggerBundleConfiguration(BetterThanEbayConfiguration configuration) {
+                return configuration.swaggerBundleConfiguration;
+            }
+        });
         bootstrap.addBundle(db);
         bootstrap.addBundle(new MigrationsBundle<BetterThanEbayConfiguration>() {
             @Override
@@ -67,11 +69,10 @@ public class BetterThanEbayApplication extends Application<BetterThanEbayConfigu
         SessionFactory sf = db.getSessionFactory();
 
         UserDAO userDAO = new UserDAO(sf);
-        UserResource userResource = new UserResource(userDAO);
-
         ItemDAO itemDAO = new ItemDAO(sf);
         BidDAO bidDAO = new BidDAO(sf);
         FeedbackDAO feedbackDAO = new FeedbackDAO(sf);
+        UserResource userResource = new UserResource(userDAO, itemDAO, bidDAO, feedbackDAO);
         ItemResource itemResource = new ItemResource(itemDAO, bidDAO, feedbackDAO);
 
         BetterThanEbayAuthenticator auth = new UnitOfWorkAwareProxyFactory(db).create(BetterThanEbayAuthenticator.class,

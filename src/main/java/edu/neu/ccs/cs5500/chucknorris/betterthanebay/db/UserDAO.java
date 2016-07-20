@@ -1,6 +1,6 @@
 package edu.neu.ccs.cs5500.chucknorris.betterthanebay.db;
 
-import java.util.Optional;
+import java.util.List;
 
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
@@ -14,6 +14,8 @@ import io.dropwizard.hibernate.AbstractDAO;
  */
 public class UserDAO extends AbstractDAO<User> {
 
+    PasswordUtil util = new PasswordUtil();
+
     public UserDAO(SessionFactory sessionFactory) {
         super(sessionFactory);
     }
@@ -25,6 +27,7 @@ public class UserDAO extends AbstractDAO<User> {
 
     // Create new User
     public User create(User user) {
+        currentSession().saveOrUpdate(user.getDetails());
         return persist(user);
     }
 
@@ -33,17 +36,34 @@ public class UserDAO extends AbstractDAO<User> {
         return persist(user);
     }
 
+    public boolean deleteUser(Long id) {
+        User user = get(id);
+        if(user == null) {
+            return false;
+        }
+        else {
+            super.currentSession().delete(user);
+            return true;
+        }
+    }
+
     public User findByCredentials(String username, String password) {
-        Query userQuery = super.namedQuery("edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.User.getByUsername")
-                .setParameter("username", username);
+        Query userQuery =
+                super.namedQuery("edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.User.getByUsername")
+                        .setParameter("username", username);
         User user = super.uniqueResult(userQuery);
 
-        PasswordUtil util = new PasswordUtil();
-        if (user != null && util.authenticate(password.toCharArray(), user.getPassword())) {
+        if ((user != null) && this.util.authenticate(password.toCharArray(), user.getPassword())) {
             return user;
         }
 
         return null;
     }
 
+    public List<User> searchByUsername(String optional, int start, int size) {
+        Query query = super.namedQuery(
+                "edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.User.searchByUsername");
+        query.setParameter("username", "%" + optional + "%");
+        return list(query);
+    }
 }

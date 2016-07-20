@@ -18,7 +18,9 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Feedback;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Item;
+import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.User;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.db.FeedbackDAO;
+import io.dropwizard.auth.Auth;
 import io.dropwizard.jersey.params.LongParam;
 import io.dropwizard.jersey.params.NonEmptyStringParam;
 
@@ -36,7 +38,8 @@ public class FeedbackResource {
     // feedback by id
     @GET
     @Path("/{feedbackId}")
-    public Response getFeedback(@PathParam("itemId") LongParam itemId, @PathParam("feedbackId") NonEmptyStringParam feedbackId) {
+    public Response getFeedback(@PathParam("itemId") LongParam itemId, @PathParam("feedbackId") NonEmptyStringParam feedbackId,
+                                @Auth User loggedInUser) {
 
         Feedback feedback = dao.findById(feedbackId.get().get());
 
@@ -48,7 +51,7 @@ public class FeedbackResource {
     }
 
     @POST
-    public Response addFeedback(@PathParam("itemId") LongParam itemId, @Valid Feedback feedback) {
+    public Response addFeedback(@PathParam("itemId") LongParam itemId, @Valid Feedback feedback, @Auth User loggedInUser) {
 
         ResponseBuilder response;
 
@@ -72,29 +75,32 @@ public class FeedbackResource {
 
     @PUT
     @Path("/{feedbackId}")
-    public Response updateFeedback(@PathParam("itemId") LongParam itemId, @PathParam("feedbackId") NonEmptyStringParam feedbackId, @Valid Feedback feedback) {
-        ResponseBuilder response;
-
-        // authenticate seller
-
-        if(feedbackId.get().isPresent()) {
-            Feedback feedback1;// = dao.findById(itemId, feedbackId.get().get()); // check if equals "buyer" or "seller"
-        }
-        if (dao.findById(feedbackId.get().get()) == null) {
-            return Response.status(Response.Status.NOT_FOUND).build();
-        }
-
-        Feedback updatedFeedback = dao.update(feedback);
-
-        if (updatedFeedback == null) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
-        }
-        return Response.ok(updatedFeedback).build();
+    public Response updateFeedback(@PathParam("itemId") LongParam feedbackId, @PathParam("feedbackId") NonEmptyStringParam bidId,
+                                   @Valid Feedback feedback, @Auth User loggedInUser) {
+//        ResponseBuilder response;
+//
+//        // authenticate seller
+//
+//        if(feedbackId.get().isPresent()) {
+//            Feedback feedback1;// = dao.findById(itemId, feedbackId.get().get()); // check if equals "buyer" or "seller"
+//        }
+//        if (dao.findById(feedbackId.get().get()) == null) {
+//            return Response.status(Response.Status.NOT_FOUND).build();
+//        }
+//
+//        Feedback updatedFeedback = dao.update(feedback);
+//
+//        if (updatedFeedback == null) {
+//            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+//        }
+//        return Response.ok(updatedFeedback).build();
+        return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
     }
 
     @DELETE
     @Path("/{feedbackId}")
-    public Response deleteFeedback(@PathParam("itemId") LongParam itemId, @PathParam("feedbackId") NonEmptyStringParam feedbackId) {
+    public Response deleteFeedback(@PathParam("itemId") LongParam itemId, @PathParam("feedbackId") NonEmptyStringParam feedbackId,
+                                   @Auth User loggedInUser) {
 
         // authenticate seller || buyer
 

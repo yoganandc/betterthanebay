@@ -1,7 +1,11 @@
 package edu.neu.ccs.cs5500.chucknorris.betterthanebay.db;
 
-import java.util.Optional;
+import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
+import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Item;
@@ -29,6 +33,13 @@ public class ItemDAO extends AbstractDAO<Item> {
     // Update bid with given information (have to check how it works)
     public Item update(Item item) {
         return persist(item);
+    }
+
+    public List<Item> getItems(Long userId) {
+        Query query = super.namedQuery("edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Item.getItemsForUser")
+                .setParameter("user_id", userId);
+        List<Item> list = list(query);
+        return list;
     }
 
 }
