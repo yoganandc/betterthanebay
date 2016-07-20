@@ -17,6 +17,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.wordnik.swagger.annotations.ApiOperation;
+import com.wordnik.swagger.annotations.ApiResponse;
+import com.wordnik.swagger.annotations.ApiResponses;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Bid;
 import io.dropwizard.hibernate.UnitOfWork;
 import org.joda.time.DateTime;
@@ -55,6 +57,7 @@ public class ItemResource {
             value = "Find item with given id",
             notes = "If {itemId} exists, returns the corresponding item object",
             response = Item.class)
+    @ApiResponses(value = {@ApiResponse(code = 404, message = "Item ID doesn't exist")})
     public Response getItem(@PathParam("itemId") LongParam itemId, @Auth User loggedInUser) {
 
         Item item = this.dao.findById(itemId.get());
@@ -72,6 +75,8 @@ public class ItemResource {
             notes = "Returns a list of items matching the given parameters for item name, category, start date, end date, lowest price, highest price, item offset number, and size of item list",
             response = Item.class,
             responseContainer = "List")
+    @ApiResponses(value = {@ApiResponse(code = 204, message = "No matching results found"),
+            @ApiResponse(code = 401, message = "User must be logged in")})
     public Response getItems(@QueryParam("name") NonEmptyStringParam name,
                              @QueryParam("category") IntParam category, @QueryParam("dateFrom") DateTimeParam dateFrom,
                              @QueryParam("dateTo") DateTimeParam dateTo, @QueryParam("priceFrom") IntParam priceFrom,
@@ -149,6 +154,8 @@ public class ItemResource {
             value = "Creates a new item auction",
             notes = "Adds the given item to the logged in user's auctions",
             response = Item.class)
+    @ApiResponses(value = {@ApiResponse(code = 400, message = "Invalid item data supplied"),
+            @ApiResponse(code = 401, message = "User must be signed in")})
     public Response addItem(@Valid Item item, @Auth User loggedInUser) {
 
         Item createdItem = this.dao.create(item);
@@ -167,20 +174,19 @@ public class ItemResource {
             value = "Updates the item details",
             notes = "Updates the given item's auction details",
             response = Item.class)
+    @ApiResponses(value = {@ApiResponse(code = 400, message = "Invalid item data supplied"),
+            @ApiResponse(code = 401, message = "User must be signed in"),
+            @ApiResponse(code = 403, message = "User cannot update item data for another user"),
+            @ApiResponse(code = 404, message = "Item ID not found")})
     public Response updateItem(@PathParam("itemId") LongParam itemId, @Valid Item item,
                                @Auth User loggedInUser) {
-
-        // UNAUTHORIZED user
 
         if (this.dao.findById(itemId.get()) == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
 
-        Item updatedItem = this.dao.update(item); // dao.updateItem(bidId, bid);
+        Item updatedItem = this.dao.update(item); // dao.updateItem(itemId, item);
 
-        if (updatedItem == null) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
-        }
         return Response.ok(updatedItem).build();
     }
 
@@ -190,6 +196,10 @@ public class ItemResource {
     @ApiOperation(
             value = "Deletes item",
             notes = "Deletes the item with given item ID")
+    @ApiResponses(value = {@ApiResponse(code = 204, message = "Item successfully deleted"),
+            @ApiResponse(code = 401, message = "User must be signed in"),
+            @ApiResponse(code = 403, message = "Item auction does not belong to signed in user"),
+            @ApiResponse(code = 404, message = "Item ID not found")})
     public Response deleteItem(@PathParam("itemId") LongParam itemId, @Auth User loggedInUser) {
 
         // authenticate user
@@ -199,11 +209,7 @@ public class ItemResource {
         }
 
         boolean success = false; // dao.deleteItem(itemId);
-        if (success) {
-            return Response.status(Response.Status.NO_CONTENT).build(); // item successfully deleted
-        } else {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build(); // failure
-        }
+        return Response.status(Response.Status.NO_CONTENT).build(); // item successfully deleted
     }
 
     @Path("/{itemId}/bids")
