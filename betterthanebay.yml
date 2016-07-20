@@ -31,5 +31,5 @@ database:
   # whether or not idle connections should be validated
   checkConnectionWhileIdle: false
 
-  swagger:
-    resourcePackage: edu.neu.ccs.cs5500.chucknorris.betterthanebay.resources
+swagger:
+  resourcePackage: edu.neu.ccs.cs5500.chucknorris.betterthanebay.resources

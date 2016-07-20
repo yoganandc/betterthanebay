@@ -1,5 +1,6 @@
 package edu.neu.ccs.cs5500.chucknorris.betterthanebay.resources;
 
+import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 
 import java.net.URI;
@@ -36,6 +37,7 @@ import io.dropwizard.jersey.params.NonEmptyStringParam;
 @Path("/users")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
+@Api(value = "/users", description = "Users")
 public class UserResource {
 
 
@@ -58,6 +60,10 @@ public class UserResource {
     @GET
     @Path("/{userId}")
     @UnitOfWork
+    @ApiOperation(
+            value = "The user object",
+            notes = "Returns the user with id {userId}",
+            response = User.class)
     public Response getUser(@PathParam("userId") LongParam userId, @Auth User loggedInUser) {
 
         final User user = this.dao.findById(userId.get());
