@@ -1,5 +1,7 @@
 package edu.neu.ccs.cs5500.chucknorris.betterthanebay.core;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.Objects;
 
 import javax.persistence.CascadeType;
@@ -37,10 +39,12 @@ public class Address {
     @Column(nullable = false)
     private String zip;
 
+    @JsonIgnore
     public Long getId() {
         return this.id;
     }
 
+    @JsonIgnore
     public void setId(Long id) {
         this.id = id;
     }

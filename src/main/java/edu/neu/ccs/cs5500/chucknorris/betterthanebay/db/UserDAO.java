@@ -14,57 +14,56 @@ import io.dropwizard.hibernate.AbstractDAO;
  */
 public class UserDAO extends AbstractDAO<User> {
 
-  PasswordUtil util = new PasswordUtil();
+    PasswordUtil util = new PasswordUtil();
 
-  public UserDAO(SessionFactory sessionFactory) {
-    super(sessionFactory);
-  }
-
-  // Find User by ID
-  public User findById(Long id) {
-    return get(id);
-  }
-
-  // Create new User
-  public User create(User user) {
-    return persist(user);
-  }
-
-  // Update User with given information (have to check how it works)
-  public User update(User user) {
-    return persist(user);
-  }
-
-  public User findByCredentials(String username, String password) {
-    Query userQuery =
-        super.namedQuery("edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.User.getByUsername")
-            .setParameter("username", username);
-    User user = super.uniqueResult(userQuery);
-
-    if ((user != null) && this.util.authenticate(password.toCharArray(), user.getPassword())) {
-      return user;
+    public UserDAO(SessionFactory sessionFactory) {
+        super(sessionFactory);
     }
 
-    return null;
-  }
+    // Find User by ID
+    public User findById(Long id) {
+        return get(id);
+    }
 
-  public List<User> searchByUsername(String optional, int start, int size) {
-    Query query = super.namedQuery(
-        "edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.User.searchByUsername");
-    query.setParameter("username", "%" + optional.toString() + "%");
-    return list(query);
-  }
+    // Create new User
+    public User create(User user) {
+        currentSession().saveOrUpdate(user.getDetails());
+        return persist(user);
+    }
 
-  public boolean deleteUser(Long id) {
-    Query query =
-        super.namedQuery("edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.User.deleteUser");
-    query.setParameter("id", id).executeUpdate();
-    return true;
-  }
+    // Update User with given information (have to check how it works)
+    public User update(User user) {
+        return persist(user);
+    }
 
-  // public boolean deleteUser(Long id) {
-  // currentSession().delete(this.get(id));
-  // return true;
-  // }
+    public boolean deleteUser(Long id) {
+        User user = get(id);
+        if(user == null) {
+            return false;
+        }
+        else {
+            super.currentSession().delete(user);
+            return true;
+        }
+    }
 
+    public User findByCredentials(String username, String password) {
+        Query userQuery =
+                super.namedQuery("edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.User.getByUsername")
+                        .setParameter("username", username);
+        User user = super.uniqueResult(userQuery);
+
+        if ((user != null) && this.util.authenticate(password.toCharArray(), user.getPassword())) {
+            return user;
+        }
+
+        return null;
+    }
+
+    public List<User> searchByUsername(String optional, int start, int size) {
+        Query query = super.namedQuery(
+                "edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.User.searchByUsername");
+        query.setParameter("username", "%" + optional + "%");
+        return list(query);
+    }
 }
