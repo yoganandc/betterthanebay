@@ -178,6 +178,9 @@ public class UserResource {
     @DELETE
     @Path("/{userId}")
     @UnitOfWork
+    @ApiOperation(
+            value = "Deletes user account",
+            notes = "Deletes the account with given user ID")
     public Response deleteUser(@PathParam("userId") LongParam userId, @Auth User loggedInUser) {
 
         // FORBIDDEN TO DELETE IF USER LOGGED IN IS NOT THE SAME
@@ -200,9 +203,17 @@ public class UserResource {
     @GET
     @Path("/{userId}/items")
     @UnitOfWork
+    @ApiOperation(
+            value = "Finds the user's items",
+            notes = "Returns all user items for the logged in user and active items for another user",
+            response = Item.class)
     public Response getItemsForUser(@PathParam("userId") LongParam userId, @Auth User loggedInUser) {
-
-        final List<Item> items = this.itemDAO.getItems(userId.get());
+        final List<Item> items = null;
+        if (loggedInUser.getId() == userId.get()) {
+            //items = this.itemDAO.getAllItems(userId.get());   //***** update User DAO
+        } else {
+            //items = this.itemDAO.getActiveItems(userId.get());  // **** update User DAO
+        }
 
         if (items == null) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
