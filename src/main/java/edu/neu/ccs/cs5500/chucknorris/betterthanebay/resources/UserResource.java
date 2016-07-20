@@ -61,8 +61,8 @@ public class UserResource {
     @Path("/{userId}")
     @UnitOfWork
     @ApiOperation(
-            value = "The user object",
-            notes = "Returns the user with id {userId}",
+            value = "Find user with given id",
+            notes = "If {userId} exists, returns the corresponding user object",
             response = User.class)
     public Response getUser(@PathParam("userId") LongParam userId, @Auth User loggedInUser) {
 
@@ -76,6 +76,11 @@ public class UserResource {
 
     @GET
     @UnitOfWork
+    @ApiOperation(
+            value = "Find users whose account username contains the given username",
+            notes = "Returns a list of users",
+            response = User.class,
+            responseContainer = "List")
     public Response searchByUsername(@QueryParam("username") String username,
                                      @QueryParam("start") IntParam start, @QueryParam("size") IntParam size,
                                      @Auth User loggedInUser) {
@@ -110,6 +115,10 @@ public class UserResource {
 
     @POST
     @UnitOfWork
+    @ApiOperation(
+            value = "Creates a new user account",
+            notes = "Adds the given user to the database",
+            response = User.class)
     public Response addUser(@Valid User user) {
 
         Response.ResponseBuilder response;
@@ -139,6 +148,10 @@ public class UserResource {
     @PUT
     @Path("/{userId}")
     @UnitOfWork
+    @ApiOperation(
+            value = "Updates the user account",
+            notes = "Updates the given user's account information",
+            response = User.class)
     public Response updateUser(@PathParam("userId") LongParam userId, @Valid User user,
                                @Auth User loggedInUser) {
 
