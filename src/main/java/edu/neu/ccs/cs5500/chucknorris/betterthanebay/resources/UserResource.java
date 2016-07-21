@@ -1,7 +1,6 @@
 package edu.neu.ccs.cs5500.chucknorris.betterthanebay.resources;
 
-import com.wordnik.swagger.annotations.Api;
-import com.wordnik.swagger.annotations.ApiOperation;
+import com.wordnik.swagger.annotations.*;
 
 import java.net.URI;
 import java.util.List;
@@ -19,10 +18,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Address;
-import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Item;
-import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Payment;
-import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.User;
+import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.*;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.db.BidDAO;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.db.FeedbackDAO;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.db.ItemDAO;
@@ -56,10 +52,12 @@ public class UserResource {
     @Path("/{userId}")
     @UnitOfWork
     @ApiOperation(
-            value = "The user object",
-            notes = "Returns the user with id {userId}",
+            value = "Find user with given id",
+            notes = "If {userId} exists, returns the corresponding user object",
             response = User.class)
-    public Response getUser(@PathParam("userId") LongParam userId, @Auth User loggedInUser) {
+    @ApiResponses(value = {@ApiResponse(code = 404, message = "User ID doesn't exist")})
+    public Response getUser(@ApiParam(value = "ID of a user", required = true) @PathParam("userId") LongParam userId,
+                            @Auth User loggedInUser) {
 
         final User user = this.dao.findById(userId.get());
         if (user == null) {
@@ -75,8 +73,16 @@ public class UserResource {
 
     @GET
     @UnitOfWork
-    public Response searchByUsername(@QueryParam("username") String username,
-                                     @QueryParam("start") IntParam start, @QueryParam("size") IntParam size,
+    @ApiOperation(
+            value = "Find users whose account username contains the given username",
+            notes = "Returns a list of users",
+            response = User.class,
+            responseContainer = "List")
+    @ApiResponses(value = {@ApiResponse(code = 204, message = "No matching usernames found"),
+            @ApiResponse(code = 401, message = "User must be logged in")})
+    public Response searchByUsername(@ApiParam(value = "part of a username", required = true) @QueryParam("username") String username,
+                                     @ApiParam(value = "results offset", required = false) @QueryParam("start") IntParam start,
+                                     @ApiParam(value = "results list size", required = false) @QueryParam("size") IntParam size,
                                      @Auth User loggedInUser) {
 
         if (username == null) {
@@ -98,9 +104,7 @@ public class UserResource {
 
         List<User> list = this.dao.searchByUsername(username, startVal, sizeVal);
 
-        if (list == null) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
-        } else if (list.isEmpty()) {
+        if (list.isEmpty()) {
             return Response.status(Response.Status.NO_CONTENT).build();
         }
         return Response.ok(list).build();
@@ -109,6 +113,11 @@ public class UserResource {
 
     @POST
     @UnitOfWork
+    @ApiOperation(
+            value = "Creates a new user account",
+            notes = "Adds the given user to the database",
+            response = User.class)
+    @ApiResponses(value = {@ApiResponse(code = 400, message = "Invalid user data supplied")})
     public Response addUser(@Valid User user) {
 
         Response.ResponseBuilder response;
@@ -128,7 +137,15 @@ public class UserResource {
     @PUT
     @Path("/{userId}")
     @UnitOfWork
-    public Response updateUser(@PathParam("userId") LongParam userId, @Valid User user,
+    @ApiOperation(
+            value = "Updates the user account",
+            notes = "Updates the given user's account information",
+            response = User.class)
+    @ApiResponses(value = {@ApiResponse(code = 400, message = "Invalid user data supplied"),
+            @ApiResponse(code = 401, message = "User must be signed in"),
+            @ApiResponse(code = 403, message = "User cannot update data for another user"),
+            @ApiResponse(code = 404, message = "User ID not found")})
+    public Response updateUser(@ApiParam(value = "ID of a user", required = true) @PathParam("userId") LongParam userId, @Valid User user,
                                @Auth User loggedInUser) {
 
         // FORBIDDEN TO UPDATE IF USER LOGGED IN IS NOT THE SAME
@@ -154,7 +171,15 @@ public class UserResource {
     @DELETE
     @Path("/{userId}")
     @UnitOfWork
-    public Response deleteUser(@PathParam("userId") LongParam userId, @Auth User loggedInUser) {
+    @ApiOperation(
+            value = "Deletes user account",
+            notes = "Deletes the account with given user ID")
+    @ApiResponses(value = {@ApiResponse(code = 204, message = "User successfully deleted"),
+            @ApiResponse(code = 401, message = "User must be signed in"),
+            @ApiResponse(code = 403, message = "User cannot delete another user"),
+            @ApiResponse(code = 404, message = "User ID not found")})
+    public Response deleteUser(@ApiParam(value = "ID of a user", required = true) @PathParam("userId") LongParam userId,
+                               @Auth User loggedInUser) {
 
         // FORBIDDEN TO DELETE IF USER LOGGED IN IS NOT THE SAME
         if(userId.get() != loggedInUser.getId()) {
@@ -165,20 +190,26 @@ public class UserResource {
             return Response.status(Response.Status.NOT_FOUND).build(); // userId doesn't exist
         }
 
-        boolean success = this.dao.deleteUser(userId.get());
-        if (success) {
-            return Response.status(Response.Status.NO_CONTENT).build(); // user account successfully
-        } else {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build(); // failure
-        }
+        this.dao.deleteUser(userId.get());
+        return Response.status(Response.Status.NO_CONTENT).build(); // user account successfully
     }
 
     @GET
     @Path("/{userId}/items")
     @UnitOfWork
-    public Response getItemsForUser(@PathParam("userId") LongParam userId, @Auth User loggedInUser) {
-
-        final List<Item> items = this.itemDAO.getItems(userId.get());
+    @ApiOperation(
+            value = "Finds the user's items",
+            notes = "Returns all user items for the logged in user and active items for another user",
+            response = Item.class)
+    @ApiResponses(value = {@ApiResponse(code = 204, message = "No user items found"),
+            @ApiResponse(code = 401, message = "User must be signed in")})
+    public Response getItemsForUser(@ApiParam(value = "ID of a user", required = true) @PathParam("userId") LongParam userId, @Auth User loggedInUser) {
+        final List<Item> items = null;
+        if (loggedInUser.getId() == userId.get()) {
+            //items = this.itemDAO.getAllItems(userId.get());   //***** update Item DAO
+        } else {
+            //items = this.itemDAO.getActiveItems(userId.get());  // **** update Item DAO
+        }
 
         if (items == null) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
@@ -193,7 +224,17 @@ public class UserResource {
     @GET
     @Path("/{userId}/bids")
     @UnitOfWork
-    public Response getBidsForUser(@PathParam("userId") LongParam userId, @Auth User loggedInUser) {
+    @ApiOperation(
+            value = "Finds the user's bids",
+            notes = "Returns all user bids",
+            response = Bid.class)
+    @ApiResponses(value = {@ApiResponse(code = 204, message = "No user bids found"),
+            @ApiResponse(code = 401, message = "User must be signed in")})
+    public Response getBidsForUser(@ApiParam(value = "ID of a user", required = true) @PathParam("userId") LongParam userId,
+                                   @Auth User loggedInUser) {
+        List<Bid> list = null; //dao.getActiveBids(userId.get());
+
+        /* TODO */
         return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
     }
 
@@ -201,9 +242,15 @@ public class UserResource {
     @GET
     @Path("/{userId}/feedback/{feedbackId}")
     @UnitOfWork
-    public Response getSellerFeedback(@PathParam("userId") LongParam userId,
+    @ApiOperation(
+            value = "Finds the user's feedback",
+            notes = "Returns all user feedback",
+            response = Feedback.class)
+    @ApiResponses(value = {@ApiResponse(code = 204, message = "No user feedback found"),
+            @ApiResponse(code = 401, message = "User must be signed in")})
+    public Response getSellerFeedback(@ApiParam(value = "ID of a user", required = true) @PathParam("userId") LongParam userId,
                                       @PathParam("feedbackId") NonEmptyStringParam feedbackId, @Auth User loggedInUser) {
-
+         /* TODO */
         return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
     }
 }
