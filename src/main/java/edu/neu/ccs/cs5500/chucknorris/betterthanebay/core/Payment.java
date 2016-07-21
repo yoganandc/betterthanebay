@@ -19,6 +19,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "payment")
@@ -42,9 +43,9 @@ public class Payment {
     private Date expiry;
 
     @OneToOne(cascade = CascadeType.ALL, optional = false, orphanRemoval = true)
-    //@JoinColumn(name = "address_id", nullable = false)
-    @PrimaryKeyJoinColumn
+    @JoinColumn(name = "address_id", nullable = false)
     @Valid
+    @NotNull
     private Address address;
 
     @Column(nullable = false)
@@ -141,5 +142,15 @@ public class Payment {
                 ", firstName='" + firstName + '\'' +
                 ", id=" + id +
                 '}';
+    }
+
+    @JsonIgnore
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    @JsonIgnore
+    public User getUser() {
+        return this.user;
     }
 }

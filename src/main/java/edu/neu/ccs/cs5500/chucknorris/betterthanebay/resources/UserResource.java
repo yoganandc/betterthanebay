@@ -40,11 +40,6 @@ import io.dropwizard.jersey.params.NonEmptyStringParam;
 @Api(value = "/users", description = "Users")
 public class UserResource {
 
-
-  /*
-   * TO DO user authentication for post, put, delete
-   */
-
     private final UserDAO dao;
     private final ItemDAO itemDAO;
     private final BidDAO bidDAO;
@@ -69,6 +64,10 @@ public class UserResource {
         final User user = this.dao.findById(userId.get());
         if (user == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
+        }
+
+        if(user.getId() != loggedInUser.getId()) {
+            
         }
 
         return Response.ok(user).build();
@@ -113,16 +112,6 @@ public class UserResource {
     public Response addUser(@Valid User user) {
 
         Response.ResponseBuilder response;
-
-        // NULL OUT ALL IDs
-//        user.setId(null);
-//        for(Address address : user.getAddresses()) {
-//            address.setId(null);
-//        }
-//        for(Payment payment : user.getPayments()) {
-//            payment.setId(null);
-//            payment.getAddress().setId(null);
-//        }
 
         User createdUser = dao.create(user);
 

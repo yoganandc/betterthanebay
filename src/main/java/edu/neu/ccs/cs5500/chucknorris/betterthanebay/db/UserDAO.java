@@ -1,11 +1,13 @@
 package edu.neu.ccs.cs5500.chucknorris.betterthanebay.db;
 
+import java.util.Date;
 import java.util.List;
 
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.auth.PasswordUtil;
+import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Payment;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.User;
 import io.dropwizard.hibernate.AbstractDAO;
 
@@ -27,12 +29,18 @@ public class UserDAO extends AbstractDAO<User> {
 
     // Create new User
     public User create(User user) {
-        currentSession().saveOrUpdate(user.getDetails());
+        user.setPassword(util.hash(user.getPassword().toCharArray()));
+        for(Payment payment : user.getPayments()) {
+            payment.setUser(user);
+        }
+        user.setCreated(new Date());
+        user.setUpdated(new Date());
         return persist(user);
     }
 
     // Update User with given information (have to check how it works)
     public User update(User user) {
+        user.setUpdated(new Date());
         return persist(user);
     }
 

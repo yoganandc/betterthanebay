@@ -20,6 +20,8 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -61,6 +63,7 @@ public class User implements Principal {
 
     @Column(nullable = false)
     @NotBlank
+    @JsonIgnore
     private String password;
 
     @OneToOne(cascade = CascadeType.ALL, optional = false, orphanRemoval = true)
@@ -89,13 +92,11 @@ public class User implements Principal {
 
     @Column(nullable = false, updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
-    @CreatedTimestamp
     @JsonIgnore
     private Date created;
 
     @Column(nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
-    @UpdatedTimestamp
     @JsonIgnore
     private Date updated;
 
@@ -115,10 +116,12 @@ public class User implements Principal {
         this.username = username;
     }
 
+    @JsonIgnore
     public String getPassword() {
         return this.password;
     }
 
+    @JsonProperty
     public void setPassword(String password) {
         this.password = password;
     }
@@ -204,16 +207,16 @@ public class User implements Principal {
     }
 
     @Override
-    @JsonIgnore
-    public String getName() {
-        return this.getUsername();
-    }
-
-    @Override
     public String toString() {
         return "User{" + "id=" + this.id + ", username='" + this.username + '\'' + ", password='"
                 + this.password + '\'' + ", details=" + this.details + ", addresses=" + this.addresses
                 + ", payments=" + this.payments + ", rating=" + this.rating + ", created=" + this.created
                 + ", updated=" + this.updated + '}';
+    }
+
+    @Override
+    @JsonIgnore
+    public String getName() {
+        return this.getUsername();
     }
 }
