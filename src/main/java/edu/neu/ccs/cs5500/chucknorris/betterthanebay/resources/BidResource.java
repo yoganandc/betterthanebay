@@ -17,6 +17,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
 import com.wordnik.swagger.annotations.ApiOperation;
+import com.wordnik.swagger.annotations.ApiParam;
 import com.wordnik.swagger.annotations.ApiResponse;
 import com.wordnik.swagger.annotations.ApiResponses;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.db.BidDAO;
@@ -50,7 +51,9 @@ public class BidResource {
             notes = "If {bidId} exists, returns the corresponding bid object",
             response = Bid.class)
     @ApiResponses(value = {@ApiResponse(code = 404, message = "Bid ID doesn't exist")})
-    public Response getBid(@PathParam("itemId") LongParam itemId, @PathParam("bidId") LongParam bidId, @Auth User loggedInUser) {
+    public Response getBid(@ApiParam(value = "Item ID", required = true) @PathParam("itemId") LongParam itemId,
+                           @ApiParam(value = "Bid ID", required = true) @PathParam("bidId") LongParam bidId,
+                           @Auth User loggedInUser) {
 
         final Bid bid = dao.findById(bidId.get());
         if (bid == null) {
@@ -69,7 +72,8 @@ public class BidResource {
             responseContainer = "List")
     @ApiResponses(value = {@ApiResponse(code = 204, message = "No matching results found"),
             @ApiResponse(code = 401, message = "User must be logged in")})
-    public Response getAllBids(@PathParam("itemId") LongParam itemId, @Auth User loggedInUser) {
+    public Response getAllBids(@ApiParam(value = "Item ID", required = true) @PathParam("itemId") LongParam itemId,
+                               @Auth User loggedInUser) {
 
         final List<Bid> bids = null; //dao.findBidsForId(itemId.get());
         if (bids == null) {
@@ -88,7 +92,8 @@ public class BidResource {
     @ApiResponses(value = {@ApiResponse(code = 400, message = "Invalid bid data supplied"),
             @ApiResponse(code = 401, message = "User must be signed in"),
             @ApiResponse(code = 403, message = "Item is not under auction")})
-    public Response addBid(@PathParam("itemId") LongParam itemId, @Valid Bid bid, @Auth User loggedInUser) {
+    public Response addBid(@ApiParam(value = "Item ID", required = true) @PathParam("itemId") LongParam itemId,
+                           @Valid Bid bid, @Auth User loggedInUser) {
         ResponseBuilder response;
 
         if (itemDAO.findById(itemId.get()).getUserId() == loggedInUser.getId()) {
@@ -120,7 +125,8 @@ public class BidResource {
             @ApiResponse(code = 401, message = "User must be signed in"),
             @ApiResponse(code = 403, message = "User cannot update bid data for another user"),
             @ApiResponse(code = 404, message = "Bid ID not found")})
-    public Response updateBid(@PathParam("itemId") LongParam itemId, @PathParam("bidId") LongParam bidId, @Valid Bid bid,
+    public Response updateBid(@ApiParam(value = "Item ID", required = true) @PathParam("itemId") LongParam itemId,
+                              @ApiParam(value = "Bid ID", required = true) @PathParam("bidId") LongParam bidId, @Valid Bid bid,
                               @Auth User loggedInUser) {
 
         if (dao.findById(bidId.get()) == null) {
@@ -145,7 +151,8 @@ public class BidResource {
             @ApiResponse(code = 401, message = "User must be signed in"),
             @ApiResponse(code = 403, message = "Bid does not belong to signed in user"),
             @ApiResponse(code = 404, message = "Bid ID not found")})
-    public Response deleteBid(@PathParam("itemId") LongParam itemId, @PathParam("bidId") LongParam bidId,
+    public Response deleteBid(@ApiParam(value = "Item ID", required = true) @PathParam("itemId") LongParam itemId,
+                              @ApiParam(value = "Bid ID", required = true) @PathParam("bidId") LongParam bidId,
                               @Auth User loggedInUser) {
 
         /* TODO
