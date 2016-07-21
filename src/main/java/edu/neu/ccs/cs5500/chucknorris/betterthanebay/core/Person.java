@@ -1,5 +1,7 @@
 package edu.neu.ccs.cs5500.chucknorris.betterthanebay.core;
 
+import org.hibernate.validator.constraints.NotBlank;
+
 import java.util.Date;
 import java.util.Objects;
 
@@ -21,15 +23,33 @@ public class Person {
     private Long id;
 
     @Column(nullable = false)
+    @NotBlank
     private String first;
 
     private String middle;
 
     @Column(nullable = false)
+    @NotBlank
     private String last;
 
     @Temporal(TemporalType.DATE)
     private Date birthday;
+
+    public Person() {
+
+    }
+
+    public Person(Person obj) {
+        this.id = new Long(obj.getId());
+        this.first = new String(obj.getFirst());
+        if(obj.getMiddle() != null) {
+            this.middle = new String(obj.getMiddle());
+        }
+        this.last = new String(obj.getLast());
+        if(obj.birthday != null) {
+            this.birthday = new Date(obj.getBirthday().getTime());
+        }
+    }
 
     public Long getId() {
         return id;

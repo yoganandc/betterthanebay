@@ -65,14 +65,20 @@ public class UserResource {
         if (user == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
+        
+        if(user.getId().equals(loggedInUser.getId())) {
+            return Response.ok(user).build();
 
-        if(user.getId() != loggedInUser.getId()) {
-            user.getPayments().clear();
-            user.getAddresses().clear();
-            user.setDetails(null);
+        }
+        else {
+            User userCopy = new User(user);
+            userCopy.getPayments().clear();
+            userCopy.getAddresses().clear();
+            userCopy.setDetails(null);
+            return Response.ok(userCopy).build();
         }
 
-        return Response.ok(user).build();
+
     }
 
     @GET

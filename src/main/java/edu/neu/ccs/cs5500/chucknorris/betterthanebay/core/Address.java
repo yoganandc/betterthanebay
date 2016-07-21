@@ -2,6 +2,8 @@ package edu.neu.ccs.cs5500.chucknorris.betterthanebay.core;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import org.hibernate.validator.constraints.NotBlank;
+
 import java.util.Objects;
 
 import javax.persistence.CascadeType;
@@ -24,11 +26,13 @@ public class Address {
     private Long id;
 
     @Column(nullable = false)
+    @NotBlank
     private String line1;
 
     private String line2;
 
     @Column(nullable = false)
+    @NotBlank
     private String city;
 
     @OneToOne(optional = false)
@@ -37,7 +41,23 @@ public class Address {
     private State state;
 
     @Column(nullable = false)
+    @NotBlank
     private String zip;
+
+    public Address() {
+
+    }
+
+    public Address(Address obj) {
+        this.id = new Long(obj.getId());
+        this.line1 = new String(obj.getLine1());
+        if(obj.getLine2() != null) {
+            this.line2 = new String(obj.getLine2());
+        }
+        this.city = new String(obj.getCity());
+        this.state = new State(obj.getState());
+        this.zip = new String(obj.getZip());
+    }
 
     @JsonIgnore
     public Long getId() {

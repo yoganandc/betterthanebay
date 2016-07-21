@@ -93,12 +93,36 @@ public class User implements Principal {
     @Column(nullable = false, updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     @JsonIgnore
+    @NotNull
     private Date created;
 
     @Column(nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     @JsonIgnore
+    @NotNull
     private Date updated;
+
+    public User() {
+
+    }
+
+    public User(User obj) {
+        this.id = new Long(obj.getId());
+        this.username = new String(obj.getUsername());
+        this.password = new String(obj.getPassword());
+        this.details = new Person(obj.getDetails());
+        for(Address address : obj.getAddresses()) {
+            this.getAddresses().add(new Address(address));
+        }
+        for(Payment payment : obj.getPayments()) {
+            this.getPayments().add(new Payment(payment));
+        }
+        if(obj.getRating() != null) {
+            this.rating = new BigDecimal(obj.getRating().toString());
+        }
+        this.created = new Date(obj.getCreated().getTime());
+        this.updated = new Date(obj.getUpdated().getTime());
+    }
 
     public Long getId() {
         return this.id;

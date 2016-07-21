@@ -35,6 +35,7 @@ public class UserDAO extends AbstractDAO<User> {
         }
         user.setCreated(new Date());
         user.setUpdated(new Date());
+
         return persist(user);
     }
 

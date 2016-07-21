@@ -2,6 +2,8 @@ package edu.neu.ccs.cs5500.chucknorris.betterthanebay.core;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import org.hibernate.validator.constraints.NotBlank;
+
 import java.util.Date;
 import java.util.Objects;
 
@@ -30,16 +32,20 @@ public class Payment {
     private Long id;
 
     @Column(name = "first_name", nullable = false)
+    @NotBlank
     private String firstName;
 
     @Column(name = "last_name", nullable = false)
+    @NotBlank
     private String lastName;
 
     @Column(nullable = false)
+    @NotBlank
     private String number;
 
     @Column(nullable = false)
     @Temporal(TemporalType.DATE)
+    @NotNull
     private Date expiry;
 
     @OneToOne(cascade = CascadeType.ALL, optional = false, orphanRemoval = true)
@@ -49,10 +55,26 @@ public class Payment {
     private Address address;
 
     @Column(nullable = false)
+    @NotNull
     private Integer csv;
 
     @ManyToOne
     private User user;
+
+    public Payment() {
+
+    }
+
+    public Payment(Payment obj) {
+        this.id = new Long(obj.getId());
+        this.firstName = new String(obj.getFirstName());
+        this.lastName = new String(obj.getLastName());
+        this.number = new String(obj.getNumber());
+        this.expiry = new Date(obj.getExpiry().getTime());
+        this.address = new Address(obj.getAddress());
+        this.csv = new Integer(obj.getCsv());
+        // DO NOT COPY OVER USER
+    }
 
     @JsonIgnore
     public Long getId() {

@@ -1,5 +1,7 @@
 package edu.neu.ccs.cs5500.chucknorris.betterthanebay.core;
 
+import org.hibernate.validator.constraints.NotBlank;
+
 import java.util.Objects;
 
 import javax.persistence.Column;
@@ -22,10 +24,22 @@ public class State {
     private Long id;
 
     @Column(nullable = false, unique = true)
+    @NotBlank
     private String name;
 
     @Column(nullable = false, unique = true)
+    @NotBlank
     private String code;
+
+    public State() {
+
+    }
+
+    public State(State obj) {
+        this.id = new Long(obj.getId());
+        this.name = new String(obj.getName());
+        this.code = new String(obj.getCode());
+    }
 
     public Long getId() {
         return id;
