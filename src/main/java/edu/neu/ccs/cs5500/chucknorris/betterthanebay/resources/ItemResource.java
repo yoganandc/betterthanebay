@@ -214,7 +214,7 @@ public class ItemResource {
 
     @Path("/{itemId}/bids")
     public BidResource getBidResource() {
-        return new BidResource(this.bidDAO);
+        return new BidResource(this.bidDAO, this.dao);
     }
 
     @Path("/{itemId}/feedback")

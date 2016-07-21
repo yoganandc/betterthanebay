@@ -17,10 +17,13 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
 import com.wordnik.swagger.annotations.ApiOperation;
+import com.wordnik.swagger.annotations.ApiResponse;
+import com.wordnik.swagger.annotations.ApiResponses;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.db.BidDAO;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Bid;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Item;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.User;
+import edu.neu.ccs.cs5500.chucknorris.betterthanebay.db.ItemDAO;
 import io.dropwizard.auth.Auth;
 import io.dropwizard.hibernate.UnitOfWork;
 import io.dropwizard.jersey.params.LongParam;
@@ -30,11 +33,14 @@ import io.dropwizard.jersey.params.LongParam;
 public class BidResource {
 
     private BidDAO dao;
+    private ItemDAO itemDAO;
 
-    public BidResource(BidDAO dao) {
+    public BidResource(BidDAO dao, ItemDAO itemDAO) {
         super();
         this.dao = dao;
+        this.itemDAO = itemDAO;
     }
+
 
     @GET
     @Path("/{bidId}")
@@ -43,6 +49,7 @@ public class BidResource {
             value = "Find bid with given id",
             notes = "If {bidId} exists, returns the corresponding bid object",
             response = Bid.class)
+    @ApiResponses(value = {@ApiResponse(code = 404, message = "Bid ID doesn't exist")})
     public Response getBid(@PathParam("itemId") LongParam itemId, @PathParam("bidId") LongParam bidId, @Auth User loggedInUser) {
 
         final Bid bid = dao.findById(bidId.get());
@@ -60,6 +67,8 @@ public class BidResource {
             notes = "Returns a list of all bids for the logged in user",
             response = Bid.class,
             responseContainer = "List")
+    @ApiResponses(value = {@ApiResponse(code = 204, message = "No matching results found"),
+            @ApiResponse(code = 401, message = "User must be logged in")})
     public Response getAllBids(@PathParam("itemId") LongParam itemId, @Auth User loggedInUser) {
 
         final List<Bid> bids = null; //dao.findBidsForId(itemId.get());
@@ -76,8 +85,20 @@ public class BidResource {
             value = "Creates a new bid",
             notes = "Places the given bid for the given item's auction",
             response = Bid.class)
+    @ApiResponses(value = {@ApiResponse(code = 400, message = "Invalid bid data supplied"),
+            @ApiResponse(code = 401, message = "User must be signed in"),
+            @ApiResponse(code = 403, message = "Item is not under auction")})
     public Response addBid(@PathParam("itemId") LongParam itemId, @Valid Bid bid, @Auth User loggedInUser) {
         ResponseBuilder response;
+
+        if (itemDAO.findById(itemId.get()).getUserId() == loggedInUser.getId()) {
+            return Response.status(Response.Status.FORBIDDEN).build();
+        }
+
+        /*
+        TODO
+        check if item is under auction
+        */
 
         Bid createdBid = dao.create(bid);
         if (createdBid == null) {
@@ -95,6 +116,10 @@ public class BidResource {
             value = "Updates bid details",
             notes = "Updates the given bid's details for the logged in user",
             response = Bid.class)
+    @ApiResponses(value = {@ApiResponse(code = 400, message = "Invalid bid data supplied"),
+            @ApiResponse(code = 401, message = "User must be signed in"),
+            @ApiResponse(code = 403, message = "User cannot update bid data for another user"),
+            @ApiResponse(code = 404, message = "Bid ID not found")})
     public Response updateBid(@PathParam("itemId") LongParam itemId, @PathParam("bidId") LongParam bidId, @Valid Bid bid,
                               @Auth User loggedInUser) {
 
@@ -116,10 +141,14 @@ public class BidResource {
     @ApiOperation(
             value = "Deletes bid",
             notes = "Deletes the bid with given bid ID")
+    @ApiResponses(value = {@ApiResponse(code = 204, message = "Bid successfully deleted"),
+            @ApiResponse(code = 401, message = "User must be signed in"),
+            @ApiResponse(code = 403, message = "Bid does not belong to signed in user"),
+            @ApiResponse(code = 404, message = "Bid ID not found")})
     public Response deleteBid(@PathParam("itemId") LongParam itemId, @PathParam("bidId") LongParam bidId,
                               @Auth User loggedInUser) {
 
-        /* TO DO
+        /* TODO
         FORBIDDEN
         UNAUTHORIZED */
 

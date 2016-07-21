@@ -81,8 +81,9 @@ public class UserResource {
             responseContainer = "List")
     @ApiResponses(value = {@ApiResponse(code = 204, message = "No matching usernames found"),
             @ApiResponse(code = 401, message = "User must be logged in")})
-    public Response searchByUsername(@QueryParam("username") String username,
-                                     @QueryParam("start") IntParam start, @QueryParam("size") IntParam size,
+    public Response searchByUsername(@ApiParam(value = "part of a username", required = true) @QueryParam("username") String username,
+                                     @ApiParam(value = "results offset", required = false) @QueryParam("start") IntParam start,
+                                     @ApiParam(value = "results list size", required = false) @QueryParam("size") IntParam size,
                                      @Auth User loggedInUser) {
 
         if (username == null) {
@@ -117,8 +118,7 @@ public class UserResource {
             value = "Creates a new user account",
             notes = "Adds the given user to the database",
             response = User.class)
-    @ApiResponses(value = {@ApiResponse(code = 400, message = "Invalid user data supplied"),
-            @ApiResponse(code = 403, message = "User already logged in")})
+    @ApiResponses(value = {@ApiResponse(code = 400, message = "Invalid user data supplied")})
     public Response addUser(@Valid User user) {
 
         Response.ResponseBuilder response;
@@ -156,7 +156,7 @@ public class UserResource {
             @ApiResponse(code = 401, message = "User must be signed in"),
             @ApiResponse(code = 403, message = "User cannot update data for another user"),
             @ApiResponse(code = 404, message = "User ID not found")})
-    public Response updateUser(@PathParam("userId") LongParam userId, @Valid User user,
+    public Response updateUser(@ApiParam(value = "ID of a user", required = true) @PathParam("userId") LongParam userId, @Valid User user,
                                @Auth User loggedInUser) {
 
         // FORBIDDEN TO UPDATE IF USER LOGGED IN IS NOT THE SAME
@@ -189,7 +189,8 @@ public class UserResource {
             @ApiResponse(code = 401, message = "User must be signed in"),
             @ApiResponse(code = 403, message = "User cannot delete another user"),
             @ApiResponse(code = 404, message = "User ID not found")})
-    public Response deleteUser(@PathParam("userId") LongParam userId, @Auth User loggedInUser) {
+    public Response deleteUser(@ApiParam(value = "ID of a user", required = true) @PathParam("userId") LongParam userId,
+                               @Auth User loggedInUser) {
 
         // FORBIDDEN TO DELETE IF USER LOGGED IN IS NOT THE SAME
         if(userId.get() != loggedInUser.getId()) {
@@ -213,7 +214,7 @@ public class UserResource {
             response = Item.class)
     @ApiResponses(value = {@ApiResponse(code = 204, message = "No user items found"),
             @ApiResponse(code = 401, message = "User must be signed in")})
-    public Response getItemsForUser(@PathParam("userId") LongParam userId, @Auth User loggedInUser) {
+    public Response getItemsForUser(@ApiParam(value = "ID of a user", required = true) @PathParam("userId") LongParam userId, @Auth User loggedInUser) {
         final List<Item> items = null;
         if (loggedInUser.getId() == userId.get()) {
             //items = this.itemDAO.getAllItems(userId.get());   //***** update Item DAO
@@ -240,7 +241,8 @@ public class UserResource {
             response = Bid.class)
     @ApiResponses(value = {@ApiResponse(code = 204, message = "No user bids found"),
             @ApiResponse(code = 401, message = "User must be signed in")})
-    public Response getBidsForUser(@PathParam("userId") LongParam userId, @Auth User loggedInUser) {
+    public Response getBidsForUser(@ApiParam(value = "ID of a user", required = true) @PathParam("userId") LongParam userId,
+                                   @Auth User loggedInUser) {
         List<Bid> list = null; //dao.getActiveBids(userId.get());
 
         /* TODO */
@@ -257,7 +259,7 @@ public class UserResource {
             response = Feedback.class)
     @ApiResponses(value = {@ApiResponse(code = 204, message = "No user feedback found"),
             @ApiResponse(code = 401, message = "User must be signed in")})
-    public Response getSellerFeedback(@PathParam("userId") LongParam userId,
+    public Response getSellerFeedback(@ApiParam(value = "ID of a user", required = true) @PathParam("userId") LongParam userId,
                                       @PathParam("feedbackId") NonEmptyStringParam feedbackId, @Auth User loggedInUser) {
          /* TODO */
         return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();

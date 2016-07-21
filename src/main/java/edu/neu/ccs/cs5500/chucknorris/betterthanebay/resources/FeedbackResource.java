@@ -17,6 +17,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
 import com.wordnik.swagger.annotations.ApiOperation;
+import com.wordnik.swagger.annotations.ApiResponse;
+import com.wordnik.swagger.annotations.ApiResponses;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Bid;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Feedback;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Item;
@@ -45,6 +47,7 @@ public class FeedbackResource {
             value = "Find feedback with given id",
             notes = "If {feedbackId} exists, returns the corresponding feedback object",
             response = Feedback.class)
+    @ApiResponses(value = {@ApiResponse(code = 404, message = "Feedback not found")})
     public Response getFeedback(@PathParam("itemId") LongParam itemId, @PathParam("feedbackId") NonEmptyStringParam feedbackId,
                                 @Auth User loggedInUser) {
 
@@ -63,6 +66,9 @@ public class FeedbackResource {
             value = "Creates a new feedback",
             notes = "Adds the given feedback to the given item's details",
             response = Feedback.class)
+    @ApiResponses(value = {@ApiResponse(code = 400, message = "Invalid feedback data supplied"),
+            @ApiResponse(code = 401, message = "User must be signed in"),
+            @ApiResponse(code = 403, message = "Forbidden user access or feedback already exists")})
     public Response addFeedback(@PathParam("itemId") LongParam itemId, @Valid Feedback feedback, @Auth User loggedInUser) {
 
         ResponseBuilder response;
@@ -92,6 +98,10 @@ public class FeedbackResource {
             value = "Updates feedback details",
             notes = "Updates the given feedback's details for the logged in user",
             response = Feedback.class)
+    @ApiResponses(value = {@ApiResponse(code = 400, message = "Invalid feedback data supplied"),
+            @ApiResponse(code = 401, message = "User must be signed in"),
+            @ApiResponse(code = 403, message = "User cannot update feedback data for another user"),
+            @ApiResponse(code = 404, message = "Feedback not found")})
     public Response updateFeedback(@PathParam("itemId") LongParam feedbackId, @PathParam("feedbackId") NonEmptyStringParam bidId,
                                    @Valid Feedback feedback, @Auth User loggedInUser) {
 //        ResponseBuilder response;
@@ -120,6 +130,10 @@ public class FeedbackResource {
     @ApiOperation(
             value = "Deletes feedback",
             notes = "Deletes the feedback with given feedback ID and corresponding item ID")
+    @ApiResponses(value = {@ApiResponse(code = 204, message = "Feedback successfully deleted"),
+            @ApiResponse(code = 401, message = "User must be signed in"),
+            @ApiResponse(code = 403, message = "Feedback does not belong to signed in user"),
+            @ApiResponse(code = 404, message = "Feedback not found")})
     public Response deleteFeedback(@PathParam("itemId") LongParam itemId, @PathParam("feedbackId") NonEmptyStringParam feedbackId,
                                    @Auth User loggedInUser) {
 
