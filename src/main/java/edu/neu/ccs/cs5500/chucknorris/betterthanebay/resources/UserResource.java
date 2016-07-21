@@ -248,7 +248,8 @@ public class UserResource {
             response = Feedback.class)
     @ApiResponses(value = {@ApiResponse(code = 204, message = "No user feedback found"),
             @ApiResponse(code = 401, message = "User must be signed in")})
-    public Response getSellerFeedback(@ApiParam(value = "ID of a user", required = true) @PathParam("userId") LongParam userId,
+    public Response getSellerFeedback(@ApiParam(value = "User ID", required = true) @PathParam("userId") LongParam userId,
+                                      @ApiParam(value = "Feedback ID of a user", required = true)
                                       @PathParam("feedbackId") NonEmptyStringParam feedbackId, @Auth User loggedInUser) {
          /* TODO */
         return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();

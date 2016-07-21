@@ -17,6 +17,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.wordnik.swagger.annotations.ApiOperation;
+import com.wordnik.swagger.annotations.ApiParam;
 import com.wordnik.swagger.annotations.ApiResponse;
 import com.wordnik.swagger.annotations.ApiResponses;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Bid;
@@ -58,7 +59,8 @@ public class ItemResource {
             notes = "If {itemId} exists, returns the corresponding item object",
             response = Item.class)
     @ApiResponses(value = {@ApiResponse(code = 404, message = "Item ID doesn't exist")})
-    public Response getItem(@PathParam("itemId") LongParam itemId, @Auth User loggedInUser) {
+    public Response getItem(@ApiParam(value = "Item ID", required = true) @PathParam("itemId") LongParam itemId,
+                            @Auth User loggedInUser) {
 
         Item item = this.dao.findById(itemId.get());
         if (item == null) {
@@ -77,11 +79,12 @@ public class ItemResource {
             responseContainer = "List")
     @ApiResponses(value = {@ApiResponse(code = 204, message = "No matching results found"),
             @ApiResponse(code = 401, message = "User must be logged in")})
-    public Response getItems(@QueryParam("name") NonEmptyStringParam name,
-                             @QueryParam("category") IntParam category, @QueryParam("dateFrom") DateTimeParam dateFrom,
-                             @QueryParam("dateTo") DateTimeParam dateTo, @QueryParam("priceFrom") IntParam priceFrom,
-                             @QueryParam("priceTo") IntParam priceTo, @QueryParam("start") IntParam start,
-                             @QueryParam("size") IntParam size, @Auth User loggedInUser) {
+    public Response getItems(@ApiParam(value = "Item keyword", required = true) @QueryParam("name") NonEmptyStringParam name,
+                             @ApiParam(value = "Item category", required = false) @QueryParam("category") IntParam category, @QueryParam("dateFrom") DateTimeParam dateFrom,
+                             @ApiParam(value = "Start date of an auction", required = false) @QueryParam("dateTo") DateTimeParam dateTo, @QueryParam("priceFrom") IntParam priceFrom,
+                             @ApiParam(value = "End date of an auction", required = false) @QueryParam("priceTo") IntParam priceTo,
+                             @ApiParam(value = "Results offset", required = false) @QueryParam("start") IntParam start,
+                             @ApiParam(value = "Results list size", required = false) @QueryParam("size") IntParam size, @Auth User loggedInUser) {
         if ((name == null) || !name.get().isPresent()) {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
@@ -178,8 +181,8 @@ public class ItemResource {
             @ApiResponse(code = 401, message = "User must be signed in"),
             @ApiResponse(code = 403, message = "User cannot update item data for another user"),
             @ApiResponse(code = 404, message = "Item ID not found")})
-    public Response updateItem(@PathParam("itemId") LongParam itemId, @Valid Item item,
-                               @Auth User loggedInUser) {
+    public Response updateItem(@ApiParam(value = "Item ID", required = true) @PathParam("itemId") LongParam itemId,
+                               @Valid Item item, @Auth User loggedInUser) {
 
         if (this.dao.findById(itemId.get()) == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
@@ -200,7 +203,8 @@ public class ItemResource {
             @ApiResponse(code = 401, message = "User must be signed in"),
             @ApiResponse(code = 403, message = "Item auction does not belong to signed in user"),
             @ApiResponse(code = 404, message = "Item ID not found")})
-    public Response deleteItem(@PathParam("itemId") LongParam itemId, @Auth User loggedInUser) {
+    public Response deleteItem(@ApiParam(value = "Item ID", required = true) @PathParam("itemId") LongParam itemId,
+                               @Auth User loggedInUser) {
 
         // authenticate user
 
