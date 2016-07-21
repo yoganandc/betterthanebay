@@ -219,4 +219,22 @@ public class User implements Principal {
     public String getName() {
         return this.getUsername();
     }
+
+//    public void addPayment(Payment payment) {
+//        payment.setUser(this);
+//        this.getPayments().add(payment);
+//    }
+//
+//    public void removePayment(Payment payment) {
+//        this.getPayments().remove(payment);
+//        payment.setUser(null);
+//    }
+//
+//    public void addAddress(Address address) {
+//        this.getAddresses().add(address);
+//    }
+//
+//    public void removeAddress(Address address) {
+//        this.getAddresses().remove(address);
+//    }
 }

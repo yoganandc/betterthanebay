@@ -32,3 +32,6 @@ server:
   connector:
     type: http
     port: ${PORT}
+
+swagger:
+  resourcePackage: edu.neu.ccs.cs5500.chucknorris.betterthanebay.resources

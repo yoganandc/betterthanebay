@@ -3,7 +3,9 @@ package edu.neu.ccs.cs5500.chucknorris.betterthanebay.resources;
 import com.wordnik.swagger.annotations.*;
 
 import java.net.URI;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.validation.Valid;
 import javax.ws.rs.Consumes;
@@ -65,7 +67,9 @@ public class UserResource {
         }
 
         if(user.getId() != loggedInUser.getId()) {
-            
+            user.getPayments().clear();
+            user.getAddresses().clear();
+            user.setDetails(null);
         }
 
         return Response.ok(user).build();
