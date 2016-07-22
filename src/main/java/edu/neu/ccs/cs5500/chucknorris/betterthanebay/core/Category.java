@@ -1,5 +1,7 @@
 package edu.neu.ccs.cs5500.chucknorris.betterthanebay.core;
 
+import org.hibernate.validator.constraints.NotBlank;
+
 import java.util.Objects;
 
 import javax.persistence.Column;
@@ -28,6 +30,7 @@ public class Category {
     private Long id;
 
     @Column(nullable = false)
+    @NotBlank
     private String name;
 
     public Long getId() {

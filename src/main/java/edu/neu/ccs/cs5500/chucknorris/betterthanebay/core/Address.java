@@ -16,7 +16,7 @@ import javax.validation.Valid;
 
 @Entity
 @Table(name = "address")
-public class Address {
+public class Address implements Comparable<Address> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -141,5 +141,10 @@ public class Address {
                 ", state=" + state +
                 ", zip='" + zip + '\'' +
                 '}';
+    }
+
+    @Override
+    public int compareTo(Address o) {
+        return this.id.compareTo(o.getId());
     }
 }

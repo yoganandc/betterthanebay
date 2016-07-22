@@ -24,7 +24,7 @@ import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "payment")
-public class Payment {
+public class Payment implements Comparable<Payment> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -181,5 +181,10 @@ public class Payment {
     @JsonIgnore
     public User getUser() {
         return this.user;
+    }
+
+    @Override
+    public int compareTo(Payment o) {
+        return this.id.compareTo(o.getId());
     }
 }

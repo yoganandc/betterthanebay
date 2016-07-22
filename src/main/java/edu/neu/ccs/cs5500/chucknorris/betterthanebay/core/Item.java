@@ -1,5 +1,8 @@
 package edu.neu.ccs.cs5500.chucknorris.betterthanebay.core;
 
+import org.hibernate.validator.constraints.NotBlank;
+import org.hibernate.validator.constraints.NotEmpty;
+
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Objects;
@@ -35,6 +38,7 @@ public class Item {
   private Long id;
 
   @Column(nullable = false)
+  @NotBlank
   private String name;
 
   private String description;
@@ -42,7 +46,8 @@ public class Item {
   @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.PERSIST},
       fetch = FetchType.EAGER)
   @JoinTable(name = "categories", joinColumns = @JoinColumn(name = "item_id", nullable = false) ,
-      inverseJoinColumns = @JoinColumn(name = "category_id", nullable = false) )
+      inverseJoinColumns = @JoinColumn(name = "category_id", nullable = false))
+  @NotEmpty
   private Set<Category> categories;
 
   @Column(name = "price", nullable = false)

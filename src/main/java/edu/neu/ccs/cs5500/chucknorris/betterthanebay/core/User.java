@@ -8,9 +8,9 @@ import org.hibernate.validator.constraints.NotEmpty;
 import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.TreeSet;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -69,13 +69,13 @@ public class User implements Principal {
             inverseJoinColumns = @JoinColumn(name = "address_id", nullable = false, unique = true))
     @Valid
     @NotEmpty
-    private Set<Address> addresses = new HashSet<>();
+    private TreeSet<Address> addresses = new TreeSet<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true,
             fetch = FetchType.EAGER)
     @Valid
     @NotEmpty
-    private Set<Payment> payments = new HashSet<>();
+    private TreeSet<Payment> payments = new TreeSet<>();
 
     @DecimalMax(value = "5.0")
     @DecimalMin(value = "0.0")
@@ -111,7 +111,7 @@ public class User implements Principal {
         this.updated = new Date(obj.getUpdated().getTime());
     }
 
-    public User(Long id, String username, String password, Person details, Set<Address> addresses, Set<Payment> payments, BigDecimal rating, Date created, Date updated) {
+    public User(Long id, String username, String password, Person details, TreeSet<Address> addresses, TreeSet<Payment> payments, BigDecimal rating, Date created, Date updated) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -155,19 +155,19 @@ public class User implements Principal {
         this.details = details;
     }
 
-    public Set<Address> getAddresses() {
+    public TreeSet<Address> getAddresses() {
         return this.addresses;
     }
 
-    public void setAddresses(Set<Address> addresses) {
+    public void setAddresses(TreeSet<Address> addresses) {
         this.addresses = addresses;
     }
 
-    public Set<Payment> getPayments() {
+    public TreeSet<Payment> getPayments() {
         return this.payments;
     }
 
-    public void setPayments(Set<Payment> payments) {
+    public void setPayments(TreeSet<Payment> payments) {
         this.payments = payments;
     }
 
