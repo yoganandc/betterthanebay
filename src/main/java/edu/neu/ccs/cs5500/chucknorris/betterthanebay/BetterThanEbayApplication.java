@@ -15,10 +15,14 @@ import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Person;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.State;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.User;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.db.BidDAO;
+import edu.neu.ccs.cs5500.chucknorris.betterthanebay.db.CategoryDAO;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.db.FeedbackDAO;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.db.ItemDAO;
+import edu.neu.ccs.cs5500.chucknorris.betterthanebay.db.StateDAO;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.db.UserDAO;
+import edu.neu.ccs.cs5500.chucknorris.betterthanebay.resources.CategoryResource;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.resources.ItemResource;
+import edu.neu.ccs.cs5500.chucknorris.betterthanebay.resources.StateResource;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.resources.UserResource;
 import io.dropwizard.Application;
 import io.dropwizard.auth.AuthDynamicFeature;
@@ -77,6 +81,12 @@ public class BetterThanEbayApplication extends Application<BetterThanEbayConfigu
 
         SessionFactory sf = db.getSessionFactory();
 
+        CategoryDAO categoryDAO = new CategoryDAO(sf);
+        CategoryResource categoryResource = new CategoryResource(categoryDAO);
+
+        StateDAO stateDAO = new StateDAO(sf);
+        StateResource stateResource = new StateResource(stateDAO);
+
         UserDAO userDAO = new UserDAO(sf);
         ItemDAO itemDAO = new ItemDAO(sf);
         BidDAO bidDAO = new BidDAO(sf);
@@ -90,6 +100,8 @@ public class BetterThanEbayApplication extends Application<BetterThanEbayConfigu
                         new BasicCredentialAuthFilter.Builder<User>().setAuthenticator(auth)
                         .setRealm("AUTHENTICATED").buildAuthFilter()));
         environment.jersey().register(new AuthValueFactoryProvider.Binder<>(User.class));
+        environment.jersey().register(categoryResource);
+        environment.jersey().register(stateResource);
         environment.jersey().register(userResource);
         environment.jersey().register(itemResource);
     }

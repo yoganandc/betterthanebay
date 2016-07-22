@@ -79,7 +79,6 @@ public class User implements Principal {
 
     @DecimalMax(value = "5.0")
     @DecimalMin(value = "0.0")
-    @JsonIgnore
     private BigDecimal rating;
 
     @Column(nullable = false, updatable = false)

@@ -14,8 +14,6 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import edu.neu.ccs.cs5500.chucknorris.betterthanebay.db.CreatedTimestamp;
-
 @Entity
 @Table(name = "bid")
 public class Bid {
@@ -35,7 +33,6 @@ public class Bid {
 
     @Column(nullable = false, updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
-    @CreatedTimestamp
     private Date time;
 
     @OneToOne(optional = false)

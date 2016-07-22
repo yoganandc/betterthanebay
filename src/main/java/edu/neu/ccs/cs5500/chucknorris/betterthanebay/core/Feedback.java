@@ -12,9 +12,6 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import edu.neu.ccs.cs5500.chucknorris.betterthanebay.db.CreatedTimestamp;
-import edu.neu.ccs.cs5500.chucknorris.betterthanebay.db.UpdatedTimestamp;
-
 @Entity
 @Table(name = "feedback")
 public class Feedback {
@@ -27,12 +24,10 @@ public class Feedback {
 
     @Column(nullable = false, updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
-    @CreatedTimestamp
     private Date created;
 
     @Column(nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
-    @UpdatedTimestamp
     private Date updated;
 
     @Column(nullable = false)

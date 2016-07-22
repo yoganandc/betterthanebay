@@ -9,6 +9,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 /**
@@ -17,6 +19,10 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "`state`")
+@NamedQueries(value = {
+        @NamedQuery(name = "edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.State.findAll",
+                query = "SELECT s FROM State s")
+})
 public class State {
 
     @Id
