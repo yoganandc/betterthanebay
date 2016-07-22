@@ -2,9 +2,6 @@ package edu.neu.ccs.cs5500.chucknorris.betterthanebay.auth;
 
 import com.google.common.base.Optional;
 
-import org.hibernate.Query;
-import org.hibernate.SessionFactory;
-
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.User;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.db.UserDAO;
 import io.dropwizard.auth.AuthenticationException;

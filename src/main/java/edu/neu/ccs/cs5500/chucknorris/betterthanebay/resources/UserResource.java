@@ -1,11 +1,13 @@
 package edu.neu.ccs.cs5500.chucknorris.betterthanebay.resources;
 
-import com.wordnik.swagger.annotations.*;
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
+import com.wordnik.swagger.annotations.ApiParam;
+import com.wordnik.swagger.annotations.ApiResponse;
+import com.wordnik.swagger.annotations.ApiResponses;
 
 import java.net.URI;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.validation.Valid;
 import javax.ws.rs.Consumes;
@@ -20,7 +22,12 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.*;
+import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Address;
+import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Bid;
+import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Feedback;
+import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Item;
+import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Payment;
+import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.User;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.db.BidDAO;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.db.FeedbackDAO;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.db.ItemDAO;

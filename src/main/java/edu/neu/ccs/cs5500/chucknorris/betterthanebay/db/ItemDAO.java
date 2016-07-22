@@ -1,12 +1,9 @@
 package edu.neu.ccs.cs5500.chucknorris.betterthanebay.db;
 
-import java.util.List;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
+
+import java.util.List;
 
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Item;
 import io.dropwizard.hibernate.AbstractDAO;

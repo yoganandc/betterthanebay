@@ -1,7 +1,5 @@
 package edu.neu.ccs.cs5500.chucknorris.betterthanebay.db;
 
-import java.util.Optional;
-
 import org.hibernate.SessionFactory;
 
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Feedback;
