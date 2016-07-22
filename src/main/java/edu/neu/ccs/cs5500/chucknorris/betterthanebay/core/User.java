@@ -2,6 +2,7 @@ package edu.neu.ccs.cs5500.chucknorris.betterthanebay.core;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import org.hibernate.annotations.OrderBy;
 import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -10,6 +11,7 @@ import java.security.Principal;
 import java.util.Date;
 import java.util.Objects;
 import java.util.Set;
+import java.util.SortedSet;
 import java.util.TreeSet;
 
 import javax.persistence.CascadeType;
@@ -69,13 +71,15 @@ public class User implements Principal {
             inverseJoinColumns = @JoinColumn(name = "address_id", nullable = false, unique = true))
     @Valid
     @NotEmpty
-    private TreeSet<Address> addresses = new TreeSet<>();
+    @OrderBy(clause = "id ASC")
+    private SortedSet<Address> addresses = new TreeSet<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true,
             fetch = FetchType.EAGER)
     @Valid
     @NotEmpty
-    private TreeSet<Payment> payments = new TreeSet<>();
+    @OrderBy(clause = "id ASC")
+    private SortedSet<Payment> payments = new TreeSet<>();
 
     @DecimalMax(value = "5.0")
     @DecimalMin(value = "0.0")
@@ -111,7 +115,7 @@ public class User implements Principal {
         this.updated = new Date(obj.getUpdated().getTime());
     }
 
-    public User(Long id, String username, String password, Person details, TreeSet<Address> addresses, TreeSet<Payment> payments, BigDecimal rating, Date created, Date updated) {
+    public User(Long id, String username, String password, Person details, SortedSet<Address> addresses, SortedSet<Payment> payments, BigDecimal rating, Date created, Date updated) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -155,19 +159,19 @@ public class User implements Principal {
         this.details = details;
     }
 
-    public TreeSet<Address> getAddresses() {
+    public SortedSet<Address> getAddresses() {
         return this.addresses;
     }
 
-    public void setAddresses(TreeSet<Address> addresses) {
+    public void setAddresses(SortedSet<Address> addresses) {
         this.addresses = addresses;
     }
 
-    public TreeSet<Payment> getPayments() {
+    public SortedSet<Payment> getPayments() {
         return this.payments;
     }
 
-    public void setPayments(TreeSet<Payment> payments) {
+    public void setPayments(SortedSet<Payment> payments) {
         this.payments = payments;
     }
 

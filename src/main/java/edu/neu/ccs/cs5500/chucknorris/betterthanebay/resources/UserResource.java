@@ -184,10 +184,12 @@ public class UserResource {
         }
 
         // NOT FOUND
-        if (this.dao.findById(userId.get()) == null) {
+        User found = this.dao.findById(userId.get());
+        if (found == null) {
             Response.status(Response.Status.NOT_FOUND).build();
         }
 
+        user.setCreated(found.getCreated());
         User updatedUser = dao.update(user);
 
         return Response.ok(updatedUser).build();

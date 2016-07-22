@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedSet;
 import java.util.TreeSet;
 
 import io.dropwizard.jackson.Jackson;
@@ -33,7 +34,7 @@ public class UserTest {
         Address a2 = new Address(46L, "9442 South Middle River St.", null, "Randallstown", s2, "21133");
         State s3 = new State(1L, "Alabama", "AL");
         Address a3 = new Address(47L, "514 Sulphur Springs Rd", null, "Birmingham", s3, "35209");
-        TreeSet<Address> addresses = new TreeSet<>();
+        SortedSet<Address> addresses = new TreeSet<>();
         addresses.add(a1);
         addresses.add(a2);
         addresses.add(a3);
@@ -44,7 +45,7 @@ public class UserTest {
         State s5 = new State(33L, "New York", "NY");
         Address a5 = new Address(49L, "90 Greenrose Dr", null, "Scarsdale", s5, "10583");
         Payment pay2 = new Payment(26L, "Christopher", "Vivio", "123456789101112", new Date(1546905600000L), a5, 999);
-        TreeSet<Payment> payments = new TreeSet<>();
+        SortedSet<Payment> payments = new TreeSet<>();
         payments.add(pay1);
         payments.add(pay2);
 
