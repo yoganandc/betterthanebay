@@ -76,12 +76,10 @@ public class Payment {
         // DO NOT COPY OVER USER
     }
 
-    @JsonIgnore
     public Long getId() {
         return this.id;
     }
 
-    @JsonIgnore
     public void setId(Long id) {
         this.id = id;
     }

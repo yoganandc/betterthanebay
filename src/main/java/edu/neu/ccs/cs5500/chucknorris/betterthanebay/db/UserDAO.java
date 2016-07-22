@@ -41,6 +41,10 @@ public class UserDAO extends AbstractDAO<User> {
 
     // Update User with given information (have to check how it works)
     public User update(User user) {
+        currentSession().clear();
+        for(Payment payment : user.getPayments()) {
+            payment.setUser(user);
+        }
         user.setUpdated(new Date());
         return persist(user);
     }

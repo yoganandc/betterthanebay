@@ -37,9 +37,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.NotEmpty;
 
-import edu.neu.ccs.cs5500.chucknorris.betterthanebay.db.CreatedTimestamp;
-import edu.neu.ccs.cs5500.chucknorris.betterthanebay.db.UpdatedTimestamp;
-
 @Entity
 @Table(name = "`user`")
 @NamedQueries(value = {
@@ -57,13 +54,12 @@ public class User implements Principal {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = true, updatable = false)
     @NotBlank
     private String username;
 
     @Column(nullable = false)
     @NotBlank
-    @JsonIgnore
     private String password;
 
     @OneToOne(cascade = CascadeType.ALL, optional = false, orphanRemoval = true)
@@ -93,13 +89,11 @@ public class User implements Principal {
     @Column(nullable = false, updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     @JsonIgnore
-    @NotNull
     private Date created;
 
     @Column(nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     @JsonIgnore
-    @NotNull
     private Date updated;
 
     public User() {
@@ -140,12 +134,10 @@ public class User implements Principal {
         this.username = username;
     }
 
-    @JsonIgnore
     public String getPassword() {
         return this.password;
     }
 
-    @JsonProperty
     public void setPassword(String password) {
         this.password = password;
     }

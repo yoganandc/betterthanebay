@@ -59,12 +59,10 @@ public class Address {
         this.zip = new String(obj.getZip());
     }
 
-    @JsonIgnore
     public Long getId() {
         return this.id;
     }
 
-    @JsonIgnore
     public void setId(Long id) {
         this.id = id;
     }

@@ -72,13 +72,12 @@ public class UserResource {
         }
         else {
             User userCopy = new User(user);
+            userCopy.setPassword(null);
             userCopy.getPayments().clear();
             userCopy.getAddresses().clear();
             userCopy.setDetails(null);
             return Response.ok(userCopy).build();
         }
-
-
     }
 
     @GET
@@ -131,6 +130,16 @@ public class UserResource {
     public Response addUser(@Valid User user) {
 
         Response.ResponseBuilder response;
+
+        user.setId(null);
+        user.getDetails().setId(null);
+        for(Address address : user.getAddresses()) {
+            address.setId(null);
+        }
+        for(Payment payment : user.getPayments()) {
+            payment.setId(null);
+            payment.getAddress().setId(null);
+        }
 
         User createdUser = dao.create(user);
 
