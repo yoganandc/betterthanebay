@@ -1,5 +1,4 @@
 .idea/
-target/
 *.iml
 .metadata/
 .recommenders/
@@ -7,4 +6,3 @@ target/
 .project
 .settings/
 .DS_Store
-Procfile
