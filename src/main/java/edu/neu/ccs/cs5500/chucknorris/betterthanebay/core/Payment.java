@@ -76,6 +76,16 @@ public class Payment {
         // DO NOT COPY OVER USER
     }
 
+    public Payment(Long id, String firstName, String lastName, String number, Date expiry, Address address, Integer csv) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.number = number;
+        this.expiry = expiry;
+        this.address = address;
+        this.csv = csv;
+    }
+
     public Long getId() {
         return this.id;
     }

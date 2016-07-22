@@ -20,9 +20,6 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
-import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -88,12 +85,10 @@ public class User implements Principal {
 
     @Column(nullable = false, updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
-    @JsonIgnore
     private Date created;
 
     @Column(nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
-    @JsonIgnore
     private Date updated;
 
     public User() {
@@ -116,6 +111,18 @@ public class User implements Principal {
         }
         this.created = new Date(obj.getCreated().getTime());
         this.updated = new Date(obj.getUpdated().getTime());
+    }
+
+    public User(Long id, String username, String password, Person details, Set<Address> addresses, Set<Payment> payments, BigDecimal rating, Date created, Date updated) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.details = details;
+        this.addresses = addresses;
+        this.payments = payments;
+        this.rating = rating;
+        this.created = created;
+        this.updated = updated;
     }
 
     public Long getId() {
@@ -166,32 +173,26 @@ public class User implements Principal {
         this.payments = payments;
     }
 
-    @JsonProperty
     public BigDecimal getRating() {
         return this.rating;
     }
 
-    @JsonIgnore
     public void setRating(BigDecimal rating) {
         this.rating = rating;
     }
 
-    @JsonProperty
     public Date getCreated() {
         return this.created;
     }
 
-    @JsonIgnore
     public void setCreated(Date created) {
         this.created = created;
     }
 
-    @JsonProperty
     public Date getUpdated() {
         return this.updated;
     }
 
-    @JsonIgnore
     public void setUpdated(Date updated) {
         this.updated = updated;
     }

@@ -41,6 +41,12 @@ public class State {
         this.code = new String(obj.getCode());
     }
 
+    public State(Long id, String name, String code) {
+        this.id = id;
+        this.name = name;
+        this.code = code;
+    }
+
     public Long getId() {
         return id;
     }

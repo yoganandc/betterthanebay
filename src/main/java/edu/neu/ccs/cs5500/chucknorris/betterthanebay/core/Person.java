@@ -53,6 +53,14 @@ public class Person {
         }
     }
 
+    public Person(Long id, String first, String middle, String last, Date birthday) {
+        this.id = id;
+        this.first = first;
+        this.middle = middle;
+        this.last = last;
+        this.birthday = birthday;
+    }
+
     public Long getId() {
         return id;
     }

@@ -7,6 +7,7 @@ import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.auth.PasswordUtil;
+import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Category;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Payment;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.User;
 import io.dropwizard.hibernate.AbstractDAO;

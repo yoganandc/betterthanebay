@@ -59,6 +59,15 @@ public class Address {
         this.zip = new String(obj.getZip());
     }
 
+    public Address(Long id, String line1, String line2, String city, State state, String zip) {
+        this.id = id;
+        this.line1 = line1;
+        this.line2 = line2;
+        this.city = city;
+        this.state = state;
+        this.zip = zip;
+    }
+
     public Long getId() {
         return this.id;
     }

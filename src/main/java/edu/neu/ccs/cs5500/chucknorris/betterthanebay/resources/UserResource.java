@@ -68,7 +68,6 @@ public class UserResource {
         
         if(user.getId().equals(loggedInUser.getId())) {
             return Response.ok(user).build();
-
         }
         else {
             User userCopy = new User(user);
