@@ -164,8 +164,8 @@ public class UserResource {
             @ApiResponse(code = 401, message = "User must be signed in"),
             @ApiResponse(code = 403, message = "User cannot update data for another user"),
             @ApiResponse(code = 404, message = "User ID not found")})
-    public Response updateUser(@ApiParam(value = "ID of a user", required = true) @PathParam("userId") LongParam userId, @Valid User user,
-                               @Auth User loggedInUser) {
+    public Response updateUser(@ApiParam(value = "ID of a user", required = true) @PathParam("userId") LongParam userId,
+                               @Valid User user, @Auth User loggedInUser) {
 
         // FORBIDDEN TO UPDATE IF USER LOGGED IN IS NOT THE SAME
         if(userId.get() != loggedInUser.getId()) {

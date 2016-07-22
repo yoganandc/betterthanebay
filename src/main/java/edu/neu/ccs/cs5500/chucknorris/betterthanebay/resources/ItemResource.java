@@ -74,7 +74,8 @@ public class ItemResource {
     @UnitOfWork
     @ApiOperation(
             value = "Find items by keyword, category, date range, and/or price range",
-            notes = "Returns a list of items matching the given parameters for item name, category, start date, end date, lowest price, highest price, item offset number, and size of item list",
+            notes = "Returns a list of items matching the given parameters for item name, category, start date, " +
+                    "end date,lowest price, highest price, item offset number, and size of item list",
             response = Item.class,
             responseContainer = "List")
     @ApiResponses(value = {@ApiResponse(code = 204, message = "No matching results found"),
@@ -142,7 +143,7 @@ public class ItemResource {
 
         }
 
-        if (list == null) {
+        if (list.isEmpty()) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         } else if (list.isEmpty()) {
             return Response.status(Response.Status.NO_CONTENT).build();
