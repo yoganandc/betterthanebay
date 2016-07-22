@@ -28,6 +28,8 @@ public class UserTest {
     private User tina;
 
     static {
+        // ADD TEST INPUT VARIABLES FOR ALL TESTING RELATED TO USER HERE
+        // FOR MODEL, DAO, AND RESOURCE
         State s1 = new State(23L, "Michigan", "MI");
         Address a1 = new Address(45L, "710 Hawthorne St.", null, "Lincoln Park", s1, "48146");
         State s2 = new State(1L, "Alabama", "AL");
