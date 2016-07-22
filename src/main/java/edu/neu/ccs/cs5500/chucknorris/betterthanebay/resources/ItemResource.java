@@ -74,17 +74,21 @@ public class ItemResource {
     @UnitOfWork
     @ApiOperation(
             value = "Find items by keyword, category, date range, and/or price range",
-            notes = "Returns a list of items matching the given parameters for item name, category, start date, end date, lowest price, highest price, item offset number, and size of item list",
+            notes = "Returns a list of items matching the given parameters for item name, category, start date, " +
+                    "end date,lowest price, highest price, item offset number, and size of item list",
             response = Item.class,
             responseContainer = "List")
     @ApiResponses(value = {@ApiResponse(code = 204, message = "No matching results found"),
             @ApiResponse(code = 401, message = "User must be logged in")})
     public Response getItems(@ApiParam(value = "Item keyword", required = true) @QueryParam("name") NonEmptyStringParam name,
-                             @ApiParam(value = "Item category", required = false) @QueryParam("category") IntParam category, @QueryParam("dateFrom") DateTimeParam dateFrom,
-                             @ApiParam(value = "Start date of an auction", required = false) @QueryParam("dateTo") DateTimeParam dateTo, @QueryParam("priceFrom") IntParam priceFrom,
-                             @ApiParam(value = "End date of an auction", required = false) @QueryParam("priceTo") IntParam priceTo,
+                             @ApiParam(value = "Item category", required = false) @QueryParam("category") IntParam category,
+                             @ApiParam(value = "Start date of an auction", required = false) @QueryParam("dateFrom") DateTimeParam dateFrom,
+                             @ApiParam(value = "End date of an auction", required = false) @QueryParam("dateTo") DateTimeParam dateTo,
+                             @ApiParam(value = "Lowest price of item", required = false) @QueryParam("priceFrom") IntParam priceFrom,
+                             @ApiParam(value = "Highest price of item", required = false) @QueryParam("priceTo") IntParam priceTo,
                              @ApiParam(value = "Results offset", required = false) @QueryParam("start") IntParam start,
-                             @ApiParam(value = "Results list size", required = false) @QueryParam("size") IntParam size, @Auth User loggedInUser) {
+                             @ApiParam(value = "Results list size", required = false) @QueryParam("size") IntParam size,
+                             @Auth User loggedInUser) {
         if ((name == null) || !name.get().isPresent()) {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
@@ -142,7 +146,7 @@ public class ItemResource {
 
         }
 
-        if (list == null) {
+        if (list.isEmpty()) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         } else if (list.isEmpty()) {
             return Response.status(Response.Status.NO_CONTENT).build();
