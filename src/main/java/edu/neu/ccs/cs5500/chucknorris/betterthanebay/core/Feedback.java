@@ -11,6 +11,9 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "feedback")
@@ -31,7 +34,29 @@ public class Feedback {
     private Date updated;
 
     @Column(nullable = false)
+    @NotNull
+    @Min(value = 0)
+    @Max(value = 5)
     private Integer rating;
+
+    public Feedback() {
+    }
+
+    public Feedback(Long id, String message, Date created, Date updated, Integer rating) {
+        this.id = id;
+        this.message = message;
+        this.created = created;
+        this.updated = updated;
+        this.rating = rating;
+    }
+
+    public Feedback(Feedback obj) {
+        this.id = new Long(obj.getId());
+        this.message = new String(obj.getMessage());
+        this.created = new Date(obj.getCreated().getTime());
+        this.updated = new Date(obj.getUpdated().getTime());
+        this.rating = new Integer(obj.getRating());
+    }
 
     public String getMessage() {
         return this.message;

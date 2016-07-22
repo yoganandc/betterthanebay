@@ -23,7 +23,7 @@ import javax.persistence.Table;
         @NamedQuery(name = "edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Category.findAll",
         query = "SELECT c FROM Category c")
 })
-public class Category {
+public class Category implements Comparable<Category> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,6 +32,19 @@ public class Category {
     @Column(nullable = false)
     @NotBlank
     private String name;
+
+    public Category() {
+
+    }
+
+    public Category(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+    public Category(Category obj) {
+        this(new Long(obj.getId()), new String(obj.getName()));
+    }
 
     public Long getId() {
         return id;
@@ -69,5 +82,10 @@ public class Category {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 '}';
+    }
+
+    @Override
+    public int compareTo(Category o) {
+        return this.id.compareTo(o.getId());
     }
 }

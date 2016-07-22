@@ -13,6 +13,8 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "bid")
@@ -23,20 +25,48 @@ public class Bid {
     private Long id;
 
     @Column(name = "item_id", nullable = false)
+    @NotNull
     private Long itemId;
 
     @Column(name = "user_id", nullable = false)
+    @NotNull
     private Long userId;
 
     @Column(nullable = false)
+    @NotNull
+    @DecimalMin(value = "0.0")
     private BigDecimal amount;
 
     @Column(nullable = false, updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
+    @NotNull
     private Date time;
 
-    @OneToOne(optional = false)
-    private Payment payment;
+    @Column(name = "payment_id", nullable = false)
+    @NotNull
+    private Long paymentId;
+
+    public Bid(Long id, Long itemId, Long userId, BigDecimal amount, Date time, Long paymentId) {
+        this.id = id;
+        this.itemId = itemId;
+        this.userId = userId;
+        this.amount = amount;
+        this.time = time;
+        this.paymentId = paymentId;
+    }
+
+    public Bid() {
+
+    }
+
+    public Bid(Bid obj) {
+        this.id = new Long(obj.getId());
+        this.itemId = new Long(obj.getItemId());
+        this.userId = new Long(obj.getUserId());
+        this.amount = new BigDecimal(obj.getAmount().toString());
+        this.time = new Date(obj.getTime().getTime());
+        this.paymentId = new Long(obj.getPaymentId());
+    }
 
     public Long getId() {
         return this.id;
@@ -87,13 +117,12 @@ public class Bid {
         this.time = time;
     }
 
-
-    public Payment getPayment() {
-        return payment;
+    public Long getPaymentId() {
+        return paymentId;
     }
 
-    public void setPayment(Payment payment) {
-        this.payment = payment;
+    public void setPaymentId(Long paymentId) {
+        this.paymentId = paymentId;
     }
 
     @Override
@@ -106,12 +135,12 @@ public class Bid {
                 Objects.equals(getUserId(), bid.getUserId()) &&
                 Objects.equals(getAmount(), bid.getAmount()) &&
                 Objects.equals(getTime(), bid.getTime()) &&
-                Objects.equals(getPayment(), bid.getPayment());
+                Objects.equals(getPaymentId(), bid.getPaymentId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getItemId(), getUserId(), getAmount(), getTime(), getPayment());
+        return Objects.hash(getId(), getItemId(), getUserId(), getAmount(), getTime(), getPaymentId());
     }
 
     @Override
@@ -122,7 +151,7 @@ public class Bid {
                 ", userId=" + userId +
                 ", amount=" + amount +
                 ", time=" + time +
-                ", payment=" + payment +
+                ", paymentId=" + paymentId +
                 '}';
     }
 }
