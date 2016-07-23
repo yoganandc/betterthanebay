@@ -21,12 +21,14 @@ public class FeedbackDAO extends AbstractDAO<Feedback> {
 
         if(id.equals(Feedback.BUYER)) {
             query = namedQuery("edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.BuyerFeedback.getForItem");
+            return uniqueResult(query);
         }
-        else {
+        else if(id.equals(Feedback.SELLER)){
             query = namedQuery("edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.SellerFeedback.getForItem");
+            return uniqueResult(query);
         }
 
-        return uniqueResult(query);
+        return null;
     }
 
     // Create new Feedback
@@ -34,8 +36,11 @@ public class FeedbackDAO extends AbstractDAO<Feedback> {
         if(id.equals( Feedback.BUYER)) {
             return persist(feedback.toBuyer());
         }
-        else {
+        else if(id.equals(Feedback.SELLER)) {
             return persist(feedback.toSeller());
+        }
+        else {
+            return null;
         }
     }
 

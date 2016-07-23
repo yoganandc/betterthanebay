@@ -89,7 +89,8 @@ public class FeedbackResource {
             response = Feedback.class)
     @ApiResponses(value = {@ApiResponse(code = 400, message = "Invalid feedback data supplied"),
             @ApiResponse(code = 401, message = "User must be signed in"),
-            @ApiResponse(code = 403, message = "Forbidden user access or feedback already exists"),})
+            @ApiResponse(code = 403, message = "Forbidden user access or feedback already exists"),
+            @ApiResponse(code = 404, message = "Item with given ID not found")})
     public Response addFeedback(@ApiParam(value = "Item ID", required = true) @PathParam("itemId") LongParam itemId,
                                 @Valid Feedback feedback, @Auth User loggedInUser) {
 
@@ -106,6 +107,9 @@ public class FeedbackResource {
 
         // NOW CHECK IF USER POSTED ITEM OR WON IT
         Bid bid = null; //bidDAO.getCurrentWinningForItem(item.getId());
+
+        /* TODO */
+        // currentWinningBidForItem could return null
 
         if(!bid.getUserId().equals(loggedInUser.getId()) && !item.getUserId().equals(loggedInUser.getId())) {
             return Response.status(Response.Status.FORBIDDEN).build();
