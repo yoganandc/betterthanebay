@@ -1,5 +1,7 @@
 package edu.neu.ccs.cs5500.chucknorris.betterthanebay.core;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import org.hibernate.validator.constraints.NotBlank;
 
 import java.util.Date;
@@ -59,10 +61,12 @@ public class Person {
         this.birthday = birthday;
     }
 
+    @JsonIgnore
     public Long getId() {
         return id;
     }
 
+    @JsonIgnore
     public void setId(Long id) {
         this.id = id;
     }
@@ -104,8 +108,7 @@ public class Person {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Person person = (Person) o;
-        return Objects.equals(getId(), person.getId()) &&
-                Objects.equals(getFirst(), person.getFirst()) &&
+        return Objects.equals(getFirst(), person.getFirst()) &&
                 Objects.equals(getMiddle(), person.getMiddle()) &&
                 Objects.equals(getLast(), person.getLast()) &&
                 Objects.equals(getBirthday(), person.getBirthday());
@@ -113,7 +116,7 @@ public class Person {
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getFirst(), getMiddle(), getLast(), getBirthday());
+        return Objects.hash(getFirst(), getMiddle(), getLast(), getBirthday());
     }
 
     @Override

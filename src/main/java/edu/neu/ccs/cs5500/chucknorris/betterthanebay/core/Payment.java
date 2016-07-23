@@ -85,10 +85,12 @@ public class Payment implements Comparable<Payment> {
         this.csv = csv;
     }
 
+    @JsonIgnore
     public Long getId() {
         return this.id;
     }
 
+    @JsonIgnore
     public void setId(Long id) {
         this.id = id;
     }
@@ -146,8 +148,7 @@ public class Payment implements Comparable<Payment> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Payment payment = (Payment) o;
-        return Objects.equals(getId(), payment.getId()) &&
-                Objects.equals(getFirstName(), payment.getFirstName()) &&
+        return Objects.equals(getFirstName(), payment.getFirstName()) &&
                 Objects.equals(getLastName(), payment.getLastName()) &&
                 Objects.equals(getNumber(), payment.getNumber()) &&
                 Objects.equals(getExpiry(), payment.getExpiry()) &&
@@ -157,19 +158,19 @@ public class Payment implements Comparable<Payment> {
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getFirstName(), getLastName(), getNumber(), getExpiry(), getAddress(), getCsv());
+        return Objects.hash(getFirstName(), getLastName(), getNumber(), getExpiry(), getAddress(), getCsv());
     }
 
     @Override
     public String toString() {
         return "Payment{" +
-                "csv=" + csv +
-                ", address=" + address +
-                ", expiry=" + expiry +
-                ", number='" + number + '\'' +
-                ", lastName='" + lastName + '\'' +
+                "id=" + id +
                 ", firstName='" + firstName + '\'' +
-                ", id=" + id +
+                ", lastName='" + lastName + '\'' +
+                ", number='" + number + '\'' +
+                ", expiry=" + expiry +
+                ", address=" + address +
+                ", csv=" + csv +
                 '}';
     }
 
@@ -185,6 +186,44 @@ public class Payment implements Comparable<Payment> {
 
     @Override
     public int compareTo(Payment o) {
+        if(this == o) {
+            return 0;
+        }
+
+        if(this.id == null && o.id == null) {
+            int comparison = firstName.compareTo(o.firstName);
+            if(comparison != 0) {
+                return comparison;
+            }
+            comparison = lastName.compareTo(o.lastName);
+            if(comparison != 0) {
+                return comparison;
+            }
+            comparison = number.compareTo(o.number);
+            if(comparison != 0) {
+                return comparison;
+            }
+            comparison = expiry.compareTo(o.expiry);
+            if(comparison != 0) {
+                return comparison;
+            }
+            comparison = address.compareTo(o.address);
+            if(comparison != 0) {
+                return comparison;
+            }
+            comparison = csv.compareTo(o.csv);
+            if(comparison != 0) {
+                return comparison;
+            }
+
+            return 0;
+        }
+        if(this.id == null) {
+            return -1;
+        }
+        if(o.id == null) {
+            return 1;
+        }
         return this.id.compareTo(o.getId());
     }
 }

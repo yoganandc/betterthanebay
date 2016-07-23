@@ -3,7 +3,9 @@ package edu.neu.ccs.cs5500.chucknorris.betterthanebay.resources;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.validation.Valid;
 import javax.ws.rs.Consumes;
@@ -153,13 +155,8 @@ public class UserResource {
 
         // null out IDs
         user.setId(null);
-        user.getDetails().setId(null);
-        for (Address address : user.getAddresses()) {
-            address.setId(null);
-        }
+
         for (Payment payment : user.getPayments()) {
-            payment.setId(null);
-            payment.getAddress().setId(null);
             //set user property on payment (for hibernate)
             payment.setUser(user);
         }
@@ -213,8 +210,29 @@ public class UserResource {
             Response.status(Response.Status.NOT_FOUND).build();
         }
 
-        //set user property on payment (for hibernate)
+        Map<Address, Address> addressMap = new HashMap<>();
+        for(Address address : found.getAddresses()) {
+            addressMap.put(address, address);
+        }
+
+        Map<Payment, Payment> paymentMap = new HashMap<>();
+        for(Payment payment : found.getPayments()) {
+            paymentMap.put(payment, payment);
+        }
+
+        //set IDs
+        user.getDetails().setId(found.getDetails().getId());
+        for(Address address : user.getAddresses()) {
+            if(addressMap.containsKey(address)) {
+                address.setId(addressMap.get(address).getId());
+            }
+        }
+
         for(Payment payment : user.getPayments()) {
+            if(paymentMap.containsKey(payment)) {
+                payment.setId(paymentMap.get(payment).getId());
+            }
+            //set user property on payment (for hibernate)
             payment.setUser(user);
         }
 

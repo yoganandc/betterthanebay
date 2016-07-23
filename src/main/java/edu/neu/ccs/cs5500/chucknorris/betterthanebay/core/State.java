@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 /**
  * Created by yoganandc on 6/29/16.
@@ -23,10 +24,11 @@ import javax.persistence.Table;
         @NamedQuery(name = "edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.State.findAll",
                 query = "SELECT s FROM State s")
 })
-public class State {
+public class State implements Comparable<State> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @NotNull
     private Long id;
 
     @Column(nullable = false, unique = true)
@@ -99,5 +101,10 @@ public class State {
                 ", name='" + name + '\'' +
                 ", code='" + code + '\'' +
                 '}';
+    }
+
+    @Override
+    public int compareTo(State o) {
+        return this.id.compareTo(o.id);
     }
 }

@@ -1,5 +1,7 @@
 package edu.neu.ccs.cs5500.chucknorris.betterthanebay.core;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import org.hibernate.validator.constraints.NotBlank;
 
 import java.util.Objects;
@@ -65,10 +67,12 @@ public class Address implements Comparable<Address> {
         this.zip = zip;
     }
 
+    @JsonIgnore
     public Long getId() {
         return this.id;
     }
 
+    @JsonIgnore
     public void setId(Long id) {
         this.id = id;
     }
@@ -118,8 +122,7 @@ public class Address implements Comparable<Address> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Address address = (Address) o;
-        return Objects.equals(getId(), address.getId()) &&
-                Objects.equals(getLine1(), address.getLine1()) &&
+        return Objects.equals(getLine1(), address.getLine1()) &&
                 Objects.equals(getLine2(), address.getLine2()) &&
                 Objects.equals(getCity(), address.getCity()) &&
                 Objects.equals(getState(), address.getState()) &&
@@ -128,7 +131,7 @@ public class Address implements Comparable<Address> {
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getLine1(), getLine2(), getCity(), getState(), getZip());
+        return Objects.hash(getLine1(), getLine2(), getCity(), getState(), getZip());
     }
 
     @Override
@@ -145,6 +148,48 @@ public class Address implements Comparable<Address> {
 
     @Override
     public int compareTo(Address o) {
+        if(this == o) {
+            return 0;
+        }
+
+        if(this.id == null && o.id == null) {
+            int comparison = line1.compareTo(o.line1);
+            if(comparison != 0) {
+                return comparison;
+            }
+            if(line2 == null && o.line2 != null) {
+                return -1;
+            }
+            if(line2 != null && o.line2 == null) {
+                return 1;
+            }
+            if(line2 != null && o.line2 != null) {
+                comparison = line2.compareTo(o.line2);
+                if(comparison != 0) {
+                    return comparison;
+                }
+            }
+            comparison = city.compareTo(o.city);
+            if(comparison != 0) {
+                return comparison;
+            }
+            comparison = state.compareTo(o.state);
+            if(comparison != 0) {
+                return comparison;
+            }
+            comparison = zip.compareTo(o.zip);
+            if(comparison != 0) {
+                return comparison;
+            }
+
+            return 0;
+        }
+        if(this.id == null) {
+            return -1;
+        }
+        if(o.id == null) {
+            return 1;
+        }
         return this.id.compareTo(o.getId());
     }
 }

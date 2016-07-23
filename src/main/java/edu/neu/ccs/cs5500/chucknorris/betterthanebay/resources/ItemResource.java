@@ -63,6 +63,10 @@ public class ItemResource {
             @ApiParam(value = "Item ID", required = true) @PathParam("itemId") LongParam itemId,
             @Auth User loggedInUser) {
 
+        /* TODO */
+        // RETURN A NOT FOUND IF USER IS ACCESSING A NON-ACTIVE ITEM
+        // AND IS NOT THE USER WHO POSTED IT
+
         Item item = this.dao.findById(itemId.get());
         if (item == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
@@ -107,12 +111,18 @@ public class ItemResource {
             startPrice = new BigDecimal(priceFrom.get());
         }
 
+        /* TODO */
+        //CHECK ENDPRICE > STARTPRICE
+
         BigDecimal endPrice;
         if (priceTo == null) {
             endPrice = new BigDecimal(Integer.MAX_VALUE);
         } else {
             endPrice = new BigDecimal(priceTo.get());
         }
+
+        /* TODO */
+        //CHECK SIZE, START > 0
 
         int startVal;
         if (start == null) {
@@ -152,6 +162,10 @@ public class ItemResource {
     @ApiResponses(value = {@ApiResponse(code = 400, message = "Invalid item data supplied"),
             @ApiResponse(code = 401, message = "User must be signed in")})
     public Response addItem(@Valid Item item, @Auth User loggedInUser) {
+
+        /* TODO */
+        //VALIDATE START_DATE IS IN FUTURE
+        // AND END_DATE > START_DATE
 
         //null out item id
         item.setId(null);
@@ -213,6 +227,10 @@ public class ItemResource {
             item.setInitialPrice(found.getInitialPrice());
         }
 
+        /* TODO */
+        //VALIDATE START_DATE IS IN FUTURE
+        // AND END_DATE > START_DATE
+
         //set json ignored properties
         item.setCreated(found.getCreated());
         item.setUpdated(new Date());
@@ -238,6 +256,10 @@ public class ItemResource {
 
         if (found == null) {
             return Response.status(Response.Status.NOT_FOUND).build(); // item doesn't exist
+        }
+
+        if(!found.getUserId().equals(loggedInUser.getId())) {
+            return Response.status(Response.Status.FORBIDDEN).build();
         }
 
         boolean success = this.dao.deleteItem(itemId.get());

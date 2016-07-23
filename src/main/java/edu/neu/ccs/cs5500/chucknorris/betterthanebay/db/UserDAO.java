@@ -32,8 +32,7 @@ public class UserDAO extends AbstractDAO<User> {
 
     // Update User with given information (have to check how it works)
     public User update(User user) {
-        currentSession().clear();
-        return persist(user);
+        return (User) currentSession().merge(user);
     }
 
     public boolean deleteUser(Long id) {

@@ -275,16 +275,4 @@ public class Item {
                 ", updated=" + updated +
                 '}';
     }
-
-    @ValidationMethod(message = "start date must be after current time")
-    @JsonIgnore
-    public boolean isStartDateValid() {
-        return this.startDate.after(new Date());
-    }
-
-    @ValidationMethod(message = "end date must be after start date")
-    @JsonIgnore
-    public boolean isEndDateValid() {
-        return this.endDate.after(this.startDate);
-    }
 }
