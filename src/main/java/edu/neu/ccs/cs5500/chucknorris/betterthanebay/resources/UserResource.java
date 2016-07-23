@@ -231,6 +231,7 @@ public class UserResource {
         for(Payment payment : user.getPayments()) {
             if(paymentMap.containsKey(payment)) {
                 payment.setId(paymentMap.get(payment).getId());
+                payment.getAddress().setId(paymentMap.get(payment).getAddress().getId());
             }
             //set user property on payment (for hibernate)
             payment.setUser(user);
