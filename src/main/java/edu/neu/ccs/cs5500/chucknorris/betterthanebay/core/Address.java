@@ -48,7 +48,9 @@ public class Address implements Comparable<Address> {
     }
 
     public Address(Address obj) {
-        this.id = new Long(obj.getId());
+        if(obj.getId() != null) {
+            this.id = new Long(obj.getId());
+        }
         this.line1 = new String(obj.getLine1());
         if(obj.getLine2() != null) {
             this.line2 = new String(obj.getLine2());

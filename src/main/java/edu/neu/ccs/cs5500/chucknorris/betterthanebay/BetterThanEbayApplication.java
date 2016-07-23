@@ -8,11 +8,13 @@ import edu.neu.ccs.cs5500.chucknorris.betterthanebay.auth.BetterThanEbayAuthenti
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.auth.PasswordUtil;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Address;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Bid;
+import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.BuyerFeedback;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Category;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Feedback;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Item;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Payment;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Person;
+import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.SellerFeedback;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.State;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.User;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.db.BidDAO;
@@ -41,7 +43,7 @@ import io.federecio.dropwizard.swagger.SwaggerBundleConfiguration;
 public class BetterThanEbayApplication extends Application<BetterThanEbayConfiguration> {
 
     private final HibernateBundle<BetterThanEbayConfiguration> db = new HibernateBundle<BetterThanEbayConfiguration>(Person.class, State.class,
-            Address.class, Payment.class, User.class, Bid.class, Category.class, Feedback.class, Item.class) {
+            Address.class, Payment.class, User.class, Bid.class, Category.class, BuyerFeedback.class, SellerFeedback.class, Item.class) {
 
         @Override
         public DataSourceFactory getDataSourceFactory(BetterThanEbayConfiguration configuration) {

@@ -97,6 +97,9 @@ public class ItemResource {
             @Auth User loggedInUser) {
 
         String searchQuery;
+
+        // NonEmptyStringParam#get() returns an Optional<String> where isPresent will return
+        // false for both null and empty string, i.e., ""
         if (name == null || !name.get().isPresent()) {
             searchQuery = "";
         }
@@ -272,6 +275,6 @@ public class ItemResource {
 
     @Path("/{itemId}/feedback")
     public FeedbackResource getFeedbackResource() {
-        return new FeedbackResource(this.feedbackDAO);
+        return new FeedbackResource(this.feedbackDAO, this.dao, this.bidDAO);
     }
 }

@@ -1,7 +1,12 @@
 package edu.neu.ccs.cs5500.chucknorris.betterthanebay.core;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -19,6 +24,9 @@ import javax.validation.constraints.NotNull;
 @MappedSuperclass
 public abstract class Feedback {
 
+    public static final String SELLER = "seller";
+    public static final String BUYER = "buyer";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -33,6 +41,9 @@ public abstract class Feedback {
     @Temporal(TemporalType.TIMESTAMP)
     private Date updated;
 
+    @Column(name = "item_id", nullable = false)
+    private Long itemId;
+
     @Column(nullable = false)
     @NotNull
     @Min(value = 0)
@@ -42,20 +53,26 @@ public abstract class Feedback {
     public Feedback() {
     }
 
-    public Feedback(Long id, String message, Date created, Date updated, Integer rating) {
+    public Feedback(Long id, String message, Date created, Date updated, Integer rating, Long itemId) {
         this.id = id;
         this.message = message;
         this.created = created;
         this.updated = updated;
         this.rating = rating;
+        this.itemId = itemId;
     }
 
     public Feedback(Feedback obj) {
         this.id = new Long(obj.getId());
-        this.message = new String(obj.getMessage());
+        if(obj.getMessage() != null) {
+            this.message = new String(obj.getMessage());
+        }
         this.created = new Date(obj.getCreated().getTime());
         this.updated = new Date(obj.getUpdated().getTime());
         this.rating = new Integer(obj.getRating());
+        if(obj.getItemId() != null) {
+            this.itemId = new Long(obj.getItemId());
+        }
     }
 
     public String getMessage() {
@@ -66,18 +83,22 @@ public abstract class Feedback {
         this.message = message;
     }
 
+    @JsonProperty
     public Date getCreated() {
         return this.created;
     }
 
+    @JsonIgnore
     public void setCreated(Date created) {
         this.created = created;
     }
 
+    @JsonProperty
     public Date getUpdated() {
         return this.updated;
     }
 
+    @JsonIgnore
     public void setUpdated(Date updated) {
         this.updated = updated;
     }
@@ -98,6 +119,16 @@ public abstract class Feedback {
         this.id = id;
     }
 
+    @JsonIgnore
+    public Long getItemId() {
+        return itemId;
+    }
+
+    @JsonIgnore
+    public void setItemId(Long itemId) {
+        this.itemId = itemId;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -107,12 +138,13 @@ public abstract class Feedback {
                 Objects.equals(getMessage(), feedback.getMessage()) &&
                 Objects.equals(getCreated(), feedback.getCreated()) &&
                 Objects.equals(getUpdated(), feedback.getUpdated()) &&
+                Objects.equals(getItemId(), feedback.getItemId()) &&
                 Objects.equals(getRating(), feedback.getRating());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getMessage(), getCreated(), getUpdated(), getRating());
+        return Objects.hash(getId(), getMessage(), getCreated(), getUpdated(), getItemId(), getRating());
     }
 
     @Override
@@ -122,7 +154,16 @@ public abstract class Feedback {
                 ", message='" + message + '\'' +
                 ", created=" + created +
                 ", updated=" + updated +
+                ", itemId=" + itemId +
                 ", rating=" + rating +
                 '}';
+    }
+
+    public Feedback toSeller() {
+        return new SellerFeedback(id, message, created, updated, rating, itemId);
+    }
+
+    public Feedback toBuyer() {
+        return new BuyerFeedback(id, message, created, updated, rating, itemId);
     }
 }

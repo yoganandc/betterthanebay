@@ -42,7 +42,9 @@ public class Person {
     }
 
     public Person(Person obj) {
-        this.id = new Long(obj.getId());
+        if(obj.getId() != null) {
+            this.id = new Long(obj.getId());
+        }
         this.first = new String(obj.getFirst());
         if(obj.getMiddle() != null) {
             this.middle = new String(obj.getMiddle());

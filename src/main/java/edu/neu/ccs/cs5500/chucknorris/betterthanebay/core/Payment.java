@@ -65,7 +65,9 @@ public class Payment implements Comparable<Payment> {
     }
 
     public Payment(Payment obj) {
-        this.id = new Long(obj.getId());
+        if(obj.getId() != null) {
+            this.id = new Long(obj.getId());
+        }
         this.firstName = new String(obj.getFirstName());
         this.lastName = new String(obj.getLastName());
         this.number = new String(obj.getNumber());

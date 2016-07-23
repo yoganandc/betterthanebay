@@ -31,27 +31,27 @@ public class UserTest {
         // ADD TEST INPUT VARIABLES FOR ALL TESTING RELATED TO USER HERE
         // FOR MODEL, DAO, AND RESOURCE
         State s1 = new State(23L, "Michigan", "MI");
-        Address a1 = new Address(45L, "710 Hawthorne St.", null, "Lincoln Park", s1, "48146");
+        Address a1 = new Address(null, "710 Hawthorne St.", null, "Lincoln Park", s1, "48146");
         State s2 = new State(1L, "Alabama", "AL");
-        Address a2 = new Address(46L, "9442 South Middle River St.", null, "Randallstown", s2, "21133");
+        Address a2 = new Address(null, "9442 South Middle River St.", null, "Randallstown", s2, "21133");
         State s3 = new State(1L, "Alabama", "AL");
-        Address a3 = new Address(47L, "514 Sulphur Springs Rd", null, "Birmingham", s3, "35209");
+        Address a3 = new Address(null, "514 Sulphur Springs Rd", null, "Birmingham", s3, "35209");
         SortedSet<Address> addresses = new TreeSet<>();
         addresses.add(a1);
         addresses.add(a2);
         addresses.add(a3);
 
         State s4 = new State(45L, "Texas", "TX");
-        Address a4 = new Address(48L, "7568 Summer Road", null, "Copperas Cove", s4, "76522");
-        Payment pay1 = new Payment(25L, "Christine", "Elizabeth", "123456789101112", new Date(1515283200000L), a4, 214);
+        Address a4 = new Address(null, "7568 Summer Road", null, "Copperas Cove", s4, "76522");
+        Payment pay1 = new Payment(null, "Christine", "Elizabeth", "123456789101112", new Date(1515283200000L), a4, 214);
         State s5 = new State(33L, "New York", "NY");
-        Address a5 = new Address(49L, "90 Greenrose Dr", null, "Scarsdale", s5, "10583");
-        Payment pay2 = new Payment(26L, "Christopher", "Vivio", "123456789101112", new Date(1546905600000L), a5, 999);
+        Address a5 = new Address(null, "90 Greenrose Dr", null, "Scarsdale", s5, "10583");
+        Payment pay2 = new Payment(null, "Christopher", "Vivio", "123456789101112", new Date(1546905600000L), a5, 999);
         SortedSet<Payment> payments = new TreeSet<>();
         payments.add(pay1);
         payments.add(pay2);
 
-        Person p1 = new Person(29L, "Tina", null, "Vivio", null);
+        Person p1 = new Person(null, "Tina", null, "Vivio", null);
         TEST_USERS.put("tina", new User(19L, "tinavivio", "$31$16$or3915LByrV-LV07oe9GyXoqaFjiLxMHLuR8NqyYZy4", p1, addresses, payments, null, new Date(1469155469613L), new Date(1469155469613L)));
     }
 

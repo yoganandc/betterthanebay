@@ -1,5 +1,8 @@
 package edu.neu.ccs.cs5500.chucknorris.betterthanebay.core;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Objects;
@@ -25,11 +28,9 @@ public class Bid {
     private Long id;
 
     @Column(name = "item_id", nullable = false)
-    @NotNull
     private Long itemId;
 
     @Column(name = "user_id", nullable = false)
-    @NotNull
     private Long userId;
 
     @Column(nullable = false)
@@ -61,8 +62,12 @@ public class Bid {
 
     public Bid(Bid obj) {
         this.id = new Long(obj.getId());
-        this.itemId = new Long(obj.getItemId());
-        this.userId = new Long(obj.getUserId());
+        if(obj.getItemId() != null) {
+            this.itemId = new Long(obj.getItemId());
+        }
+        if(obj.getUserId() != null) {
+            this.userId = new Long(obj.getUserId());
+        }
         this.amount = new BigDecimal(obj.getAmount().toString());
         this.time = new Date(obj.getTime().getTime());
         this.paymentId = new Long(obj.getPaymentId());
@@ -72,47 +77,44 @@ public class Bid {
         return this.id;
     }
 
-
     public void setId(Long id) {
         this.id = id;
     }
 
-
+    @JsonIgnore
     public Long getItemId() {
         return this.itemId;
     }
 
-
+    @JsonIgnore
     public void setItemId(Long itemId) {
         this.itemId = itemId;
     }
 
-
+    @JsonIgnore
     public Long getUserId() {
         return this.userId;
     }
 
-
+    @JsonIgnore
     public void setUserId(Long userId) {
         this.userId = userId;
     }
-
 
     public BigDecimal getAmount() {
         return this.amount;
     }
 
-
     public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }
 
-
+    @JsonProperty
     public Date getTime() {
         return this.time;
     }
 
-
+    @JsonIgnore
     public void setTime(Date time) {
         this.time = time;
     }

@@ -18,11 +18,23 @@ public class BidDAO extends AbstractDAO<Bid> {
 
   // Create new Bid
   public Bid create(Bid bid) {
-    return persist(bid);
+      return persist(bid);
   }
 
   // Update bid with given information (have to check how it works)
   public Bid update(Bid bid) {
-    return persist(bid);
+      currentSession().clear();
+      return persist(bid);
   }
+
+    public boolean deleteBid(Long id) {
+        Bid bid = get(id);
+        if(bid == null) {
+            return false;
+        }
+        else {
+            currentSession().delete(bid);
+            return true;
+        }
+    }
 }

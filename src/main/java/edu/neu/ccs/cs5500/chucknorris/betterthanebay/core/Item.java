@@ -138,7 +138,9 @@ public class Item {
         if(obj.getImage() != null) {
             this.image = new String(obj.getImage());
         }
-        this.userId = new Long(obj.getUserId());
+        if(obj.getUserId() != null) {
+            this.userId = new Long(obj.getUserId());
+        }
         this.created = new Date(obj.getCreated().getTime());
         this.updated = new Date(obj.getUpdated().getTime());
     }
