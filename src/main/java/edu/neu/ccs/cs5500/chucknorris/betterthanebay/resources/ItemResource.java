@@ -170,13 +170,11 @@ public class ItemResource {
         //null out item id
         item.setId(null);
 
-        //set item's user_id to id of logged in user
-        item.setUserId(loggedInUser.getId());
-
         //set json ignored properties
         Date now = new Date();
         item.setCreated(now);
         item.setUpdated(now);
+        item.setUserId(loggedInUser.getId());
 
         Item createdItem = this.dao.create(item);
 
@@ -232,6 +230,7 @@ public class ItemResource {
         // AND END_DATE > START_DATE
 
         //set json ignored properties
+        item.setUserId(loggedInUser.getId());
         item.setCreated(found.getCreated());
         item.setUpdated(new Date());
 

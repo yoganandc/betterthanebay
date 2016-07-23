@@ -94,7 +94,6 @@ public class Item {
     private String image;
 
     @Column(name = "user_id", nullable = false)
-    @NotNull
     private Long userId;
 
     @Column(nullable = false, updatable = false)
@@ -208,10 +207,12 @@ public class Item {
         this.image = image;
     }
 
+    @JsonIgnore
     public Long getUserId() {
         return this.userId;
     }
 
+    @JsonIgnore
     public void setUserId(Long userId) {
         this.userId = userId;
     }
