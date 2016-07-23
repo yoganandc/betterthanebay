@@ -1,6 +1,7 @@
 package edu.neu.ccs.cs5500.chucknorris.betterthanebay.core;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.hibernate.annotations.OrderBy;
 import org.hibernate.validator.constraints.NotBlank;
@@ -175,26 +176,32 @@ public class User implements Principal {
         this.payments = payments;
     }
 
+    @JsonProperty
     public BigDecimal getRating() {
         return this.rating;
     }
 
+    @JsonIgnore
     public void setRating(BigDecimal rating) {
         this.rating = rating;
     }
 
+    @JsonProperty
     public Date getCreated() {
         return this.created;
     }
 
+    @JsonIgnore
     public void setCreated(Date created) {
         this.created = created;
     }
 
+    @JsonProperty
     public Date getUpdated() {
         return this.updated;
     }
 
+    @JsonIgnore
     public void setUpdated(Date updated) {
         this.updated = updated;
     }

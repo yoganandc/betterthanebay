@@ -43,7 +43,7 @@ public class Payment implements Comparable<Payment> {
     private String number;
 
     @Column(nullable = false)
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     @NotNull
     private Date expiry;
 

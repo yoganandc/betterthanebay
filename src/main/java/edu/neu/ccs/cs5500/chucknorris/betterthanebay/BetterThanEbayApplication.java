@@ -5,6 +5,7 @@ import de.thomaskrille.dropwizard_template_config.TemplateConfigBundle;
 import org.hibernate.SessionFactory;
 
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.auth.BetterThanEbayAuthenticator;
+import edu.neu.ccs.cs5500.chucknorris.betterthanebay.auth.PasswordUtil;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Address;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Bid;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Category;
@@ -80,6 +81,7 @@ public class BetterThanEbayApplication extends Application<BetterThanEbayConfigu
                     final Environment environment) {
 
         SessionFactory sf = db.getSessionFactory();
+        PasswordUtil util = new PasswordUtil();
 
         CategoryDAO categoryDAO = new CategoryDAO(sf);
         CategoryResource categoryResource = new CategoryResource(categoryDAO);
@@ -91,11 +93,14 @@ public class BetterThanEbayApplication extends Application<BetterThanEbayConfigu
         ItemDAO itemDAO = new ItemDAO(sf);
         BidDAO bidDAO = new BidDAO(sf);
         FeedbackDAO feedbackDAO = new FeedbackDAO(sf);
-        UserResource userResource = new UserResource(userDAO, itemDAO, bidDAO, feedbackDAO);
+        UserResource userResource = new UserResource(userDAO, itemDAO, bidDAO, feedbackDAO, util);
         ItemResource itemResource = new ItemResource(itemDAO, bidDAO, feedbackDAO);
 
+        Class constructorTypes[] = {UserDAO.class, PasswordUtil.class};
+        Object constructorArgs[] = {userDAO, util};
+
         BetterThanEbayAuthenticator auth = new UnitOfWorkAwareProxyFactory(db).create(BetterThanEbayAuthenticator.class,
-                                                                                  UserDAO.class, userDAO);
+                                                                                  constructorTypes, constructorArgs);
         environment.jersey().register(new AuthDynamicFeature(
                         new BasicCredentialAuthFilter.Builder<User>().setAuthenticator(auth)
                         .setRealm("AUTHENTICATED").buildAuthFilter()));

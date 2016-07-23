@@ -6,10 +6,10 @@ database:
   user: postgres
 
   # the password
-  password: 12345
+  password: postgres
 
   # the JDBC URL
-  url: jdbc:postgresql://127.0.0.1/test
+  url: jdbc:postgresql://127.0.0.1/betterthanebay
 
   # any properties specific to your JDBC driver:
   properties:

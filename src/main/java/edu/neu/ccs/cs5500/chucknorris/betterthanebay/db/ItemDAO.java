@@ -13,59 +13,53 @@ import io.dropwizard.hibernate.AbstractDAO;
  */
 public class ItemDAO extends AbstractDAO<Item> {
 
-  public ItemDAO(SessionFactory sessionFactory) {
-    super(sessionFactory);
-  }
+    public ItemDAO(SessionFactory sessionFactory) {
+        super(sessionFactory);
+    }
 
-  // // (DOESN'T WORK) Find Item by ID
-  // public Item findById(Long id) {
-  // return get(id);
-  // }
+     public Item findById(Long id) {
+        return get(id);
+     }
 
-  // Create new Item
-  public Item create(Item item) {
-    return persist(item);
-  }
+    // Create new Item
+    public Item create(Item item) {
+        return persist(item);
+    }
 
-  // Update bid with given information (have to check how it works)
-  public Item update(Item item) {
-    return persist(item);
-  }
+    // Update bid with given information (have to check how it works)
+    public Item update(Item item) {
+        currentSession().clear();
+        return persist(item);
+    }
 
-  // Returns all items for given userId
-  public List<Item> getAllItems(Long userId) {
-    Query query =
-        super.namedQuery("edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Item.getItemsForUser")
-            .setParameter("user_id", userId);
-    List<Item> list = list(query);
-    return list;
-  }
+    // Deletes item with given id
+    public boolean deleteItem(Long id) {
+        Item item = get(id);
+        if(item == null) {
+            return false;
+        }
+        else {
+            currentSession().delete(item);
+            return true;
+        }
+    }
 
-  // Returns all Active Items aka End Date is in the Future by given UserId
-  public List<Item> getActiveItems(Long userId) {
-    Query query =
-        super.namedQuery("edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Item.getActiveItems")
-            .setParameter("user_id", userId);
-    List<Item> list = list(query);
-    return list;
-  }
+    // Returns all items for given userId
+    public List<Item> getAllItems(Long userId) {
+        Query query =
+                super.namedQuery("edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Item.getItemsForUser")
+                        .setParameter("user_id", userId);
+        List<Item> list = list(query);
+        return list;
+    }
 
-  // Finds Item by its Id
-  public Item findById(Long id) {
-    Query query =
-        super.namedQuery("edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Item.findById")
-            .setParameter("id", id);
-    Item item = super.uniqueResult(query);
-    return item;
-  }
-
-  // Deletes item with given id
-  public boolean deleteItem(Long id) {
-    Query query =
-        super.namedQuery("edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Item.deleteItem")
-            .setParameter("id", id);
-    query.executeUpdate();
-    return true;
-  }
+    // Returns all Active Items aka End Date is in the Future by given UserId
+    public List<Item> getActiveItems(Long userId) {
+        Query query =
+                super.namedQuery("edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Item.getActiveItems")
+                        .setParameter("user_id", userId);
+        List<Item> list = list(query);
+        return list;
+    }
 
 }

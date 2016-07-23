@@ -11,6 +11,7 @@ import java.util.Base64;
 import javax.ws.rs.core.HttpHeaders;
 
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.auth.BetterThanEbayAuthenticator;
+import edu.neu.ccs.cs5500.chucknorris.betterthanebay.auth.PasswordUtil;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.User;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.UserTest;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.db.BidDAO;
@@ -38,8 +39,10 @@ public class UserResourceTest {
     private static final BidDAO BID_DAO = mock(BidDAO.class);
     private static final FeedbackDAO FEEDBACK_DAO = mock(FeedbackDAO.class);
 
+    private static final PasswordUtil util = new PasswordUtil();
+
     private static final BasicCredentialAuthFilter<User> BASIC_AUTH_HANDLER = new BasicCredentialAuthFilter.Builder<User>()
-            .setAuthenticator(new BetterThanEbayAuthenticator(DAO))
+            .setAuthenticator(new BetterThanEbayAuthenticator(DAO, util))
             .setPrefix("Basic")
             .setRealm("AUTHENTICATED")
             .buildAuthFilter();
@@ -49,7 +52,7 @@ public class UserResourceTest {
             .addProvider(new AuthValueFactoryProvider.Binder<>(User.class))
             .addProvider(new AuthDynamicFeature(BASIC_AUTH_HANDLER))
             .setTestContainerFactory(new GrizzlyTestContainerFactory())
-            .addResource(new UserResource(DAO, ITEM_DAO, BID_DAO, FEEDBACK_DAO))
+            .addResource(new UserResource(DAO, ITEM_DAO, BID_DAO, FEEDBACK_DAO, util))
             .build();
 
     private User tina;
@@ -67,7 +70,7 @@ public class UserResourceTest {
 
     @Test
     public void testGetUser() {
-        when(DAO.findByCredentials("tinavivio", "password5")).thenReturn(tina);
+        when(DAO.findByCredentials("tinavivio")).thenReturn(tina);
         when(DAO.findById(19L)).thenReturn(tina);
 
         User found = RULE.getJerseyTest().target("/users/19").request()
@@ -75,7 +78,7 @@ public class UserResourceTest {
                 .get(User.class);
 
         assertThat(found).isEqualTo(tina);
-        verify(DAO).findByCredentials("tinavivio", "password5");
+        verify(DAO).findByCredentials("tinavivio");
         verify(DAO).findById(19L);
     }
 }

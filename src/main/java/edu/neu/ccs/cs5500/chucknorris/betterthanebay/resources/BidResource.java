@@ -95,33 +95,34 @@ public class BidResource {
     public Response addBid(@ApiParam(value = "Item ID", required = true) @PathParam("itemId") LongParam itemId,
                            @Valid Bid bid, @Auth User loggedInUser) {
 
-        Item item = itemDAO.findById(itemId.get());
-
-        /* user cannot bid on their own item */
-        if (item.getUserId() == loggedInUser.getId() || item.getUserId() == bid.getUserId()) {
-            return Response.status(Response.Status.FORBIDDEN).build();
-        }
-
-        /* item must be under auction */
-        if (item.getEndDate().before(bid.getTime()) || item.getStartDate().after(bid.getTime())) {
-            return Response.status(Response.Status.FORBIDDEN).build();
-        }
-
-        /* bid amount must be greater than initial price and current bid */
-        if (item.getBid() == null) {
-            if (item.getInitialPrice().compareTo(bid.getAmount()) == 1) {
-                return Response.status(Response.Status.BAD_REQUEST).build();
-            }
-        } else if (item.getBid().getAmount().compareTo(bid.getAmount()) == 1) {
-                return Response.status(Response.Status.BAD_REQUEST).build();
-        }
-
-        Bid createdBid = dao.create(bid);
-        if (createdBid == null) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
-        } else {
-            return Response.created(URI.create("/bids/" + createdBid.getId())).entity(createdBid).build();
-        }
+//        Item item = itemDAO.findById(itemId.get());
+//
+//        /* user cannot bid on their own item */
+//        if (item.getUserId() == loggedInUser.getId() || item.getUserId() == bid.getUserId()) {
+//            return Response.status(Response.Status.FORBIDDEN).build();
+//        }
+//
+//        /* item must be under auction */
+//        if (item.getEndDate().before(bid.getTime()) || item.getStartDate().after(bid.getTime())) {
+//            return Response.status(Response.Status.FORBIDDEN).build();
+//        }
+//
+//        /* bid amount must be greater than initial price and current bid */
+//        if (item.getBid() == null) {
+//            if (item.getInitialPrice().compareTo(bid.getAmount()) == 1) {
+//                return Response.status(Response.Status.BAD_REQUEST).build();
+//            }
+//        } else if (item.getBid().getAmount().compareTo(bid.getAmount()) == 1) {
+//                return Response.status(Response.Status.BAD_REQUEST).build();
+//        }
+//
+//        Bid createdBid = dao.create(bid);
+//        if (createdBid == null) {
+//            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+//        } else {
+//            return Response.created(URI.create("/bids/" + createdBid.getId())).entity(createdBid).build();
+//        }
+        return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
     }
 
     @PUT
@@ -139,33 +140,34 @@ public class BidResource {
                               @ApiParam(value = "Bid ID", required = true) @PathParam("bidId") LongParam bidId,
                               @Valid Bid bid, @Auth User loggedInUser) {
 
-        if (dao.findById(bidId.get()) == null) {
-            return Response.status(Response.Status.NOT_FOUND).build();
-        }
-
-        Item item = itemDAO.findById(itemId.get());
-
-        /* user cannot update bid of another user */
-        if (bid.getUserId() != loggedInUser.getId()) {
-            return Response.status(Response.Status.FORBIDDEN).build();
-        }
-
-        /* item must be under auction */
-        if (item.getEndDate().before(bid.getTime()) || item.getStartDate().after(bid.getTime())) {
-            return Response.status(Response.Status.FORBIDDEN).build();
-        }
-
-        /* bid amount must be greater than current bid */
-        if (item.getBid().getAmount().compareTo(bid.getAmount()) == 1) {
-            return Response.status(Response.Status.BAD_REQUEST).build();
-        }
-
-        Bid updatedBid = dao.update(bid);  // dao.updateBid(bidId, bid);
-
-        if (updatedBid == null) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
-        }
-        return Response.ok(updatedBid).build();
+//        if (dao.findById(bidId.get()) == null) {
+//            return Response.status(Response.Status.NOT_FOUND).build();
+//        }
+//
+//        Item item = itemDAO.findById(itemId.get());
+//
+//        /* user cannot update bid of another user */
+//        if (bid.getUserId() != loggedInUser.getId()) {
+//            return Response.status(Response.Status.FORBIDDEN).build();
+//        }
+//
+//        /* item must be under auction */
+//        if (item.getEndDate().before(bid.getTime()) || item.getStartDate().after(bid.getTime())) {
+//            return Response.status(Response.Status.FORBIDDEN).build();
+//        }
+//
+//        /* bid amount must be greater than current bid */
+//        if (item.getBid().getAmount().compareTo(bid.getAmount()) == 1) {
+//            return Response.status(Response.Status.BAD_REQUEST).build();
+//        }
+//
+//        Bid updatedBid = dao.update(bid);  // dao.updateBid(bidId, bid);
+//
+//        if (updatedBid == null) {
+//            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+//        }
+//        return Response.ok(updatedBid).build();
+        return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
     }
 
     @DELETE

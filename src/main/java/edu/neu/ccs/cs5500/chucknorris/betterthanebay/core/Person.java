@@ -32,7 +32,7 @@ public class Person {
     @NotBlank
     private String last;
 
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date birthday;
 
     public Person() {
