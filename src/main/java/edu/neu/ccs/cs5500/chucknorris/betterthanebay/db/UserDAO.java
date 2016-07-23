@@ -59,7 +59,8 @@ public class UserDAO extends AbstractDAO<User> {
     public List<User> searchByUsername(String optional, int start, int size) {
         Query query = super.namedQuery(
                 "edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.User.searchByUsername");
-        query.setParameter("username", "%" + optional + "%");
+        query.setParameter("username", "%" + optional + "%")
+                .setFirstResult(start).setMaxResults(size);
         return list(query);
     }
 }

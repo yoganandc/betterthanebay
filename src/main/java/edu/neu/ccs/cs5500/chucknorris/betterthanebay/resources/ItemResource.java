@@ -1,5 +1,6 @@
 package edu.neu.ccs.cs5500.chucknorris.betterthanebay.resources;
 
+import java.math.BigDecimal;
 import java.net.URI;
 import java.util.Date;
 import java.util.List;
@@ -73,20 +74,16 @@ public class ItemResource {
     @GET
     @UnitOfWork
     @ApiOperation(value = "Find items by keyword, category, date range, and/or price range",
-            notes = "Returns a list of items matching the given parameters for item name, category, start date, "
-                    + "end date,lowest price, highest price, item offset number, and size of item list",
+            notes = "Returns a list of items matching the given parameters for item name, category, "
+                    + "lowest price, highest price, item offset number, and size of item list",
             response = Item.class, responseContainer = "List")
     @ApiResponses(value = {@ApiResponse(code = 204, message = "No matching results found"),
             @ApiResponse(code = 401, message = "User must be logged in")})
     public Response getItems(
             @ApiParam(value = "Item keyword",
-                    required = true) @QueryParam("name") NonEmptyStringParam name,
+                    required = false) @QueryParam("name") NonEmptyStringParam name,
             @ApiParam(value = "Item category",
-                    required = false) @QueryParam("category") IntParam category,
-            @ApiParam(value = "Start date of an auction",
-                    required = false) @QueryParam("dateFrom") DateTimeParam dateFrom,
-            @ApiParam(value = "End date of an auction",
-                    required = false) @QueryParam("dateTo") DateTimeParam dateTo,
+                    required = false) @QueryParam("category") LongParam category,
             @ApiParam(value = "Lowest price of item",
                     required = false) @QueryParam("priceFrom") IntParam priceFrom,
             @ApiParam(value = "Highest price of item",
@@ -94,36 +91,27 @@ public class ItemResource {
             @ApiParam(value = "Results offset", required = false) @QueryParam("start") IntParam start,
             @ApiParam(value = "Results list size", required = false) @QueryParam("size") IntParam size,
             @Auth User loggedInUser) {
-        if ((name == null) || !name.get().isPresent()) {
-            return Response.status(Response.Status.BAD_REQUEST).build();
+
+        String searchQuery;
+        if (name == null || !name.get().isPresent()) {
+            searchQuery = "";
+        }
+        else {
+            searchQuery = name.get().get();
         }
 
-        DateTime startDate;
-        if (dateFrom == null) {
-            startDate = new DateTime(0);
-        } else {
-            startDate = dateFrom.get();
-        }
-
-        DateTime endDate;
-        if (dateTo == null) {
-            endDate = new DateTime();
-        } else {
-            endDate = dateTo.get();
-        }
-
-        Double startPrice;
+        BigDecimal startPrice;
         if (priceFrom == null) {
-            startPrice = 0.0;
+            startPrice = new BigDecimal("0");
         } else {
-            startPrice = priceFrom.get().doubleValue();
+            startPrice = new BigDecimal(priceFrom.get());
         }
 
-        Double endPrice;
+        BigDecimal endPrice;
         if (priceTo == null) {
-            endPrice = Double.MAX_VALUE;
+            endPrice = new BigDecimal(Integer.MAX_VALUE);
         } else {
-            endPrice = priceTo.get().doubleValue();
+            endPrice = new BigDecimal(priceTo.get());
         }
 
         int startVal;
@@ -140,15 +128,12 @@ public class ItemResource {
             sizeVal = size.get();
         }
 
-
         List<Item> list = null;
 
         if (category != null) {
-            // list = dao.searchWithCategory(name.get(), startDate, endDate, startPrice, endPrice,
-            // startVal, sizeVal, category.get());
+            list = dao.searchWithCategory(searchQuery, startPrice, endPrice, category.get(), startVal, sizeVal);
         } else {
-            // list = dao.searchWithoutCategory(name.get(), startDate, endDate, startPrice, endPrice,
-            // startVal, sizeVal);
+            list = dao.searchWithoutCategory(searchQuery, startPrice, endPrice, startVal, sizeVal);
         }
 
         if (list == null) {

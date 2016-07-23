@@ -40,7 +40,7 @@ import javax.validation.constraints.NotNull;
 @Table(name = "`user`")
 @NamedQueries(value = {
         @NamedQuery(name = "edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.User.searchByUsername",
-                query = "SELECT u FROM User u WHERE u.username LIKE :username"),
+                query = "SELECT u FROM User u WHERE u.username LIKE :username ORDER BY u.id ASC"),
         @NamedQuery(name = "edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.User.getByUsername",
                 query = "SELECT u FROM User u WHERE u.username = :username"),
         @NamedQuery(name = "edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.User.deleteUser",

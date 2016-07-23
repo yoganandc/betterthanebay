@@ -42,9 +42,18 @@ import io.dropwizard.validation.ValidationMethod;
 @NamedQueries(value = {
         @NamedQuery(name = "edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Item.getItemsForUser",
                 query = "SELECT i FROM Item i WHERE i.userId = :user_id"),
-        @NamedQuery(name = "edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Item.getActiveItems",
-                query = "SELECT i FROM Item i WHERE i.userId = :user_id"
-                        + " AND i.endDate > CURRENT_TIMESTAMP ")
+        @NamedQuery(name = "edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Item.getActiveItemsForUser",
+                query = "SELECT i FROM Item i WHERE i.userId = :user_id AND i.endDate > CURRENT_TIMESTAMP AND i.startDate < CURRENT_TIMESTAMP"),
+        @NamedQuery(name = "edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Item.getItemsWithCategory",
+                query = "SELECT i FROM Item i JOIN i.categories c WHERE c.id = :category_id " +
+                        "AND i.startDate < CURRENT_TIMESTAMP AND i.endDate > CURRENT_TIMESTAMP AND i.initialPrice >= :start_price " +
+                        "AND i.initialPrice <= :end_price AND i.name LIKE :query AND i.description LIKE :query " +
+                        "ORDER BY i.endDate ASC"),
+        @NamedQuery(name = "edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Item.getItemsWithoutCategory",
+                query = "SELECT i FROM Item i " +
+                        "WHERE i.startDate < CURRENT_TIMESTAMP AND i.endDate > CURRENT_TIMESTAMP AND i.initialPrice >= :start_price " +
+                        "AND i.initialPrice <= :end_price AND i.name LIKE :query AND i.description LIKE :query " +
+                        "ORDER BY i.endDate ASC")
 })
 public class Item {
 

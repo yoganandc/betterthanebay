@@ -1,5 +1,7 @@
 package edu.neu.ccs.cs5500.chucknorris.betterthanebay.db;
 
+import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 import org.hibernate.Query;
@@ -56,10 +58,38 @@ public class ItemDAO extends AbstractDAO<Item> {
     // Returns all Active Items aka End Date is in the Future by given UserId
     public List<Item> getActiveItems(Long userId) {
         Query query =
-                super.namedQuery("edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Item.getActiveItems")
+                super.namedQuery("edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Item.getActiveItemsForUser")
                         .setParameter("user_id", userId);
         List<Item> list = list(query);
         return list;
+    }
+
+    public List<Item> searchWithCategory(String queryString, BigDecimal startPrice, BigDecimal endPrice,
+                                         Long categoryId, Integer start, Integer end) {
+
+        queryString = "%" + queryString + "%";
+        Query query = super.namedQuery("edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Item.getItemsWithCategory")
+                .setParameter("query", queryString)
+                .setParameter("start_price", startPrice)
+                .setParameter("end_price", endPrice)
+                .setParameter("category_id", categoryId)
+                .setFirstResult(start)
+                .setMaxResults(end);
+        System.out.println(query.toString());
+        return list(query);
+    }
+
+    public List<Item> searchWithoutCategory(String queryString, BigDecimal startPrice, BigDecimal endPrice,
+                                            Integer start, Integer end) {
+
+        queryString = "%" + queryString + "%";
+        Query query = super.namedQuery("edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Item.getItemsWithoutCategory")
+                .setParameter("query", queryString)
+                .setParameter("start_price", startPrice)
+                .setParameter("end_price", endPrice)
+                .setFirstResult(start)
+                .setMaxResults(end);
+        return list(query);
     }
 
 }
