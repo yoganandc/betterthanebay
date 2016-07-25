@@ -33,6 +33,31 @@ public class FeedbackDAO extends AbstractDAO<Feedback> {
 
     // Create new Feedback
     public Feedback create(Feedback feedback, String id) {
+        return persistFeedback(feedback, id);
+    }
+
+    // Update Feedback with given information (have to check how it works)
+    public Feedback update(Feedback feedback, String id) {
+        currentSession().clear();
+        return persistFeedback(feedback, id);
+    }
+
+    public boolean deleteFeedback(Long itemId, String id) {
+        Feedback feedback = findById(itemId, id);
+        if(feedback == null) {
+            return false;
+        }
+        else if(id.equals(Feedback.SELLER)){
+            currentSession().delete(feedback.toSeller());
+            return true;
+        }
+        else {
+            currentSession().delete(feedback.toBuyer());
+            return true;
+        }
+    }
+
+    private Feedback persistFeedback(Feedback feedback, String id) {
         if(id.equals( Feedback.BUYER)) {
             return persist(feedback.toBuyer());
         }
@@ -41,23 +66,6 @@ public class FeedbackDAO extends AbstractDAO<Feedback> {
         }
         else {
             return null;
-        }
-    }
-
-    // Update Feedback with given information (have to check how it works)
-    public Feedback update(Feedback feedback) {
-        currentSession().clear();
-        return persist(feedback);
-    }
-
-    public boolean deleteFeedback(Long id) {
-        Feedback feedback = get(id);
-        if(feedback == null) {
-            return false;
-        }
-        else {
-            currentSession().delete(feedback);
-            return true;
         }
     }
 }

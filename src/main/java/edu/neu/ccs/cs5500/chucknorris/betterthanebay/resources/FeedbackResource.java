@@ -35,6 +35,11 @@ import io.dropwizard.hibernate.UnitOfWork;
 import io.dropwizard.jersey.params.LongParam;
 import io.dropwizard.jersey.params.NonEmptyStringParam;
 
+/*
+ * This can be confusing!
+ * Buyer leaves feedback for seller at /item/{itemId}/feedback/seller
+ * Seller leaves feedback for buyer at /item/{itemId}/feedback/buyer
+ */
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class FeedbackResource {
@@ -160,27 +165,61 @@ public class FeedbackResource {
             @ApiResponse(code = 401, message = "User must be signed in"),
             @ApiResponse(code = 403, message = "User cannot update feedback data for another user"),
             @ApiResponse(code = 404, message = "Feedback not found")})
-    public Response updateFeedback(@ApiParam(value = "Item ID", required = true) @PathParam("itemId") LongParam feedbackId,
-                                   @ApiParam(value = "Feedback ID", required = true) @PathParam("feedbackId") NonEmptyStringParam bidId,
+    public Response updateFeedback(@ApiParam(value = "Item ID", required = true) @PathParam("itemId") LongParam itemId,
+                                   @ApiParam(value = "Feedback ID", required = true) @PathParam("feedbackId") NonEmptyStringParam feedbackId,
                                    @Valid Feedback feedback, @Auth User loggedInUser) {
-//        ResponseBuilder response;
-//
-//        // authenticate seller
-//
-//        if(feedbackId.get().isPresent()) {
-//            Feedback feedback1;// = dao.findById(itemId, feedbackId.get().get()); // check if equals "buyer" or "seller"
-//        }
-//        if (dao.findById(feedbackId.get().get()) == null) {
-//            return Response.status(Response.Status.NOT_FOUND).build();
-//        }
-//
-//        Feedback updatedFeedback = dao.update(feedback);
-//
-//        if (updatedFeedback == null) {
-//            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
-//        }
-//        return Response.ok(updatedFeedback).build();
-        return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+
+        if(!feedbackId.get().isPresent() || VALID_ID.contains(feedbackId.get().get())) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+
+        // get associated item
+        Item item = itemDAO.findById(itemId.get());
+        if(item == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+
+        // get associated winning bid
+        Bid bid = null; // bidDAO.getCurrentWinningForItem(itemId.get());
+
+        // check if user accessing feedback is buyer (for seller, i.e., at path /seller)
+        if(feedbackId.get().get().equals(Feedback.SELLER) &&!loggedInUser.getId().equals(bid.getUserId())) {
+            return Response.status(Response.Status.FORBIDDEN).build();
+        }
+
+        //check if user accessing is seller (for buyer, i.e., at path /buyer)
+        if(feedbackId.get().get().equals(Feedback.BUYER) &&!loggedInUser.getId().equals(item.getUserId())) {
+            return Response.status(Response.Status.FORBIDDEN).build();
+        }
+
+        Feedback found = dao.findById(itemId.get(), feedbackId.get().get());
+        if(found == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+
+        // WE MUST SET FEEDBACK ID IN CASE SUPPLIED FEEDBACK HAS
+        // WRONG ID OR NO ID (THIS IS ONLY FOR FEEDBACK AS PATH DOES NOT
+        // MATCH ID INSIDE OBJECT
+        feedback.setId(found.getId());
+
+        // set json ignored properties
+        feedback.setItemId(item.getId());
+        feedback.setCreated(found.getCreated());
+        feedback.setUpdated(new Date());
+
+        Feedback updatedFeedback = null;
+
+        if(feedbackId.get().get().equals(Feedback.SELLER)) {
+            updatedFeedback = dao.update(feedback, Feedback.SELLER);
+        }
+        else {
+            updatedFeedback = dao.update(feedback, Feedback.BUYER);
+        }
+
+        if (updatedFeedback == null) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+        return Response.ok(updatedFeedback).build();
     }
 
     @DELETE
@@ -197,24 +236,44 @@ public class FeedbackResource {
                                    @ApiParam(value = "Feedback ID", required = true) @PathParam("feedbackId") NonEmptyStringParam feedbackId,
                                    @Auth User loggedInUser) {
 
-//         authenticate seller || buyer
-//
-//        ResponseBuilder response;
-//
-//        Feedback feedback = null; //dao.getFeedback(feedbackId);
-//        if (feedback == null) {
-//            response = Response.status(Response.Status.BAD_REQUEST); // invalid bid id
-//        }
-//
-//        boolean success = false; //dao.deleteFeedback(feedbackId);
-//        if (success) {
-//            response = Response.status(Response.Status.OK); // feedback successfully deleted
-//        } else {
-//            response = Response.status(Response.Status.BAD_REQUEST); // failure
-//        }
-//
-//        return response.build();
-        return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        if(!feedbackId.get().isPresent() || VALID_ID.contains(feedbackId.get().get())) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+
+        // get associated item
+        Item item = itemDAO.findById(itemId.get());
+        if(item == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+
+        // get associated winning bid
+        Bid bid = null; // bidDAO.getCurrentWinningForItem(itemId.get());
+
+        // check if user accessing feedback is buyer (for seller, i.e., at path /seller)
+        if(feedbackId.get().get().equals(Feedback.SELLER) &&!loggedInUser.getId().equals(bid.getUserId())) {
+            return Response.status(Response.Status.FORBIDDEN).build();
+        }
+
+        //check if user accessing is seller (for buyer, i.e., at path /buyer)
+        if(feedbackId.get().get().equals(Feedback.BUYER) &&!loggedInUser.getId().equals(item.getUserId())) {
+            return Response.status(Response.Status.FORBIDDEN).build();
+        }
+
+        boolean success = false;
+
+        if(feedbackId.get().get().equals(Feedback.SELLER)) {
+            success = dao.deleteFeedback(itemId.get(), Feedback.SELLER);
+        }
+        else {
+            success = dao.deleteFeedback(itemId.get(), Feedback.BUYER);
+        }
+
+        if (success) {
+            return Response.status(Response.Status.NO_CONTENT).build();
+        }
+        else {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
 
     }
 }

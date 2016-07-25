@@ -202,7 +202,7 @@ public class ItemResource {
             @Valid Item item, @Auth User loggedInUser) {
 
         //bad request if entity's id does not match path id
-        if(!item.getId().equals(itemId.get())) {
+        if(!itemId.get().equals(item.getId())) {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
 
