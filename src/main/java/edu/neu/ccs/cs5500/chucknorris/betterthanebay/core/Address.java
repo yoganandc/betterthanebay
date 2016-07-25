@@ -154,44 +154,39 @@ public class Address implements Comparable<Address> {
             return 0;
         }
 
-        if(this.id == null && o.id == null) {
-            int comparison = line1.compareTo(o.line1);
-            if(comparison != 0) {
-                return comparison;
-            }
-            if(line2 == null && o.line2 != null) {
-                return -1;
-            }
-            if(line2 != null && o.line2 == null) {
-                return 1;
-            }
-            if(line2 != null && o.line2 != null) {
-                comparison = line2.compareTo(o.line2);
-                if(comparison != 0) {
-                    return comparison;
-                }
-            }
-            comparison = city.compareTo(o.city);
-            if(comparison != 0) {
-                return comparison;
-            }
-            comparison = state.compareTo(o.state);
-            if(comparison != 0) {
-                return comparison;
-            }
-            comparison = zip.compareTo(o.zip);
-            if(comparison != 0) {
-                return comparison;
-            }
-
-            return 0;
+        int comparison = line1.compareTo(o.line1);
+        if(comparison != 0) {
+            return comparison;
         }
-        if(this.id == null) {
+
+        if(line2 == null && o.line2 != null) {
             return -1;
         }
-        if(o.id == null) {
+        if(line2 != null && o.line2 == null) {
             return 1;
         }
-        return this.id.compareTo(o.getId());
+        if(line2 != null && o.line2 != null) {
+            comparison = line2.compareTo(o.line2);
+            if(comparison != 0) {
+                return comparison;
+            }
+        }
+
+        comparison = city.compareTo(o.city);
+        if(comparison != 0) {
+            return comparison;
+        }
+
+        comparison = state.compareTo(o.state);
+        if(comparison != 0) {
+            return comparison;
+        }
+
+        comparison = zip.compareTo(o.zip);
+        if(comparison != 0) {
+            return comparison;
+        }
+
+        return 0;
     }
 }

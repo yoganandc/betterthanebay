@@ -22,7 +22,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 @MappedSuperclass
-public abstract class Feedback {
+public class Feedback {
 
     public static final String SELLER = "seller";
     public static final String BUYER = "buyer";

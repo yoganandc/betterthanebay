@@ -192,40 +192,31 @@ public class Payment implements Comparable<Payment> {
             return 0;
         }
 
-        if(this.id == null && o.id == null) {
-            int comparison = firstName.compareTo(o.firstName);
-            if(comparison != 0) {
-                return comparison;
-            }
-            comparison = lastName.compareTo(o.lastName);
-            if(comparison != 0) {
-                return comparison;
-            }
-            comparison = number.compareTo(o.number);
-            if(comparison != 0) {
-                return comparison;
-            }
-            comparison = expiry.compareTo(o.expiry);
-            if(comparison != 0) {
-                return comparison;
-            }
-            comparison = address.compareTo(o.address);
-            if(comparison != 0) {
-                return comparison;
-            }
-            comparison = csv.compareTo(o.csv);
-            if(comparison != 0) {
-                return comparison;
-            }
+        int comparison = firstName.compareTo(o.firstName);
+        if(comparison != 0) {
+            return comparison;
+        }
+        comparison = lastName.compareTo(o.lastName);
+        if(comparison != 0) {
+            return comparison;
+        }
+        comparison = number.compareTo(o.number);
+        if(comparison != 0) {
+            return comparison;
+        }
+        comparison = expiry.compareTo(o.expiry);
+        if(comparison != 0) {
+            return comparison;
+        }
+        comparison = address.compareTo(o.address);
+        if(comparison != 0) {
+            return comparison;
+        }
+        comparison = csv.compareTo(o.csv);
+        if(comparison != 0) {
+            return comparison;
+        }
 
-            return 0;
-        }
-        if(this.id == null) {
-            return -1;
-        }
-        if(o.id == null) {
-            return 1;
-        }
-        return this.id.compareTo(o.getId());
+        return 0;
     }
 }

@@ -99,12 +99,12 @@ public class UserResource {
             @ApiResponse(code = 401, message = "User must be logged in")})
     public Response searchByUsername(
             @ApiParam(value = "part of a username",
-                    required = true) @QueryParam("username") String username,
+                    required = true) @QueryParam("username") NonEmptyStringParam username,
             @ApiParam(value = "results offset", required = false) @QueryParam("start") IntParam start,
             @ApiParam(value = "results list size", required = false) @QueryParam("size") IntParam size,
             @Auth User loggedInUser) {
 
-        if (username == null) {
+        if (username == null || !username.get().isPresent()) {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
         int startVal;
@@ -121,7 +121,7 @@ public class UserResource {
             sizeVal = size.get();
         }
 
-        List<User> list = this.dao.searchByUsername(username, startVal, sizeVal);
+        List<User> list = this.dao.searchByUsername(username.get().get(), startVal, sizeVal);
 
         if (list.isEmpty()) {
             return Response.status(Response.Status.NO_CONTENT).build();
