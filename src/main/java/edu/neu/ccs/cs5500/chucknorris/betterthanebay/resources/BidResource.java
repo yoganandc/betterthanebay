@@ -115,7 +115,7 @@ public class BidResource {
     }
 
     /* bid amount must be greater than initial price and current bid */
-    Bid currentWinning = null; // dao.getCurrentWinningForItem(Long itemId)
+    Bid currentWinning = dao.getCurrentWinningBid(itemId.get());
 
     if (currentWinning == null) {
       if (item.getInitialPrice().compareTo(bid.getAmount()) > 0) {
