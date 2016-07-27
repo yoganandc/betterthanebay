@@ -255,9 +255,17 @@ public class ItemResource {
             item.setInitialPrice(found.getInitialPrice());
         }
 
-    /* TODO */
-        // VALIDATE START_DATE IS IN FUTURE
+    /* TODO YOGI check */
+        // VALIDATE START_DATE IS IN FUTURE ???  ok if changes above are not allowed ^^
         // AND END_DATE > START_DATE
+
+        if (item.getStartDate().before(new Date())) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorMessage("Auction start date/time precedes current date/time")).build();
+        }
+
+        if (item.getEndDate().before(item.getStartDate())) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorMessage("Auction end date/time precedes start date/time")).build();
+        }
 
         // set json ignored properties
         item.setUserId(loggedInUser.getId());
@@ -283,27 +291,29 @@ public class ItemResource {
 
         Item found = this.dao.findById(itemId.get());
 
+        // item doesn't exist
         if (found == null) {
-            return Response.status(Response.Status.NOT_FOUND).build(); // item doesn't exist
+            return Response.status(Response.Status.NOT_FOUND).entity(new ErrorMessage("Item ID not found")).build();
         }
 
         if (!found.getUserId().equals(loggedInUser.getId())) {
-            return Response.status(Response.Status.FORBIDDEN).build();
+            return Response.status(Response.Status.FORBIDDEN).entity(new ErrorMessage("Logged in user cannot delete another user's item")).build();
         }
 
         boolean success = this.dao.deleteItem(itemId.get());
-        return Response.status(Response.Status.NO_CONTENT).build(); // item successfully deleted
+        return Response.status(Response.Status.NO_CONTENT).entity(new ErrorMessage("item successfully deleted")).build();
     }
 
     @GET
     @Path("/{itemId}/winning")
     @UnitOfWork
+    @ApiResponses(value = {@ApiResponse(code = 404, message = "No bids found")})
     public Response getCurrentWinningBid(@PathParam("itemId") LongParam itemId, @Auth User loggedInUser) {
 
         Bid bid = this.bidDAO.getCurrentWinningBid(itemId.get());
 
         if (bid == null) {
-            return Response.status(Response.Status.NOT_FOUND).build();
+            return Response.status(Response.Status.NOT_FOUND).entity(new ErrorMessage("No bids placed on this item")).build();
         }
 
         return Response.ok(bid).build();
@@ -318,6 +328,4 @@ public class ItemResource {
     public FeedbackResource getFeedbackResource() {
         return new FeedbackResource(this.feedbackDAO, this.dao, this.bidDAO);
     }
-
-
 }
