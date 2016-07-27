@@ -23,10 +23,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
-import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Bid;
-import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Feedback;
-import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Item;
-import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.User;
+import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.*;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.db.BidDAO;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.db.FeedbackDAO;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.db.ItemDAO;
@@ -73,14 +70,14 @@ public class FeedbackResource {
                                 @ApiParam(value = "Feedback ID", required = true) @PathParam("feedbackId") NonEmptyStringParam feedbackId,
                                 @Auth User loggedInUser) {
 
-        if(!feedbackId.get().isPresent() || VALID_ID.contains(feedbackId.get().get())) {
-            return Response.status(Response.Status.NOT_FOUND).build();
+        if(!feedbackId.get().isPresent() || !VALID_ID.contains(feedbackId.get().get())) {
+            return Response.status(Response.Status.NOT_FOUND).entity(new ErrorMessage("Valid ID is either \"seller\" or \"buyer\"")).build();
         }
 
         Feedback feedback = dao.findById(itemId.get(), feedbackId.get().get());
 
         if (feedback == null) {
-            return Response.status(Response.Status.NOT_FOUND).build();
+            return Response.status(Response.Status.NOT_FOUND).entity(new ErrorMessage("No feedback found for feedback id")).build();
         }
 
         return Response.ok(feedback).build();
@@ -95,29 +92,29 @@ public class FeedbackResource {
     @ApiResponses(value = {@ApiResponse(code = 400, message = "Invalid feedback data supplied"),
             @ApiResponse(code = 401, message = "User must be signed in"),
             @ApiResponse(code = 403, message = "Forbidden user access or feedback already exists"),
-            @ApiResponse(code = 404, message = "Item with given ID not found")})
+            @ApiResponse(code = 404, message = "Item ID not found"),
+            @ApiResponse(code = 500, message = "Database error while creating feedback")})
     public Response addFeedback(@ApiParam(value = "Item ID", required = true) @PathParam("itemId") LongParam itemId,
                                 @Valid Feedback feedback, @Auth User loggedInUser) {
 
         Item item = itemDAO.findById(itemId.get());
         if(item == null) {
-            return Response.status(Response.Status.NOT_FOUND).build();
+            return Response.status(Response.Status.NOT_FOUND).entity(new ErrorMessage("Item ID not found")).build();
         }
 
         // FIRST CHECK IF ITEM HAS FINISHED AUCTION
         Date now = new Date();
         if(item.getEndDate().after(now)) {
-            return Response.status(Response.Status.FORBIDDEN).build();
+            return Response.status(Response.Status.FORBIDDEN).entity(new ErrorMessage("Item auction has not ended")).build();
         }
 
         // NOW CHECK IF USER POSTED ITEM OR WON IT
         Bid bid = bidDAO.getCurrentWinningBid(item.getId());
 
-        /* TODO */
-        // currentWinningBidForItem could return null
-
-        if(!bid.getUserId().equals(loggedInUser.getId()) && !item.getUserId().equals(loggedInUser.getId())) {
-            return Response.status(Response.Status.FORBIDDEN).build();
+        if (bid == null) {
+            return Response.status(Response.Status.FORBIDDEN).entity(new ErrorMessage("Item was not bid on")).build();
+        } else if (!bid.getUserId().equals(loggedInUser.getId()) && !item.getUserId().equals(loggedInUser.getId())) {
+            return Response.status(Response.Status.FORBIDDEN).entity(new ErrorMessage("Only seller or buyer of the item can leave feedback")).build();
         }
 
         //set id to null
@@ -145,7 +142,7 @@ public class FeedbackResource {
         }
 
         if(created == null) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorMessage("Database error")).build();
         } else {
 
             if (bid.getUserId().equals(loggedInUser.getId())) {
@@ -170,19 +167,20 @@ public class FeedbackResource {
     @ApiResponses(value = {@ApiResponse(code = 400, message = "Invalid feedback data supplied"),
             @ApiResponse(code = 401, message = "User must be signed in"),
             @ApiResponse(code = 403, message = "User cannot update feedback data for another user"),
-            @ApiResponse(code = 404, message = "Feedback not found")})
+            @ApiResponse(code = 404, message = "Feedback not found"),
+            @ApiResponse(code = 500, message = "Database error")})
     public Response updateFeedback(@ApiParam(value = "Item ID", required = true) @PathParam("itemId") LongParam itemId,
                                    @ApiParam(value = "Feedback ID", required = true) @PathParam("feedbackId") NonEmptyStringParam feedbackId,
                                    @Valid Feedback feedback, @Auth User loggedInUser) {
 
-        if(!feedbackId.get().isPresent() || VALID_ID.contains(feedbackId.get().get())) {
-            return Response.status(Response.Status.NOT_FOUND).build();
+        if(!feedbackId.get().isPresent() || !VALID_ID.contains(feedbackId.get().get())) {
+            return Response.status(Response.Status.NOT_FOUND).entity(new ErrorMessage("Valid ID is either \"seller\" or \"buyer\"")).build();
         }
 
         // get associated item
         Item item = itemDAO.findById(itemId.get());
         if(item == null) {
-            return Response.status(Response.Status.NOT_FOUND).build();
+            return Response.status(Response.Status.NOT_FOUND).entity(new ErrorMessage("Item ID not found")).build();
         }
 
         // get associated winning bid
@@ -190,17 +188,17 @@ public class FeedbackResource {
 
         // check if user accessing feedback is buyer (for seller, i.e., at path /seller)
         if(feedbackId.get().get().equals(Feedback.SELLER) &&!loggedInUser.getId().equals(bid.getUserId())) {
-            return Response.status(Response.Status.FORBIDDEN).build();
+            return Response.status(Response.Status.FORBIDDEN).entity(new ErrorMessage("Seller cannot update their own feedback")).build();
         }
 
         //check if user accessing is seller (for buyer, i.e., at path /buyer)
         if(feedbackId.get().get().equals(Feedback.BUYER) &&!loggedInUser.getId().equals(item.getUserId())) {
-            return Response.status(Response.Status.FORBIDDEN).build();
+            return Response.status(Response.Status.FORBIDDEN).entity(new ErrorMessage("Buyer cannot update their own feedback")).build();
         }
 
         Feedback found = dao.findById(itemId.get(), feedbackId.get().get());
         if(found == null) {
-            return Response.status(Response.Status.NOT_FOUND).build();
+            return Response.status(Response.Status.NOT_FOUND).entity(new ErrorMessage("Feedback type for item ID not found")).build();
         }
 
         // set json ignored properties
@@ -220,7 +218,7 @@ public class FeedbackResource {
         }
 
         if (updatedFeedback == null) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorMessage("Database error")).build();
         }
         return Response.ok(updatedFeedback).build();
     }
@@ -240,13 +238,13 @@ public class FeedbackResource {
                                    @Auth User loggedInUser) {
 
         if(!feedbackId.get().isPresent() || VALID_ID.contains(feedbackId.get().get())) {
-            return Response.status(Response.Status.NOT_FOUND).build();
+            return Response.status(Response.Status.NOT_FOUND).entity(new ErrorMessage("Valid ID is either \"seller\" or \"buyer\"")).build();
         }
 
         // get associated item
         Item item = itemDAO.findById(itemId.get());
         if(item == null) {
-            return Response.status(Response.Status.NOT_FOUND).build();
+            return Response.status(Response.Status.NOT_FOUND).entity(new ErrorMessage("Item ID not found")).build();
         }
 
         // get associated winning bid
@@ -254,12 +252,12 @@ public class FeedbackResource {
 
         // check if user accessing feedback is buyer (for seller, i.e., at path /seller)
         if(feedbackId.get().get().equals(Feedback.SELLER) &&!loggedInUser.getId().equals(bid.getUserId())) {
-            return Response.status(Response.Status.FORBIDDEN).build();
+            return Response.status(Response.Status.FORBIDDEN).entity(new ErrorMessage("Seller cannot delete feedback left by buyer")).build();
         }
 
         //check if user accessing is seller (for buyer, i.e., at path /buyer)
         if(feedbackId.get().get().equals(Feedback.BUYER) &&!loggedInUser.getId().equals(item.getUserId())) {
-            return Response.status(Response.Status.FORBIDDEN).build();
+            return Response.status(Response.Status.FORBIDDEN).entity(new ErrorMessage("Buyer cannot delete feedback left by seller")).build();
         }
 
         boolean success = false;
@@ -272,11 +270,10 @@ public class FeedbackResource {
         }
 
         if (success) {
-            return Response.status(Response.Status.NO_CONTENT).build();
+            return Response.status(Response.Status.NO_CONTENT).entity(new ErrorMessage("Feedback successfully deleted")).build();
         }
         else {
-            return Response.status(Response.Status.NOT_FOUND).build();
+            return Response.status(Response.Status.NOT_FOUND).entity(new ErrorMessage("Feedback type for this item doesn't exist")).build();
         }
-
     }
 }

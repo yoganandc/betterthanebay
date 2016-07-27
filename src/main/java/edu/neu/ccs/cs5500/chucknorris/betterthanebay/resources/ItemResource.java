@@ -24,6 +24,7 @@ import com.wordnik.swagger.annotations.ApiResponse;
 import com.wordnik.swagger.annotations.ApiResponses;
 
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Bid;
+import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.ErrorMessage;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Item;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.User;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.db.BidDAO;
@@ -41,7 +42,7 @@ import io.dropwizard.jersey.params.NonEmptyStringParam;
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class ItemResource {
-    
+
 
   private ItemDAO dao;
   private BidDAO bidDAO;
@@ -60,19 +61,21 @@ public class ItemResource {
   @UnitOfWork
   @ApiOperation(value = "Find item with given id",
       notes = "If {itemId} exists, returns the corresponding item object", response = Item.class)
-  @ApiResponses(value = {@ApiResponse(code = 404, message = "Item ID doesn't exist")})
+  @ApiResponses(value = {@ApiResponse(code = 404, message = "Item ID not found")})
   public Response getItem(
       @ApiParam(value = "Item ID", required = true) @PathParam("itemId") LongParam itemId,
       @Auth User loggedInUser) {
 
-    /* TODO */
-        // RETURN A NOT FOUND IF USER IS ACCESSING A NON-ACTIVE ITEM
-        // AND IS NOT THE USER WHO POSTED IT
-
         Item item = this.dao.findById(itemId.get());
+
         if (item == null) {
-            return Response.status(Response.Status.NOT_FOUND).build();
+            return Response.status(Response.Status.NOT_FOUND).entity(new ErrorMessage("Item ID not found")).build();
         }
+
+      Date now = new Date();
+      if ((item.getStartDate().after(now) || item.getEndDate().before(now)) && !loggedInUser.getId().equals(item.getUserId())) {
+          return Response.status(Response.Status.NOT_FOUND).entity(new ErrorMessage("Item ID not found")).build();
+      }
 
         return Response.ok(item).build();
     }
@@ -84,7 +87,8 @@ public class ItemResource {
                     + "lowest price, highest price, item offset number, and size of item list",
             response = Item.class, responseContainer = "List")
     @ApiResponses(value = {@ApiResponse(code = 204, message = "No matching results found"),
-            @ApiResponse(code = 401, message = "User must be logged in")})
+            @ApiResponse(code = 401, message = "User must be logged in"),
+            @ApiResponse(code = 500, message = "Database error")})
     public Response getItems(
             @ApiParam(value = "Item keyword",
                     required = false) @QueryParam("name") NonEmptyStringParam name,
@@ -115,9 +119,6 @@ public class ItemResource {
             startPrice = new BigDecimal(priceFrom.get());
         }
 
-    /* TODO */
-        // CHECK ENDPRICE > STARTPRICE
-
         BigDecimal endPrice;
         if (priceTo == null) {
             endPrice = new BigDecimal(Integer.MAX_VALUE);
@@ -125,13 +126,17 @@ public class ItemResource {
             endPrice = new BigDecimal(priceTo.get());
         }
 
-    /* TODO */
-        // CHECK SIZE, START > 0
+        if (endPrice.compareTo(startPrice) < 0) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorMessage("Highest price is less than lowest price")).build();
+        }
 
         int startVal;
         if (start == null) {
             startVal = 0;
         } else {
+            if (start.get().compareTo(0) < 0) {
+                return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorMessage("List offset must be greater than 0")).build();
+            }
             startVal = start.get();
         }
 
@@ -139,6 +144,9 @@ public class ItemResource {
         if (size == null) {
             sizeVal = 20;
         } else {
+            if (size.get().compareTo(0) < 0) {
+                return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorMessage("List size must be greater than 0")).build();
+            }
             sizeVal = size.get();
         }
 
@@ -152,9 +160,9 @@ public class ItemResource {
         }
 
         if (list == null) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorMessage("Database error")).build();
         } else if (list.isEmpty()) {
-            return Response.status(Response.Status.NO_CONTENT).build();
+            return Response.status(Response.Status.NO_CONTENT).entity(new ErrorMessage("No matching results found")).build();
         }
         return Response.ok(list).build();
     }
@@ -165,18 +173,23 @@ public class ItemResource {
     @ApiOperation(value = "Creates a new item auction",
             notes = "Adds the given item to the logged in user's auctions", response = Item.class)
     @ApiResponses(value = {@ApiResponse(code = 400, message = "Invalid item data supplied"),
-            @ApiResponse(code = 401, message = "User must be signed in")})
+            @ApiResponse(code = 401, message = "User must be signed in"),
+            @ApiResponse(code = 500, message = "Database error")})
     public Response addItem(@Valid Item item, @Auth User loggedInUser) {
 
-    /* TODO */
-        // VALIDATE START_DATE IS IN FUTURE
-        // AND END_DATE > START_DATE
+        Date now = new Date();
+        if (item.getStartDate().before(now)) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorMessage("Auction start date/time precedes current date/time")).build();
+        }
+
+        if (item.getEndDate().before(item.getStartDate())) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorMessage("Auction end date/time precedes start date/time")).build();
+        }
 
         // null out item id
         item.setId(null);
 
         // set json ignored properties
-        Date now = new Date();
         item.setCreated(now);
         item.setUpdated(now);
         item.setUserId(loggedInUser.getId());
@@ -184,7 +197,7 @@ public class ItemResource {
         Item createdItem = this.dao.create(item);
 
         if (createdItem == null) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build(); // failure
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorMessage("Database error")).build();
         }
         return Response.created(URI.create("/items/" + createdItem.getId())).entity(createdItem)
                         .build();
@@ -199,35 +212,37 @@ public class ItemResource {
             @ApiResponse(code = 401, message = "User must be signed in"),
             @ApiResponse(code = 403, message = "User cannot update item data for another user"),
             @ApiResponse(code = 404, message = "Item ID not found")})
-    public Response updateItem(
-            @ApiParam(value = "Item ID", required = true) @PathParam("itemId") LongParam itemId,
+    public Response updateItem(@ApiParam(value = "Item ID", required = true) @PathParam("itemId") LongParam itemId,
             @Valid Item item, @Auth User loggedInUser) {
 
         Item found = this.dao.findById(itemId.get());
         if (found == null) {
-            return Response.status(Response.Status.NOT_FOUND).build();
+            return Response.status(Response.Status.NOT_FOUND).entity(new ErrorMessage("Item ID not found")).build();
         }
 
         // forbidden to update if logged in user did not post item
         if (!found.getUserId().equals(loggedInUser.getId())) {
-            return Response.status(Response.Status.FORBIDDEN).build();
+            return Response.status(Response.Status.FORBIDDEN).entity(new ErrorMessage("Logged in user cannot modify another user's item")).build();
         }
 
         // if item's end_date has crossed, you can no longer modify the item
         if (!found.getEndDate().after(new Date())) {
-            return Response.status(Response.Status.FORBIDDEN).build();
+            return Response.status(Response.Status.FORBIDDEN).entity(new ErrorMessage("Item auction has ended")).build();
         }
 
-        // if item's start_date has crossed, you can no longer modify name, start_date, and initialprice
-        if (found.getStartDate().after(new Date())) {
+        // if item's start_date has crossed, you can no longer modify name, start_date, and initial price
+        if (found.getStartDate().before(new Date())) {
             item.setStartDate(found.getStartDate());
             item.setName(found.getName());
             item.setInitialPrice(found.getInitialPrice());
         }
+        else if (item.getStartDate().before(new Date())) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorMessage("Auction start date/time precedes current date/time")).build();
+        }
 
-    /* TODO */
-        // VALIDATE START_DATE IS IN FUTURE
-        // AND END_DATE > START_DATE
+        if (item.getEndDate().before(item.getStartDate())) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorMessage("Auction end date/time precedes start date/time")).build();
+        }
 
         // set json ignored properties
         item.setId(found.getId());
@@ -254,27 +269,29 @@ public class ItemResource {
 
         Item found = this.dao.findById(itemId.get());
 
+        // item doesn't exist
         if (found == null) {
-            return Response.status(Response.Status.NOT_FOUND).build(); // item doesn't exist
+            return Response.status(Response.Status.NOT_FOUND).entity(new ErrorMessage("Item ID not found")).build();
         }
 
         if (!found.getUserId().equals(loggedInUser.getId())) {
-            return Response.status(Response.Status.FORBIDDEN).build();
+            return Response.status(Response.Status.FORBIDDEN).entity(new ErrorMessage("Logged in user cannot delete another user's item")).build();
         }
 
         boolean success = this.dao.deleteItem(itemId.get());
-        return Response.status(Response.Status.NO_CONTENT).build(); // item successfully deleted
+        return Response.status(Response.Status.NO_CONTENT).entity(new ErrorMessage("item successfully deleted")).build();
     }
 
     @GET
     @Path("/{itemId}/winning")
     @UnitOfWork
+    @ApiResponses(value = {@ApiResponse(code = 404, message = "No bids found")})
     public Response getCurrentWinningBid(@PathParam("itemId") LongParam itemId, @Auth User loggedInUser) {
 
         Bid bid = this.bidDAO.getCurrentWinningBid(itemId.get());
 
         if (bid == null) {
-            return Response.status(Response.Status.NOT_FOUND).build();
+            return Response.status(Response.Status.NOT_FOUND).entity(new ErrorMessage("No bids placed on this item")).build();
         }
 
         return Response.ok(bid).build();
@@ -289,6 +306,4 @@ public class ItemResource {
     public FeedbackResource getFeedbackResource() {
         return this.feedbackResource;
     }
-
-
 }
