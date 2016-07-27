@@ -40,7 +40,7 @@ import io.dropwizard.jersey.params.NonEmptyStringParam;
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class ItemResource {
-    
+
 
   private ItemDAO dao;
   private BidDAO bidDAO;

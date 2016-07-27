@@ -91,6 +91,7 @@ public class UserResource {
     @ApiOperation(value = "Find users whose account username contains the given username",
             notes = "Returns a list of users", response = User.class, responseContainer = "List")
     @ApiResponses(value = {@ApiResponse(code = 204, message = "No matching usernames found"),
+            @ApiResponse(code = 400, message = "No username entered"),
             @ApiResponse(code = 401, message = "User must be logged in")})
     public Response searchByUsername(
             @ApiParam(value = "part of a username",
@@ -100,7 +101,7 @@ public class UserResource {
             @Auth User loggedInUser) {
 
         if (username == null || !username.get().isPresent()) {
-            return Response.status(Response.Status.BAD_REQUEST).build();
+            return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorMessage("No username entered")).build();
         }
         int startVal;
         if (start == null) {
@@ -119,7 +120,7 @@ public class UserResource {
         List<User> list = this.dao.searchByUsername(username.get().get(), startVal, sizeVal);
 
         if (list.isEmpty()) {
-            return Response.status(Response.Status.NO_CONTENT).build();
+            return Response.status(Response.Status.NO_CONTENT).entity(new ErrorMessage("No results for username found")).build();
         }
 
         List<User> listCopy = new ArrayList<>();
@@ -143,7 +144,8 @@ public class UserResource {
     @UnitOfWork
     @ApiOperation(value = "Creates a new user account", notes = "Adds the given user to the database",
             response = User.class)
-    @ApiResponses(value = {@ApiResponse(code = 400, message = "Invalid user data supplied")})
+    @ApiResponses(value = {@ApiResponse(code = 400, message = "Invalid user data supplied"),
+            @ApiResponse(code = 500, message = "Database error while creating user")})
     public Response addUser(@Valid User user) {
 
         Response.ResponseBuilder response;
@@ -167,7 +169,7 @@ public class UserResource {
         User createdUser = this.dao.create(user);
 
         if (createdUser == null) {
-            response = Response.status(Response.Status.INTERNAL_SERVER_ERROR);
+            response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorMessage("Database error"));
 
         } else { // user successfully created
             response = Response.created(URI.create("/users/" + createdUser.getId())).entity(createdUser);
@@ -191,18 +193,18 @@ public class UserResource {
 
         // FORBIDDEN TO UPDATE IF USER LOGGED IN IS NOT THE SAME
         if (!userId.get().equals(loggedInUser.getId())) {
-            return Response.status(Response.Status.FORBIDDEN).build();
+            return Response.status(Response.Status.FORBIDDEN).entity(new ErrorMessage("User cannot update data for another user")).build();
         }
 
         // BAD REQUEST IF ENTITY OBJECT'S ID DOES NOT MATCH PATH ID
         if (!userId.get().equals(user.getId())) {
-            return Response.status(Response.Status.BAD_REQUEST).build();
+            return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorMessage("User id must remain unchanged")).build();
         }
 
         // NOT FOUND
         User found = this.dao.findById(userId.get());
         if (found == null) {
-            Response.status(Response.Status.NOT_FOUND).build();
+            Response.status(Response.Status.NOT_FOUND).entity(new ErrorMessage("User id not found")).build();
         }
 
         Map<Address, Address> addressMap = new HashMap<>();
@@ -248,7 +250,7 @@ public class UserResource {
     @ApiOperation(value = "Deletes user account", notes = "Deletes the account with given user ID")
     @ApiResponses(value = {@ApiResponse(code = 204, message = "User successfully deleted"),
             @ApiResponse(code = 401, message = "User must be signed in"),
-            @ApiResponse(code = 403, message = "User cannot delete another user"),
+            @ApiResponse(code = 403, message = "Logged in user cannot delete another user"),
             @ApiResponse(code = 404, message = "User ID not found")})
     public Response deleteUser(
             @ApiParam(value = "ID of a user", required = true) @PathParam("userId") LongParam userId,
@@ -256,15 +258,17 @@ public class UserResource {
 
         // FORBIDDEN TO DELETE IF USER LOGGED IN IS NOT THE SAME
         if (!userId.get().equals(loggedInUser.getId())) {
-            return Response.status(Response.Status.FORBIDDEN).build();
+            return Response.status(Response.Status.FORBIDDEN).entity(new ErrorMessage("Logged in user cannot delete another user")).build();
         }
 
+        // userId doesn't exist
         if (this.dao.findById(userId.get()) == null) {
-            return Response.status(Response.Status.NOT_FOUND).build(); // userId doesn't exist
+            return Response.status(Response.Status.NOT_FOUND).entity(new ErrorMessage("User ID not found")).build();
         }
 
+        // user account successfully deleted
         this.dao.deleteUser(userId.get());
-        return Response.status(Response.Status.NO_CONTENT).build(); // user account successfully
+        return Response.status(Response.Status.NO_CONTENT).entity(new ErrorMessage("User successfully deleted")).build();
     }
 
     @GET
@@ -274,7 +278,8 @@ public class UserResource {
             notes = "Returns all user items for the logged in user and active items for another user",
             response = Item.class)
     @ApiResponses(value = {@ApiResponse(code = 204, message = "No user items found"),
-            @ApiResponse(code = 401, message = "User must be signed in")})
+            @ApiResponse(code = 401, message = "User must be signed in"),
+            @ApiResponse(code = 500, message = "Database error")})
     public Response getItemsForUser(
             @ApiParam(value = "ID of a user", required = true) @PathParam("userId") LongParam userId,
             @Auth User loggedInUser) {
@@ -286,10 +291,10 @@ public class UserResource {
         }
 
         if (items == null) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorMessage("Database error")).build();
         }
         if (items.isEmpty()) {
-            return Response.status(Response.Status.NO_CONTENT).build();
+            return Response.status(Response.Status.NO_CONTENT).entity(new ErrorMessage("No user items found")).build();
         }
 
         return Response.ok(items).build();
@@ -305,7 +310,7 @@ public class UserResource {
     public Response getBidsForUser(
             @ApiParam(value = "ID of a user", required = true) @PathParam("userId") LongParam userId,
             @Auth User loggedInUser) {
-        List<Bid> list = null; // dao.getActiveBids(userId.get());
+        List<Bid> list = null; //dao.getActiveBids(userId.get());
 
     /* TODO */
         return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
