@@ -147,8 +147,6 @@ public class ItemResource {
         }
 
         if (list.isEmpty()) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
-        } else if (list.isEmpty()) {
             return Response.status(Response.Status.NO_CONTENT).build();
         }
         return Response.ok(list).build();
