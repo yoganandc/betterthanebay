@@ -181,18 +181,28 @@ public class ItemResource {
     @ApiOperation(value = "Creates a new item auction",
             notes = "Adds the given item to the logged in user's auctions", response = Item.class)
     @ApiResponses(value = {@ApiResponse(code = 400, message = "Invalid item data supplied"),
-            @ApiResponse(code = 401, message = "User must be signed in")})
+            @ApiResponse(code = 401, message = "User must be signed in"),
+            @ApiResponse(code = 500, message = "Database error")})
     public Response addItem(@Valid Item item, @Auth User loggedInUser) {
 
-    /* TODO */
+    /* TODO YOGI check */
         // VALIDATE START_DATE IS IN FUTURE
         // AND END_DATE > START_DATE
+        // I have a question about using now date
+
+        Date now = new Date();
+        if (item.getStartDate().before(now)) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorMessage("Auction start date/time precedes current date/time")).build();
+        }
+
+        if (item.getEndDate().before(item.getStartDate())) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorMessage("Auction end date/time precedes start date/time")).build();
+        }
 
         // null out item id
         item.setId(null);
 
         // set json ignored properties
-        Date now = new Date();
         item.setCreated(now);
         item.setUpdated(now);
         item.setUserId(loggedInUser.getId());
@@ -200,7 +210,7 @@ public class ItemResource {
         Item createdItem = this.dao.create(item);
 
         if (createdItem == null) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build(); // failure
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorMessage("Database error")).build();
         }
         return Response.created(URI.create("/items/" + createdItem.getId())).entity(createdItem)
                 .build();
@@ -215,31 +225,30 @@ public class ItemResource {
             @ApiResponse(code = 401, message = "User must be signed in"),
             @ApiResponse(code = 403, message = "User cannot update item data for another user"),
             @ApiResponse(code = 404, message = "Item ID not found")})
-    public Response updateItem(
-            @ApiParam(value = "Item ID", required = true) @PathParam("itemId") LongParam itemId,
+    public Response updateItem(@ApiParam(value = "Item ID", required = true) @PathParam("itemId") LongParam itemId,
             @Valid Item item, @Auth User loggedInUser) {
 
         // bad request if entity's id does not match path id
         if (!itemId.get().equals(item.getId())) {
-            return Response.status(Response.Status.BAD_REQUEST).build();
+            return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorMessage("Item ID must remain unchanged")).build();
         }
 
         Item found = this.dao.findById(itemId.get());
         if (found == null) {
-            return Response.status(Response.Status.NOT_FOUND).build();
+            return Response.status(Response.Status.NOT_FOUND).entity(new ErrorMessage("Item ID not found")).build();
         }
 
         // forbidden to update if logged in user did not post item
         if (!found.getUserId().equals(loggedInUser.getId())) {
-            return Response.status(Response.Status.FORBIDDEN).build();
+            return Response.status(Response.Status.FORBIDDEN).entity(new ErrorMessage("Logged in user cannot modify another user's item")).build();
         }
 
         // if item's end_date has crossed, you can no longer modify the item
         if (!found.getEndDate().after(new Date())) {
-            return Response.status(Response.Status.FORBIDDEN).build();
+            return Response.status(Response.Status.FORBIDDEN).entity(new ErrorMessage("Item auction has ended")).build();
         }
 
-        // if item's start_date has crossed, you can no longer modify name, start_date, and initialprice
+        // if item's start_date has crossed, you can no longer modify name, start_date, and initial price
         if (found.getStartDate().after(new Date())) {
             item.setStartDate(found.getStartDate());
             item.setName(found.getName());
