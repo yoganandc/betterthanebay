@@ -1,5 +1,7 @@
 package edu.neu.ccs.cs5500.chucknorris.betterthanebay.core;
 
+import org.hibernate.validator.constraints.NotBlank;
+
 import java.util.Objects;
 
 import javax.persistence.Column;
@@ -7,7 +9,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 /**
  * Created by yoganandc on 7/1/16.
@@ -15,14 +20,33 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "category")
-public class Category {
+@NamedQueries(value = {
+        @NamedQuery(name = "edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Category.findAll",
+        query = "SELECT c FROM Category c")
+})
+public class Category implements Comparable<Category> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @NotNull
     private Long id;
 
     @Column(nullable = false)
+    @NotBlank
     private String name;
+
+    public Category() {
+
+    }
+
+    public Category(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+    public Category(Category obj) {
+        this(new Long(obj.getId()), new String(obj.getName()));
+    }
 
     public Long getId() {
         return id;
@@ -60,5 +84,10 @@ public class Category {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 '}';
+    }
+
+    @Override
+    public int compareTo(Category o) {
+        return this.id.compareTo(o.getId());
     }
 }

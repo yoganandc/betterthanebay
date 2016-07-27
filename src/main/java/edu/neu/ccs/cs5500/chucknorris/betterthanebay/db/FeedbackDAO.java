@@ -1,7 +1,6 @@
 package edu.neu.ccs.cs5500.chucknorris.betterthanebay.db;
 
-import java.util.Optional;
-
+import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Feedback;
@@ -12,22 +11,61 @@ import io.dropwizard.hibernate.AbstractDAO;
  */
 public class FeedbackDAO extends AbstractDAO<Feedback> {
 
-  public FeedbackDAO(SessionFactory sessionFactory) {
-    super(sessionFactory);
-  }
+    public FeedbackDAO(SessionFactory sessionFactory) {
+        super(sessionFactory);
+    }
 
-  // Find Feedback by ID
-  public Feedback findById(String id) {
-    return get(id);
-  }
+    // Find Feedback by ID
+    public Feedback findById(Long itemId, String id) {
+        Query query;
 
-  // Create new Feedback
-  public Feedback create(Feedback feedback) {
-    return persist(feedback);
-  }
+        if(id.equals(Feedback.BUYER)) {
+            query = namedQuery("edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.BuyerFeedback.getForItem");
+            return uniqueResult(query);
+        }
+        else if(id.equals(Feedback.SELLER)){
+            query = namedQuery("edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.SellerFeedback.getForItem");
+            return uniqueResult(query);
+        }
 
-  // Update Feedback with given information (have to check how it works)
-  public Feedback update(Feedback feedback) {
-    return persist(feedback);
-  }
+        return null;
+    }
+
+    // Create new Feedback
+    public Feedback create(Feedback feedback, String id) {
+        return persistFeedback(feedback, id);
+    }
+
+    // Update Feedback with given information (have to check how it works)
+    public Feedback update(Feedback feedback, String id) {
+        currentSession().clear();
+        return persistFeedback(feedback, id);
+    }
+
+    public boolean deleteFeedback(Long itemId, String id) {
+        Feedback feedback = findById(itemId, id);
+        if(feedback == null) {
+            return false;
+        }
+        else if(id.equals(Feedback.SELLER)){
+            currentSession().delete(feedback.toSeller());
+            return true;
+        }
+        else {
+            currentSession().delete(feedback.toBuyer());
+            return true;
+        }
+    }
+
+    private Feedback persistFeedback(Feedback feedback, String id) {
+        if(id.equals( Feedback.BUYER)) {
+            return persist(feedback.toBuyer());
+        }
+        else if(id.equals(Feedback.SELLER)) {
+            return persist(feedback.toSeller());
+        }
+        else {
+            return null;
+        }
+    }
 }

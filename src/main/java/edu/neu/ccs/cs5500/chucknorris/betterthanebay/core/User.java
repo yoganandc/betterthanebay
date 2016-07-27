@@ -1,11 +1,19 @@
 package edu.neu.ccs.cs5500.chucknorris.betterthanebay.core;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import org.hibernate.annotations.OrderBy;
+import org.hibernate.validator.constraints.NotBlank;
+import org.hibernate.validator.constraints.NotEmpty;
+
 import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -20,9 +28,6 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
-import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -31,17 +36,11 @@ import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import org.hibernate.validator.constraints.NotBlank;
-import org.hibernate.validator.constraints.NotEmpty;
-
 @Entity
 @Table(name = "`user`")
 @NamedQueries(value = {
         @NamedQuery(name = "edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.User.searchByUsername",
-                query = "SELECT u FROM User u WHERE u.username LIKE :username"),
+                query = "SELECT u FROM User u WHERE u.username LIKE :username ORDER BY u.id ASC"),
         @NamedQuery(name = "edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.User.getByUsername",
                 query = "SELECT u FROM User u WHERE u.username = :username"),
         @NamedQuery(name = "edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.User.deleteUser",
@@ -73,27 +72,26 @@ public class User implements Principal {
             inverseJoinColumns = @JoinColumn(name = "address_id", nullable = false, unique = true))
     @Valid
     @NotEmpty
-    private Set<Address> addresses = new HashSet<>();
+    @OrderBy(clause = "id ASC")
+    private SortedSet<Address> addresses = new TreeSet<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true,
             fetch = FetchType.EAGER)
     @Valid
     @NotEmpty
-    private Set<Payment> payments = new HashSet<>();
+    @OrderBy(clause = "id ASC")
+    private SortedSet<Payment> payments = new TreeSet<>();
 
     @DecimalMax(value = "5.0")
     @DecimalMin(value = "0.0")
-    @JsonIgnore
     private BigDecimal rating;
 
     @Column(nullable = false, updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
-    @JsonIgnore
     private Date created;
 
     @Column(nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
-    @JsonIgnore
     private Date updated;
 
     public User() {
@@ -116,6 +114,18 @@ public class User implements Principal {
         }
         this.created = new Date(obj.getCreated().getTime());
         this.updated = new Date(obj.getUpdated().getTime());
+    }
+
+    public User(Long id, String username, String password, Person details, SortedSet<Address> addresses, SortedSet<Payment> payments, BigDecimal rating, Date created, Date updated) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.details = details;
+        this.addresses = addresses;
+        this.payments = payments;
+        this.rating = rating;
+        this.created = created;
+        this.updated = updated;
     }
 
     public Long getId() {
@@ -150,19 +160,19 @@ public class User implements Principal {
         this.details = details;
     }
 
-    public Set<Address> getAddresses() {
+    public SortedSet<Address> getAddresses() {
         return this.addresses;
     }
 
-    public void setAddresses(Set<Address> addresses) {
+    public void setAddresses(SortedSet<Address> addresses) {
         this.addresses = addresses;
     }
 
-    public Set<Payment> getPayments() {
+    public SortedSet<Payment> getPayments() {
         return this.payments;
     }
 
-    public void setPayments(Set<Payment> payments) {
+    public void setPayments(SortedSet<Payment> payments) {
         this.payments = payments;
     }
 

@@ -6,7 +6,6 @@ import org.hibernate.validator.constraints.NotBlank;
 
 import java.util.Objects;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -19,7 +18,7 @@ import javax.validation.Valid;
 
 @Entity
 @Table(name = "address")
-public class Address {
+public class Address implements Comparable<Address> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -49,7 +48,9 @@ public class Address {
     }
 
     public Address(Address obj) {
-        this.id = new Long(obj.getId());
+        if(obj.getId() != null) {
+            this.id = new Long(obj.getId());
+        }
         this.line1 = new String(obj.getLine1());
         if(obj.getLine2() != null) {
             this.line2 = new String(obj.getLine2());
@@ -59,10 +60,21 @@ public class Address {
         this.zip = new String(obj.getZip());
     }
 
+    public Address(Long id, String line1, String line2, String city, State state, String zip) {
+        this.id = id;
+        this.line1 = line1;
+        this.line2 = line2;
+        this.city = city;
+        this.state = state;
+        this.zip = zip;
+    }
+
+    @JsonIgnore
     public Long getId() {
         return this.id;
     }
 
+    @JsonIgnore
     public void setId(Long id) {
         this.id = id;
     }
@@ -112,8 +124,7 @@ public class Address {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Address address = (Address) o;
-        return Objects.equals(getId(), address.getId()) &&
-                Objects.equals(getLine1(), address.getLine1()) &&
+        return Objects.equals(getLine1(), address.getLine1()) &&
                 Objects.equals(getLine2(), address.getLine2()) &&
                 Objects.equals(getCity(), address.getCity()) &&
                 Objects.equals(getState(), address.getState()) &&
@@ -122,7 +133,7 @@ public class Address {
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getLine1(), getLine2(), getCity(), getState(), getZip());
+        return Objects.hash(getLine1(), getLine2(), getCity(), getState(), getZip());
     }
 
     @Override
@@ -135,5 +146,47 @@ public class Address {
                 ", state=" + state +
                 ", zip='" + zip + '\'' +
                 '}';
+    }
+
+    @Override
+    public int compareTo(Address o) {
+        if(this == o) {
+            return 0;
+        }
+
+        int comparison = line1.compareTo(o.line1);
+        if(comparison != 0) {
+            return comparison;
+        }
+
+        if(line2 == null && o.line2 != null) {
+            return -1;
+        }
+        if(line2 != null && o.line2 == null) {
+            return 1;
+        }
+        if(line2 != null && o.line2 != null) {
+            comparison = line2.compareTo(o.line2);
+            if(comparison != 0) {
+                return comparison;
+            }
+        }
+
+        comparison = city.compareTo(o.city);
+        if(comparison != 0) {
+            return comparison;
+        }
+
+        comparison = state.compareTo(o.state);
+        if(comparison != 0) {
+            return comparison;
+        }
+
+        comparison = zip.compareTo(o.zip);
+        if(comparison != 0) {
+            return comparison;
+        }
+
+        return 0;
     }
 }

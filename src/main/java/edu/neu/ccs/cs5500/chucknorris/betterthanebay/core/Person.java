@@ -34,7 +34,7 @@ public class Person {
     @NotBlank
     private String last;
 
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date birthday;
 
     public Person() {
@@ -42,7 +42,9 @@ public class Person {
     }
 
     public Person(Person obj) {
-        this.id = new Long(obj.getId());
+        if(obj.getId() != null) {
+            this.id = new Long(obj.getId());
+        }
         this.first = new String(obj.getFirst());
         if(obj.getMiddle() != null) {
             this.middle = new String(obj.getMiddle());
@@ -53,10 +55,20 @@ public class Person {
         }
     }
 
+    public Person(Long id, String first, String middle, String last, Date birthday) {
+        this.id = id;
+        this.first = first;
+        this.middle = middle;
+        this.last = last;
+        this.birthday = birthday;
+    }
+
+    @JsonIgnore
     public Long getId() {
         return id;
     }
 
+    @JsonIgnore
     public void setId(Long id) {
         this.id = id;
     }
@@ -98,8 +110,7 @@ public class Person {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Person person = (Person) o;
-        return Objects.equals(getId(), person.getId()) &&
-                Objects.equals(getFirst(), person.getFirst()) &&
+        return Objects.equals(getFirst(), person.getFirst()) &&
                 Objects.equals(getMiddle(), person.getMiddle()) &&
                 Objects.equals(getLast(), person.getLast()) &&
                 Objects.equals(getBirthday(), person.getBirthday());
@@ -107,7 +118,7 @@ public class Person {
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getFirst(), getMiddle(), getLast(), getBirthday());
+        return Objects.hash(getFirst(), getMiddle(), getLast(), getBirthday());
     }
 
     @Override

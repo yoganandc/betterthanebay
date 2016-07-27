@@ -16,7 +16,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
-import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -25,7 +24,7 @@ import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "payment")
-public class Payment {
+public class Payment implements Comparable<Payment> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,7 +43,7 @@ public class Payment {
     private String number;
 
     @Column(nullable = false)
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     @NotNull
     private Date expiry;
 
@@ -66,7 +65,9 @@ public class Payment {
     }
 
     public Payment(Payment obj) {
-        this.id = new Long(obj.getId());
+        if(obj.getId() != null) {
+            this.id = new Long(obj.getId());
+        }
         this.firstName = new String(obj.getFirstName());
         this.lastName = new String(obj.getLastName());
         this.number = new String(obj.getNumber());
@@ -76,10 +77,22 @@ public class Payment {
         // DO NOT COPY OVER USER
     }
 
+    public Payment(Long id, String firstName, String lastName, String number, Date expiry, Address address, Integer csv) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.number = number;
+        this.expiry = expiry;
+        this.address = address;
+        this.csv = csv;
+    }
+
+    @JsonIgnore
     public Long getId() {
         return this.id;
     }
 
+    @JsonIgnore
     public void setId(Long id) {
         this.id = id;
     }
@@ -137,8 +150,7 @@ public class Payment {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Payment payment = (Payment) o;
-        return Objects.equals(getId(), payment.getId()) &&
-                Objects.equals(getFirstName(), payment.getFirstName()) &&
+        return Objects.equals(getFirstName(), payment.getFirstName()) &&
                 Objects.equals(getLastName(), payment.getLastName()) &&
                 Objects.equals(getNumber(), payment.getNumber()) &&
                 Objects.equals(getExpiry(), payment.getExpiry()) &&
@@ -148,19 +160,19 @@ public class Payment {
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getFirstName(), getLastName(), getNumber(), getExpiry(), getAddress(), getCsv());
+        return Objects.hash(getFirstName(), getLastName(), getNumber(), getExpiry(), getAddress(), getCsv());
     }
 
     @Override
     public String toString() {
         return "Payment{" +
-                "csv=" + csv +
-                ", address=" + address +
-                ", expiry=" + expiry +
-                ", number='" + number + '\'' +
-                ", lastName='" + lastName + '\'' +
+                "id=" + id +
                 ", firstName='" + firstName + '\'' +
-                ", id=" + id +
+                ", lastName='" + lastName + '\'' +
+                ", number='" + number + '\'' +
+                ", expiry=" + expiry +
+                ", address=" + address +
+                ", csv=" + csv +
                 '}';
     }
 
@@ -172,5 +184,39 @@ public class Payment {
     @JsonIgnore
     public User getUser() {
         return this.user;
+    }
+
+    @Override
+    public int compareTo(Payment o) {
+        if(this == o) {
+            return 0;
+        }
+
+        int comparison = firstName.compareTo(o.firstName);
+        if(comparison != 0) {
+            return comparison;
+        }
+        comparison = lastName.compareTo(o.lastName);
+        if(comparison != 0) {
+            return comparison;
+        }
+        comparison = number.compareTo(o.number);
+        if(comparison != 0) {
+            return comparison;
+        }
+        comparison = expiry.compareTo(o.expiry);
+        if(comparison != 0) {
+            return comparison;
+        }
+        comparison = address.compareTo(o.address);
+        if(comparison != 0) {
+            return comparison;
+        }
+        comparison = csv.compareTo(o.csv);
+        if(comparison != 0) {
+            return comparison;
+        }
+
+        return 0;
     }
 }
