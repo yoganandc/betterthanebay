@@ -41,7 +41,8 @@ public class BidDAO extends AbstractDAO<Bid> {
   public Bid getCurrentWinningBid(Long itemId) {
     Query query = super.namedQuery(
         "edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Bid.getCurrentWinningBid")
-            .setParameter("itemId", itemId);
+            .setParameter("itemId", itemId)
+            .setMaxResults(1);
     return list(query).get(0);
   }
 }

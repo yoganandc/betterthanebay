@@ -75,7 +75,6 @@ public class ItemDAO extends AbstractDAO<Item> {
                 .setParameter("category_id", categoryId)
                 .setFirstResult(start)
                 .setMaxResults(end);
-        System.out.println(query.toString());
         return list(query);
     }
 

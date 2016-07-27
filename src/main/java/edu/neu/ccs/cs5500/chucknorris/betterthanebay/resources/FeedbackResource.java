@@ -111,7 +111,7 @@ public class FeedbackResource {
         }
 
         // NOW CHECK IF USER POSTED ITEM OR WON IT
-        Bid bid = null; //bidDAO.getCurrentWinningForItem(item.getId());
+        Bid bid = bidDAO.getCurrentWinningBid(item.getId());
 
         /* TODO */
         // currentWinningBidForItem could return null
@@ -180,7 +180,7 @@ public class FeedbackResource {
         }
 
         // get associated winning bid
-        Bid bid = null; // bidDAO.getCurrentWinningForItem(itemId.get());
+        Bid bid = bidDAO.getCurrentWinningBid(item.getId());
 
         // check if user accessing feedback is buyer (for seller, i.e., at path /seller)
         if(feedbackId.get().get().equals(Feedback.SELLER) &&!loggedInUser.getId().equals(bid.getUserId())) {
@@ -247,7 +247,7 @@ public class FeedbackResource {
         }
 
         // get associated winning bid
-        Bid bid = null; // bidDAO.getCurrentWinningForItem(itemId.get());
+        Bid bid = bidDAO.getCurrentWinningBid(item.getId());
 
         // check if user accessing feedback is buyer (for seller, i.e., at path /seller)
         if(feedbackId.get().get().equals(Feedback.SELLER) &&!loggedInUser.getId().equals(bid.getUserId())) {
