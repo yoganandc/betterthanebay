@@ -194,11 +194,6 @@ public class UserResource {
             return Response.status(Response.Status.FORBIDDEN).build();
         }
 
-        // BAD REQUEST IF ENTITY OBJECT'S ID DOES NOT MATCH PATH ID
-        if (!userId.get().equals(user.getId())) {
-            return Response.status(Response.Status.BAD_REQUEST).build();
-        }
-
         // NOT FOUND
         User found = this.dao.findById(userId.get());
         if (found == null) {
@@ -233,6 +228,7 @@ public class UserResource {
         }
 
         // set json ignored properties
+        user.setId(found.getId());
         user.setCreated(found.getCreated());
         user.setUpdated(new Date());
         user.setRating(found.getRating());
@@ -305,10 +301,17 @@ public class UserResource {
     public Response getBidsForUser(
             @ApiParam(value = "ID of a user", required = true) @PathParam("userId") LongParam userId,
             @Auth User loggedInUser) {
-        List<Bid> list = null; // dao.getActiveBids(userId.get());
 
-    /* TODO */
-        return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        List<Bid> list = bidDAO.getBidsForUser(userId.get());
+
+        if (list == null) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+        if (list.isEmpty()) {
+            return Response.status(Response.Status.NO_CONTENT).build();
+        }
+
+        return Response.ok(list).build();
     }
 
     // seller feedback by user
@@ -324,7 +327,25 @@ public class UserResource {
             @ApiParam(value = "Feedback ID of a user",
                     required = true) @PathParam("feedbackId") NonEmptyStringParam feedbackId,
             @Auth User loggedInUser) {
-    /* TODO */
-        return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        List<Feedback> feedbackList = null;
+
+        if(feedbackId.equals(Feedback.SELLER)) {
+            feedbackList = feedbackDAO.getFeedbackForUser(userId.get(), Feedback.SELLER);
+        }
+        else if(feedbackId.equals(Feedback.BUYER)) {
+            feedbackList = feedbackDAO.getFeedbackForUser(userId.get(), Feedback.BUYER);
+        }
+        else {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+
+        if(feedbackList == null) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+        else if(feedbackList.isEmpty()) {
+            return Response.status(Response.Status.NO_CONTENT).build();
+        }
+
+        return Response.ok(feedbackList).build();
     }
 }

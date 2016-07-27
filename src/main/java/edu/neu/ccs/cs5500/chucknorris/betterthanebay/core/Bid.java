@@ -24,7 +24,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @Table(name = "bid")
 @NamedQueries(value = {@NamedQuery(
     name = "edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Bid.getCurrentWinningBid",
-    query = "SELECT b FROM Bid b WHERE b.itemId = :itemId ORDER BY b.amount DESC")})
+    query = "SELECT b FROM Bid b WHERE b.itemId = :itemId ORDER BY b.amount DESC"),
+        @NamedQuery(name  = "edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Bid.getBidsForUser",
+        query = "SELECT b FROM Bid b WHERE b.userId = :userId ORDER BY b.time DESC")
+})
 public class Bid {
 
   @Id
@@ -42,9 +45,8 @@ public class Bid {
   @DecimalMin(value = "0.0")
   private BigDecimal amount;
 
-  @Column(nullable = false, updatable = false)
+  @Column(name = "created", nullable = false, updatable = false)
   @Temporal(TemporalType.TIMESTAMP)
-  @NotNull
   private Date time;
 
   @Column(name = "payment_id", nullable = false)
@@ -65,7 +67,9 @@ public class Bid {
   }
 
   public Bid(Bid obj) {
-    this.id = new Long(obj.getId());
+      if(obj.getId() != null) {
+          this.id = new Long(obj.getId());
+      }
     if (obj.getItemId() != null) {
       this.itemId = new Long(obj.getItemId());
     }
@@ -77,10 +81,12 @@ public class Bid {
     this.paymentId = new Long(obj.getPaymentId());
   }
 
+    @JsonProperty
   public Long getId() {
     return this.id;
   }
 
+    @JsonIgnore
   public void setId(Long id) {
     this.id = id;
   }

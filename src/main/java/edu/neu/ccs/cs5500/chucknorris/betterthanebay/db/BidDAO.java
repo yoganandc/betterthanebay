@@ -3,6 +3,8 @@ package edu.neu.ccs.cs5500.chucknorris.betterthanebay.db;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 
+import java.util.List;
+
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Bid;
 import io.dropwizard.hibernate.AbstractDAO;
 
@@ -43,6 +45,18 @@ public class BidDAO extends AbstractDAO<Bid> {
         "edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Bid.getCurrentWinningBid")
             .setParameter("itemId", itemId)
             .setMaxResults(1);
-    return list(query).get(0);
+    List<Bid> bids = super.list(query);
+      if(bids.isEmpty()) {
+          return null;
+      }
+      else {
+          return bids.get(0);
+      }
   }
+
+    public List<Bid> getBidsForUser(Long userId) {
+        Query query = super.namedQuery("edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Bid.getBidsForUser")
+                .setParameter("userId", userId);
+        return list(query);
+    }
 }

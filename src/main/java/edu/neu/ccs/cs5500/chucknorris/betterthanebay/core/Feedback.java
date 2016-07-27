@@ -44,6 +44,9 @@ public class Feedback {
     @Column(name = "item_id", nullable = false)
     private Long itemId;
 
+    @Column(name = "user_id", nullable = false)
+    private Long userId;
+
     @Column(nullable = false)
     @NotNull
     @Min(value = 0)
@@ -53,17 +56,20 @@ public class Feedback {
     public Feedback() {
     }
 
-    public Feedback(Long id, String message, Date created, Date updated, Integer rating, Long itemId) {
+    public Feedback(Long id, String message, Date created, Date updated, Integer rating, Long itemId, Long userId) {
         this.id = id;
         this.message = message;
         this.created = created;
         this.updated = updated;
         this.rating = rating;
         this.itemId = itemId;
+        this.userId = userId;
     }
 
     public Feedback(Feedback obj) {
-        this.id = new Long(obj.getId());
+        if(obj.getId() != null) {
+            this.id = new Long(obj.getId());
+        }
         if(obj.getMessage() != null) {
             this.message = new String(obj.getMessage());
         }
@@ -72,6 +78,9 @@ public class Feedback {
         this.rating = new Integer(obj.getRating());
         if(obj.getItemId() != null) {
             this.itemId = new Long(obj.getItemId());
+        }
+        if(obj.getUserId() != null) {
+            this.userId = new Long(obj.getUserId());
         }
     }
 
@@ -111,10 +120,12 @@ public class Feedback {
         this.rating = rating;
     }
 
+    @JsonProperty
     public Long getId() {
         return id;
     }
 
+    @JsonIgnore
     public void setId(Long id) {
         this.id = id;
     }
@@ -129,6 +140,16 @@ public class Feedback {
         this.itemId = itemId;
     }
 
+    @JsonIgnore
+    public Long getUserId() {
+        return userId;
+    }
+
+    @JsonIgnore
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -139,12 +160,13 @@ public class Feedback {
                 Objects.equals(getCreated(), feedback.getCreated()) &&
                 Objects.equals(getUpdated(), feedback.getUpdated()) &&
                 Objects.equals(getItemId(), feedback.getItemId()) &&
+                Objects.equals(getUserId(), feedback.getUserId()) &&
                 Objects.equals(getRating(), feedback.getRating());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getMessage(), getCreated(), getUpdated(), getItemId(), getRating());
+        return Objects.hash(getId(), getMessage(), getCreated(), getUpdated(), getItemId(), getUserId(), getRating());
     }
 
     @Override
@@ -155,15 +177,16 @@ public class Feedback {
                 ", created=" + created +
                 ", updated=" + updated +
                 ", itemId=" + itemId +
+                ", userId=" + userId +
                 ", rating=" + rating +
                 '}';
     }
 
     public Feedback toSeller() {
-        return new SellerFeedback(id, message, created, updated, rating, itemId);
+        return new SellerFeedback(id, message, created, updated, rating, itemId, userId);
     }
 
     public Feedback toBuyer() {
-        return new BuyerFeedback(id, message, created, updated, rating, itemId);
+        return new BuyerFeedback(id, message, created, updated, rating, itemId, userId);
     }
 }

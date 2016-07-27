@@ -99,7 +99,9 @@ public class User implements Principal {
     }
 
     public User(User obj) {
-        this.id = new Long(obj.getId());
+        if(obj.getId() != null) {
+            this.id = new Long(obj.getId());
+        }
         this.username = new String(obj.getUsername());
         this.password = new String(obj.getPassword());
         this.details = new Person(obj.getDetails());
@@ -128,10 +130,12 @@ public class User implements Principal {
         this.updated = updated;
     }
 
+    @JsonProperty
     public Long getId() {
         return this.id;
     }
 
+    @JsonIgnore
     public void setId(Long id) {
         this.id = id;
     }

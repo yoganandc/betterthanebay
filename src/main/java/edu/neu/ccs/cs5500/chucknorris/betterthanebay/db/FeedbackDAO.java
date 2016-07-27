@@ -3,6 +3,8 @@ package edu.neu.ccs.cs5500.chucknorris.betterthanebay.db;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 
+import java.util.List;
+
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Feedback;
 import io.dropwizard.hibernate.AbstractDAO;
 
@@ -57,14 +59,26 @@ public class FeedbackDAO extends AbstractDAO<Feedback> {
         }
     }
 
-    private Feedback persistFeedback(Feedback feedback, String id) {
-        if(id.equals( Feedback.BUYER)) {
-            return persist(feedback.toBuyer());
+    public List<Feedback> getFeedbackForUser(Long userId, String id) {
+        if(id.equals(Feedback.SELLER)) {
+            return list(namedQuery("edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.SellerFeedback.getForUser")
+            .setParameter("user_id", userId));
         }
-        else if(id.equals(Feedback.SELLER)) {
-            return persist(feedback.toSeller());
+        else if(id.equals(Feedback.BUYER)) {
+            return list(namedQuery("edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.BuerFeedback.getForUser")
+            .setParameter("user_id", userId));
         }
         else {
+            return null;
+        }
+    }
+
+    private Feedback persistFeedback(Feedback feedback, String id) {
+        if (id.equals(Feedback.BUYER)) {
+            return persist(feedback.toBuyer());
+        } else if (id.equals(Feedback.SELLER)) {
+            return persist(feedback.toSeller());
+        } else {
             return null;
         }
     }

@@ -31,6 +31,7 @@ import edu.neu.ccs.cs5500.chucknorris.betterthanebay.db.FeedbackDAO;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.db.ItemDAO;
 import io.dropwizard.auth.Auth;
 import io.dropwizard.hibernate.UnitOfWork;
+import io.dropwizard.hibernate.UnitOfWorkAwareProxyFactory;
 import io.dropwizard.jersey.params.IntParam;
 import io.dropwizard.jersey.params.LongParam;
 import io.dropwizard.jersey.params.NonEmptyStringParam;
@@ -44,12 +45,14 @@ public class ItemResource {
 
   private ItemDAO dao;
   private BidDAO bidDAO;
-  private FeedbackDAO feedbackDAO;
+  private FeedbackResource feedbackResource;
+    private BidResource bidResource;
 
-  public ItemResource(ItemDAO dao, BidDAO bidDAO, FeedbackDAO feedbackDAO) {
+  public ItemResource(ItemDAO dao, BidDAO bidDAO, FeedbackResource feedbackResource, BidResource bidResource) {
     this.dao = dao;
     this.bidDAO = bidDAO;
-    this.feedbackDAO = feedbackDAO;
+    this.feedbackResource = feedbackResource;
+      this.bidResource = bidResource;
   }
 
   @GET
@@ -184,7 +187,7 @@ public class ItemResource {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build(); // failure
         }
         return Response.created(URI.create("/items/" + createdItem.getId())).entity(createdItem)
-                .build();
+                        .build();
     }
 
     @PUT
@@ -199,11 +202,6 @@ public class ItemResource {
     public Response updateItem(
             @ApiParam(value = "Item ID", required = true) @PathParam("itemId") LongParam itemId,
             @Valid Item item, @Auth User loggedInUser) {
-
-        // bad request if entity's id does not match path id
-        if (!itemId.get().equals(item.getId())) {
-            return Response.status(Response.Status.BAD_REQUEST).build();
-        }
 
         Item found = this.dao.findById(itemId.get());
         if (found == null) {
@@ -232,6 +230,7 @@ public class ItemResource {
         // AND END_DATE > START_DATE
 
         // set json ignored properties
+        item.setId(found.getId());
         item.setUserId(loggedInUser.getId());
         item.setCreated(found.getCreated());
         item.setUpdated(new Date());
@@ -283,12 +282,12 @@ public class ItemResource {
 
     @Path("/{itemId}/bids")
     public BidResource getBidResource() {
-        return new BidResource(this.bidDAO, this.dao);
+        return this.bidResource;
     }
 
     @Path("/{itemId}/feedback")
     public FeedbackResource getFeedbackResource() {
-        return new FeedbackResource(this.feedbackDAO, this.dao, this.bidDAO);
+        return this.feedbackResource;
     }
 
 

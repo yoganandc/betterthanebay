@@ -30,7 +30,6 @@ import io.dropwizard.auth.Auth;
 import io.dropwizard.hibernate.UnitOfWork;
 import io.dropwizard.jersey.params.LongParam;
 
-@Path("/bids")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class BidResource {
@@ -43,7 +42,6 @@ public class BidResource {
     this.dao = dao;
     this.itemDAO = itemDAO;
   }
-
 
   @GET
   @Path("/{bidId}")
@@ -159,11 +157,6 @@ public class BidResource {
       @ApiParam(value = "Bid ID", required = true) @PathParam("bidId") LongParam bidId,
       @Valid Bid bid, @Auth User loggedInUser) {
 
-    // bad request if entity's id does not match path id
-    if (!bidId.get().equals(bid.getId())) {
-      return Response.status(Response.Status.BAD_REQUEST).build();
-    }
-
     Bid found = this.dao.findById(bidId.get());
     if (found == null) {
       return Response.status(Response.Status.NOT_FOUND).build();
@@ -185,6 +178,7 @@ public class BidResource {
     bid.setAmount(found.getAmount());
 
     // set json ignored properties
+      bid.setId(found.getId());
     bid.setItemId(itemId.get());
     bid.setUserId(loggedInUser.getId());
     bid.setTime(found.getTime());

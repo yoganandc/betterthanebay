@@ -127,6 +127,12 @@ public class FeedbackResource {
         feedback.setItemId(item.getId());
         feedback.setCreated(now);
         feedback.setUpdated(now);
+        if(bid.getUserId().equals(loggedInUser.getId())) {
+            feedback.setUserId(item.getUserId());
+        }
+        else {
+            feedback.setUserId(bid.getUserId());
+        }
 
         Feedback created = null;
 
@@ -197,15 +203,12 @@ public class FeedbackResource {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
 
-        // WE MUST SET FEEDBACK ID IN CASE SUPPLIED FEEDBACK HAS
-        // WRONG ID OR NO ID (THIS IS ONLY FOR FEEDBACK AS PATH DOES NOT
-        // MATCH ID INSIDE OBJECT
-        feedback.setId(found.getId());
-
         // set json ignored properties
+        feedback.setId(found.getId());
         feedback.setItemId(item.getId());
         feedback.setCreated(found.getCreated());
         feedback.setUpdated(new Date());
+        feedback.setUserId(found.getUserId());
 
         Feedback updatedFeedback = null;
 

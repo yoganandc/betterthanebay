@@ -124,7 +124,9 @@ public class Item {
     }
 
     public Item(Item obj) {
-        this.id = new Long(obj.getId());
+        if(obj.getId() != null) {
+            this.id = new Long(obj.getId());
+        }
         this.name = new String(obj.getName());
         if(obj.getDescription() != null) {
             this.description = new String(obj.getDescription());
@@ -145,10 +147,12 @@ public class Item {
         this.updated = new Date(obj.getUpdated().getTime());
     }
 
+    @JsonProperty
     public Long getId() {
         return this.id;
     }
 
+    @JsonIgnore
     public void setId(Long id) {
         this.id = id;
     }

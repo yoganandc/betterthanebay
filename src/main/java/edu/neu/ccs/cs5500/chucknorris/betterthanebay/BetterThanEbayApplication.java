@@ -23,7 +23,9 @@ import edu.neu.ccs.cs5500.chucknorris.betterthanebay.db.FeedbackDAO;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.db.ItemDAO;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.db.StateDAO;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.db.UserDAO;
+import edu.neu.ccs.cs5500.chucknorris.betterthanebay.resources.BidResource;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.resources.CategoryResource;
+import edu.neu.ccs.cs5500.chucknorris.betterthanebay.resources.FeedbackResource;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.resources.ItemResource;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.resources.StateResource;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.resources.UserResource;
@@ -95,14 +97,23 @@ public class BetterThanEbayApplication extends Application<BetterThanEbayConfigu
         ItemDAO itemDAO = new ItemDAO(sf);
         BidDAO bidDAO = new BidDAO(sf);
         FeedbackDAO feedbackDAO = new FeedbackDAO(sf);
-        UserResource userResource = new UserResource(userDAO, itemDAO, bidDAO, feedbackDAO, util);
-        ItemResource itemResource = new ItemResource(itemDAO, bidDAO, feedbackDAO);
 
-        Class constructorTypes[] = {UserDAO.class, PasswordUtil.class};
+        Class[] bidArgTypes = {BidDAO.class, ItemDAO.class};
+        Object[] bidArgs = {bidDAO, itemDAO};
+        BidResource bidResource = new UnitOfWorkAwareProxyFactory(db).create(BidResource.class, bidArgTypes, bidArgs);
+
+        Class[] feedbackArgTypes = {FeedbackDAO.class, ItemDAO.class, BidDAO.class};
+        Object[] feedbackArgs = {feedbackDAO, itemDAO, bidDAO};
+        FeedbackResource feedbackResource = new UnitOfWorkAwareProxyFactory(db).create(FeedbackResource.class, feedbackArgTypes, feedbackArgs);
+
+        UserResource userResource = new UserResource(userDAO, itemDAO, bidDAO, feedbackDAO, util);
+        ItemResource itemResource = new ItemResource(itemDAO, bidDAO, feedbackResource, bidResource);
+
+        Class constructorArgTypes[] = {UserDAO.class, PasswordUtil.class};
         Object constructorArgs[] = {userDAO, util};
 
         BetterThanEbayAuthenticator auth = new UnitOfWorkAwareProxyFactory(db).create(BetterThanEbayAuthenticator.class,
-                                                                                  constructorTypes, constructorArgs);
+                                                                                  constructorArgTypes, constructorArgs);
         environment.jersey().register(new AuthDynamicFeature(
                         new BasicCredentialAuthFilter.Builder<User>().setAuthenticator(auth)
                         .setRealm("AUTHENTICATED").buildAuthFilter()));

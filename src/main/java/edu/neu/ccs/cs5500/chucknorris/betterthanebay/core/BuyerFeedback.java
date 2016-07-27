@@ -14,7 +14,9 @@ import javax.persistence.Table;
 @Table(name = "buyer_feedback")
 @NamedQueries(value = {
         @NamedQuery(name = "edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.BuyerFeedback.getForItem",
-                query = "SELECT f FROM BuyerFeedback f WHERE f.itemId = :item_id")
+                query = "SELECT f FROM BuyerFeedback f WHERE f.itemId = :item_id"),
+        @NamedQuery(name = "edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.BuyerFeedback.getForUser",
+                query = "SELECT f FROM BuyerFeedback f WHERE f.userId = :user_id")
 })
 public class BuyerFeedback extends Feedback {
 
@@ -26,7 +28,7 @@ public class BuyerFeedback extends Feedback {
         super(obj);
     }
 
-    public BuyerFeedback(Long id, String message, Date created, Date updated, Integer rating, Long itemId) {
-        super(id, message, created, updated, rating, itemId);
+    public BuyerFeedback(Long id, String message, Date created, Date updated, Integer rating, Long itemId, Long userId) {
+        super(id, message, created, updated, rating, itemId, userId);
     }
 }
