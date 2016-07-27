@@ -24,6 +24,7 @@ import com.wordnik.swagger.annotations.ApiResponse;
 import com.wordnik.swagger.annotations.ApiResponses;
 
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Bid;
+import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.ErrorMessage;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Item;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.User;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.db.BidDAO;
@@ -57,19 +58,25 @@ public class ItemResource {
   @UnitOfWork
   @ApiOperation(value = "Find item with given id",
       notes = "If {itemId} exists, returns the corresponding item object", response = Item.class)
-  @ApiResponses(value = {@ApiResponse(code = 404, message = "Item ID doesn't exist")})
+  @ApiResponses(value = {@ApiResponse(code = 404, message = "Item ID not found")})
   public Response getItem(
       @ApiParam(value = "Item ID", required = true) @PathParam("itemId") LongParam itemId,
       @Auth User loggedInUser) {
 
-    /* TODO */
+    /* TODO YOGI check */
         // RETURN A NOT FOUND IF USER IS ACCESSING A NON-ACTIVE ITEM
         // AND IS NOT THE USER WHO POSTED IT
 
         Item item = this.dao.findById(itemId.get());
+
         if (item == null) {
-            return Response.status(Response.Status.NOT_FOUND).build();
+            return Response.status(Response.Status.NOT_FOUND).entity(new ErrorMessage("Item ID not found")).build();
         }
+
+      Date now = new Date();
+      if ((item.getStartDate().after(now) || item.getEndDate().before(now)) && !loggedInUser.getId().equals(item.getUserId())) {
+          return Response.status(Response.Status.NOT_FOUND).entity(new ErrorMessage("Item ID not found")).build();
+      }
 
         return Response.ok(item).build();
     }
@@ -81,7 +88,8 @@ public class ItemResource {
                     + "lowest price, highest price, item offset number, and size of item list",
             response = Item.class, responseContainer = "List")
     @ApiResponses(value = {@ApiResponse(code = 204, message = "No matching results found"),
-            @ApiResponse(code = 401, message = "User must be logged in")})
+            @ApiResponse(code = 401, message = "User must be logged in"),
+            @ApiResponse(code = 500, message = "Database error")})
     public Response getItems(
             @ApiParam(value = "Item keyword",
                     required = false) @QueryParam("name") NonEmptyStringParam name,
@@ -112,9 +120,6 @@ public class ItemResource {
             startPrice = new BigDecimal(priceFrom.get());
         }
 
-    /* TODO */
-        // CHECK ENDPRICE > STARTPRICE
-
         BigDecimal endPrice;
         if (priceTo == null) {
             endPrice = new BigDecimal(Integer.MAX_VALUE);
@@ -122,8 +127,22 @@ public class ItemResource {
             endPrice = new BigDecimal(priceTo.get());
         }
 
-    /* TODO */
+        /* TODO YOGI check */
+        // CHECK ENDPRICE > STARTPRICE
+
+        if (endPrice.compareTo(startPrice) < 0) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorMessage("Highest price is less than lowest price")).build();
+        }
+
+        /* TODO YOGI check */
         // CHECK SIZE, START > 0
+        if (start.get().compareTo(0) < 0) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorMessage("List offset must be greater than 0")).build();
+        }
+
+        if (size.get().compareTo(0) < 0) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorMessage("List size must be greater than 0")).build();
+        }
 
         int startVal;
         if (start == null) {
@@ -149,9 +168,9 @@ public class ItemResource {
         }
 
         if (list == null) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorMessage("Database error")).build();
         } else if (list.isEmpty()) {
-            return Response.status(Response.Status.NO_CONTENT).build();
+            return Response.status(Response.Status.NO_CONTENT).entity(new ErrorMessage("No matching results found")).build();
         }
         return Response.ok(list).build();
     }
