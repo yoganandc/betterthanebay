@@ -1,11 +1,5 @@
 package edu.neu.ccs.cs5500.chucknorris.betterthanebay.resources;
 
-import com.wordnik.swagger.annotations.Api;
-import com.wordnik.swagger.annotations.ApiOperation;
-import com.wordnik.swagger.annotations.ApiParam;
-import com.wordnik.swagger.annotations.ApiResponse;
-import com.wordnik.swagger.annotations.ApiResponses;
-
 import java.net.URI;
 import java.util.Date;
 import java.util.HashSet;
@@ -32,6 +26,12 @@ import io.dropwizard.auth.Auth;
 import io.dropwizard.hibernate.UnitOfWork;
 import io.dropwizard.jersey.params.LongParam;
 import io.dropwizard.jersey.params.NonEmptyStringParam;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.Authorization;
 
 /*
  * This can be confusing!
@@ -40,7 +40,7 @@ import io.dropwizard.jersey.params.NonEmptyStringParam;
  */
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-@Api(value = "/items/{itemId}/feedback", description = "Feedback")
+@Api //authorizations = {@Authorization(value = "basicauth")})
 public class FeedbackResource {
 
     private FeedbackDAO dao;
