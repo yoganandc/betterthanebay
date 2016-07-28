@@ -212,28 +212,19 @@ public class User implements Principal {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if ((o == null) || (getClass() != o.getClass())) {
-            return false;
-        }
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return Objects.equals(getId(), user.getId())
-                && Objects.equals(getUsername(), user.getUsername())
-                && Objects.equals(getPassword(), user.getPassword())
-                && Objects.equals(getDetails(), user.getDetails())
-                && Objects.equals(getAddresses(), user.getAddresses())
-                && Objects.equals(getPayments(), user.getPayments())
-                && Objects.equals(getRating(), user.getRating())
-                && Objects.equals(getCreated(), user.getCreated())
-                && Objects.equals(getUpdated(), user.getUpdated());
+        return Objects.equals(getUsername(), user.getUsername()) &&
+                Objects.equals(getDetails(), user.getDetails()) &&
+                Objects.equals(getAddresses(), user.getAddresses()) &&
+                Objects.equals(getPayments(), user.getPayments()) &&
+                Objects.equals(getRating(), user.getRating());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getUsername(), getPassword(), getDetails(), getAddresses(),
-                getPayments(), getRating(), getCreated(), getUpdated());
+        return Objects.hash(getUsername(), getDetails(), getAddresses(), getPayments(), getRating());
     }
 
     @Override
