@@ -43,7 +43,7 @@ public class BidDAO extends AbstractDAO<Bid> {
   public Bid getCurrentWinningBid(Long itemId) {
     Query query = super.namedQuery(
         "edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Bid.getCurrentWinningBid")
-            .setParameter("itemId", itemId)
+            .setParameter("item_id", itemId)
             .setMaxResults(1);
     List<Bid> bids = super.list(query);
       if(bids.isEmpty()) {
@@ -56,7 +56,13 @@ public class BidDAO extends AbstractDAO<Bid> {
 
     public List<Bid> getBidsForUser(Long userId) {
         Query query = super.namedQuery("edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Bid.getBidsForUser")
-                .setParameter("userId", userId);
+                .setParameter("user_id", userId);
+        return list(query);
+    }
+
+    public List<Bid> getBidsForItem(Long itemId) {
+        Query query = super.namedQuery("edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Bid.getBidsForItem")
+                .setParameter("item_id", itemId);
         return list(query);
     }
 }

@@ -24,9 +24,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @Table(name = "bid")
 @NamedQueries(value = {@NamedQuery(
     name = "edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Bid.getCurrentWinningBid",
-    query = "SELECT b FROM Bid b WHERE b.itemId = :itemId ORDER BY b.amount DESC"),
+    query = "SELECT b FROM Bid b WHERE b.itemId = :item_id ORDER BY b.amount DESC"),
         @NamedQuery(name  = "edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Bid.getBidsForUser",
-        query = "SELECT b FROM Bid b WHERE b.userId = :userId ORDER BY b.time DESC")
+        query = "SELECT b FROM Bid b WHERE b.userId = :user_id ORDER BY b.time DESC"),
+        @NamedQuery(name = "edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Bid.getBidsForItem",
+        query = "SELECT b FROM Bid b WHERE b.itemId = :item_id ORDER BY b.time DESC")
 })
 public class Bid {
 

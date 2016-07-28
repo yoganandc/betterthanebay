@@ -1,6 +1,7 @@
 package edu.neu.ccs.cs5500.chucknorris.betterthanebay.resources;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -23,6 +24,7 @@ import com.wordnik.swagger.annotations.ApiResponses;
 
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Bid;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Item;
+import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Payment;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.User;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.db.BidDAO;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.db.ItemDAO;
@@ -60,7 +62,12 @@ public class BidResource {
       return Response.status(Response.Status.NOT_FOUND).build();
     }
 
-    return Response.ok(bid).build();
+      Bid bidCopy = new Bid(bid);
+      if(!bid.getUserId().equals(loggedInUser.getId())) {
+          bidCopy.setPaymentId(null);
+      }
+
+    return Response.ok(bidCopy).build();
   }
 
   @GET
@@ -74,12 +81,22 @@ public class BidResource {
       @ApiParam(value = "Item ID", required = true) @PathParam("itemId") LongParam itemId,
       @Auth User loggedInUser) {
 
-    final List<Bid> bids = null; // dao.findBidsForItem(itemId.get());
+    final List<Bid> bids = dao.getBidsForItem(itemId.get());
+
     if (bids.isEmpty()) {
       return Response.status(Response.Status.NOT_FOUND).build();
     }
 
-    return Response.ok(bids).build();
+      List<Bid> bidsCopy = new ArrayList<>();
+      for(Bid bid: bids) {
+          Bid bidCopy = new Bid(bid);
+          if(bid.getUserId() != loggedInUser.getId()) {
+              bidCopy.setPaymentId(null);
+          }
+          bidsCopy.add(bidCopy);
+      }
+
+    return Response.ok(bidsCopy).build();
   }
 
   @POST
@@ -123,8 +140,16 @@ public class BidResource {
       return Response.status(Response.Status.BAD_REQUEST).build();
     }
 
-    /* TODO */
-    // VERIFY THAT PAYMENT ID IS VALID AND BELONGS TO USER
+      boolean validPayment = false;
+      for(Payment p : loggedInUser.getPayments()) {
+          if(bid.getPaymentId().equals(p.getId())) {
+              validPayment = true;
+          }
+      }
+
+      if(!validPayment) {
+          return Response.status(Response.Status.BAD_REQUEST).build();
+      }
 
     // set ID to null (as with all POST)
     bid.setId(null);
@@ -171,8 +196,16 @@ public class BidResource {
       return Response.status(Response.Status.FORBIDDEN).build();
     }
 
-    /* TODO */
-    // VERIFY THAT PAYMENT ID IS VALID AND BELONGS TO USER
+      boolean validPayment = false;
+      for(Payment p : loggedInUser.getPayments()) {
+          if(bid.getPaymentId().equals(p.getId())) {
+              validPayment = true;
+          }
+      }
+
+      if(!validPayment) {
+          return Response.status(Response.Status.BAD_REQUEST).build();
+      }
 
     /* user cannot update anything but payment option */
     bid.setAmount(found.getAmount());
