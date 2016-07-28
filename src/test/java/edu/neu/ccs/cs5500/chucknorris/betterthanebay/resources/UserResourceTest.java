@@ -132,8 +132,6 @@ public class UserResourceTest {
 
         assertThat(createdSully).isEqualTo(sully);
         verify(DAO).create(sully2);
-
-
     }
 
 

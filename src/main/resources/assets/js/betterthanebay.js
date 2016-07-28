@@ -3,18 +3,6 @@
  */
 
 $(function() {
-    // var UserModel = Backbone.Model.extend({
-    //                                           defaults: {
-    //                                               password: null,
-    //                                               details: null,
-    //                                               rating: null
-    //                                           }
-    //                                       });
-    //
-    // var UserCollection = Backbone.Collection.extend({
-    //                                                     url: '/api/users',
-    //                                                     model: UserModel
-    //                                                 });
 
     var ItemModel = Backbone.Model.extend({ url: '/api/items/16'});
     var ItemView = Backbone.View.extend({
