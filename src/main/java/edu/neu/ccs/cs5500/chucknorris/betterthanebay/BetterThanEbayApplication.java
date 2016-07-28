@@ -30,6 +30,7 @@ import edu.neu.ccs.cs5500.chucknorris.betterthanebay.resources.ItemResource;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.resources.StateResource;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.resources.UserResource;
 import io.dropwizard.Application;
+import io.dropwizard.assets.AssetsBundle;
 import io.dropwizard.auth.AuthDynamicFeature;
 import io.dropwizard.auth.AuthValueFactoryProvider;
 import io.dropwizard.auth.basic.BasicCredentialAuthFilter;
@@ -78,6 +79,7 @@ public class BetterThanEbayApplication extends Application<BetterThanEbayConfigu
                 return configuration.getDataSourceFactory();
             }
         });
+        bootstrap.addBundle(new AssetsBundle("/assets", "/"));
     }
 
     @Override

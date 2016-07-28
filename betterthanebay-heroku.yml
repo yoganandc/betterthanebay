@@ -27,11 +27,12 @@ database:
 
 server:
   type: simple
-  applicationContextPath: /api
+  applicationContextPath: /betterthanebay
   adminContextPath: /admin
   connector:
     type: http
     port: ${PORT}
+  rootPath: /api
 
 swagger:
   resourcePackage: edu.neu.ccs.cs5500.chucknorris.betterthanebay.resources

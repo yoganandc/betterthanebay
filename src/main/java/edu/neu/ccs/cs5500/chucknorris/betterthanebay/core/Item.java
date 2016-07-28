@@ -83,7 +83,6 @@ public class Item {
 
     @Column(name = "start_date", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
-    @NotNull
     private Date startDate;
 
     @Column(name = "end_date", nullable = false)
@@ -135,7 +134,9 @@ public class Item {
             this.categories.add(new Category(category));
         }
         this.initialPrice = new BigDecimal(obj.getInitialPrice().toString());
-        this.startDate = new Date(obj.getStartDate().getTime());
+        if(obj.getStartDate() != null) {
+            this.startDate = new Date(obj.getStartDate().getTime());
+        }
         this.endDate = new Date(obj.getEndDate().getTime());
         if(obj.getImage() != null) {
             this.image = new String(obj.getImage());
@@ -243,6 +244,26 @@ public class Item {
         this.updated = updated;
     }
 
+//    @Override
+//    public boolean equals(Object o) {
+//        if (this == o) return true;
+//        if (o == null || getClass() != o.getClass()) return false;
+//        Item item = (Item) o;
+//        return Objects.equals(getName(), item.getName()) &&
+//                Objects.equals(getDescription(), item.getDescription()) &&
+//                Objects.equals(getCategories(), item.getCategories()) &&
+//                Objects.equals(getInitialPrice(), item.getInitialPrice()) &&
+//                Objects.equals(getStartDate(), item.getStartDate()) &&
+//                Objects.equals(getEndDate(), item.getEndDate()) &&
+//                Objects.equals(getImage(), item.getImage());
+//    }
+//
+//    @Override
+//    public int hashCode() {
+//        return Objects.hash(getName(), getDescription(), getCategories(), getInitialPrice(), getStartDate(), getEndDate(), getImage());
+//    }
+
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -252,14 +273,13 @@ public class Item {
                 Objects.equals(getDescription(), item.getDescription()) &&
                 Objects.equals(getCategories(), item.getCategories()) &&
                 Objects.equals(getInitialPrice(), item.getInitialPrice()) &&
-                Objects.equals(getStartDate(), item.getStartDate()) &&
                 Objects.equals(getEndDate(), item.getEndDate()) &&
                 Objects.equals(getImage(), item.getImage());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getName(), getDescription(), getCategories(), getInitialPrice(), getStartDate(), getEndDate(), getImage());
+        return Objects.hash(getName(), getDescription(), getCategories(), getInitialPrice(), getEndDate(), getImage());
     }
 
     @Override

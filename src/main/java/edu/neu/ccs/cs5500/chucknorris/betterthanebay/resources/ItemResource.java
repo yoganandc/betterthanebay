@@ -191,6 +191,11 @@ public class ItemResource {
         // null out item id
         item.setId(null);
 
+        // start date could be null
+        if(item.getStartDate() == null) {
+            item.setStartDate(now);
+        }
+
         // set json ignored properties
         item.setCreated(now);
         item.setUpdated(now);
@@ -227,18 +232,25 @@ public class ItemResource {
             return Response.status(Response.Status.FORBIDDEN).entity(new ErrorMessage("Logged in user cannot modify another user's item")).build();
         }
 
+        Date now = new Date();
+
         // if item's end_date has crossed, you can no longer modify the item
-        if (!found.getEndDate().after(new Date())) {
+        if (!found.getEndDate().after(now)) {
             return Response.status(Response.Status.FORBIDDEN).entity(new ErrorMessage("Item auction has ended")).build();
         }
 
+        // start date could be null
+        if(item.getStartDate() == null) {
+            item.setStartDate(found.getStartDate());
+        }
+
         // if item's start_date has crossed, you can no longer modify name, start_date, and initial price
-        if (found.getStartDate().before(new Date())) {
+        if (found.getStartDate().before(now)) {
             item.setStartDate(found.getStartDate());
             item.setName(found.getName());
             item.setInitialPrice(found.getInitialPrice());
         }
-        else if (item.getStartDate().before(new Date())) {
+        else if (item.getStartDate().before(now)) {
             return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorMessage("Auction start date/time precedes current date/time")).build();
         }
 
@@ -250,7 +262,7 @@ public class ItemResource {
         item.setId(found.getId());
         item.setUserId(loggedInUser.getId());
         item.setCreated(found.getCreated());
-        item.setUpdated(new Date());
+        item.setUpdated(now);
 
         Item updatedItem = this.dao.update(item);
 
