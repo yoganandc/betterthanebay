@@ -1,5 +1,6 @@
 package edu.neu.ccs.cs5500.chucknorris.betterthanebay.resources;
 
+import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiParam;
 import com.wordnik.swagger.annotations.ApiResponse;
@@ -39,6 +40,7 @@ import io.dropwizard.jersey.params.NonEmptyStringParam;
  */
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
+@Api(value = "/items/{itemId}/feedback", description = "Feedback")
 public class FeedbackResource {
 
     private FeedbackDAO dao;
