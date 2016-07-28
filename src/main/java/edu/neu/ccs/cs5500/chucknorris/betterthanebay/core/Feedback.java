@@ -155,18 +155,13 @@ public class Feedback {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Feedback feedback = (Feedback) o;
-        return Objects.equals(getId(), feedback.getId()) &&
-                Objects.equals(getMessage(), feedback.getMessage()) &&
-                Objects.equals(getCreated(), feedback.getCreated()) &&
-                Objects.equals(getUpdated(), feedback.getUpdated()) &&
-                Objects.equals(getItemId(), feedback.getItemId()) &&
-                Objects.equals(getUserId(), feedback.getUserId()) &&
+        return Objects.equals(getMessage(), feedback.getMessage()) &&
                 Objects.equals(getRating(), feedback.getRating());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getMessage(), getCreated(), getUpdated(), getItemId(), getUserId(), getRating());
+        return Objects.hash(getMessage(), getRating());
     }
 
     @Override

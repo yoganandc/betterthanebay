@@ -137,27 +137,21 @@ public class Bid {
     this.paymentId = paymentId;
   }
 
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Bid bid = (Bid) o;
+        return Objects.equals(getAmount(), bid.getAmount()) &&
+                Objects.equals(getPaymentId(), bid.getPaymentId());
     }
-    if ((o == null) || (getClass() != o.getClass())) {
-      return false;
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getAmount(), getPaymentId());
     }
-    Bid bid = (Bid) o;
-    return Objects.equals(getId(), bid.getId()) && Objects.equals(getItemId(), bid.getItemId())
-        && Objects.equals(getUserId(), bid.getUserId())
-        && Objects.equals(getAmount(), bid.getAmount()) && Objects.equals(getTime(), bid.getTime())
-        && Objects.equals(getPaymentId(), bid.getPaymentId());
-  }
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(getId(), getItemId(), getUserId(), getAmount(), getTime(), getPaymentId());
-  }
-
-  @Override
+    @Override
   public String toString() {
     return "Bid{" + "id=" + this.id + ", itemId=" + this.itemId + ", userId=" + this.userId
         + ", amount=" + this.amount + ", time=" + this.time + ", paymentId=" + this.paymentId + '}';

@@ -248,22 +248,18 @@ public class Item {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Item item = (Item) o;
-        return Objects.equals(getId(), item.getId()) &&
-                Objects.equals(getName(), item.getName()) &&
+        return Objects.equals(getName(), item.getName()) &&
                 Objects.equals(getDescription(), item.getDescription()) &&
                 Objects.equals(getCategories(), item.getCategories()) &&
                 Objects.equals(getInitialPrice(), item.getInitialPrice()) &&
                 Objects.equals(getStartDate(), item.getStartDate()) &&
                 Objects.equals(getEndDate(), item.getEndDate()) &&
-                Objects.equals(getImage(), item.getImage()) &&
-                Objects.equals(getUserId(), item.getUserId()) &&
-                Objects.equals(getCreated(), item.getCreated()) &&
-                Objects.equals(getUpdated(), item.getUpdated());
+                Objects.equals(getImage(), item.getImage());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getName(), getDescription(), getCategories(), getInitialPrice(), getStartDate(), getEndDate(), getImage(), getUserId(), getCreated(), getUpdated());
+        return Objects.hash(getName(), getDescription(), getCategories(), getInitialPrice(), getStartDate(), getEndDate(), getImage());
     }
 
     @Override

@@ -22,11 +22,13 @@ public class FeedbackDAO extends AbstractDAO<Feedback> {
         Query query;
 
         if(id.equals(Feedback.BUYER)) {
-            query = namedQuery("edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.BuyerFeedback.getForItem");
+            query = namedQuery("edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.BuyerFeedback.getForItem")
+            .setParameter("item_id", itemId);
             return uniqueResult(query);
         }
         else if(id.equals(Feedback.SELLER)){
-            query = namedQuery("edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.SellerFeedback.getForItem");
+            query = namedQuery("edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.SellerFeedback.getForItem")
+            .setParameter("item_id", itemId);
             return uniqueResult(query);
         }
 
