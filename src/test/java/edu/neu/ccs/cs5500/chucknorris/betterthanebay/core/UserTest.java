@@ -52,13 +52,28 @@ public class UserTest {
         payments.add(pay2);
 
         Person p1 = new Person(29L, "Tina", null, "Vivio", null);
-        TEST_USERS.put("tina", new User(19L, "tinavivio", "$31$16$or3915LByrV-LV07oe9GyXoqaFjiLxMHLuR8NqyYZy4", p1, addresses, payments, null, new Date(1469155469613L), new Date(1469155469613L)));
+        TEST_USERS.put("tina", new User(19L, "tinavivio", "$31$16$or3915LByrV-LV07oe9GyXoqaFjiLxMHLuR8NqyYZy4",
+                p1, addresses, payments, null, new Date(1469155469613L), new Date(1469155469613L)));
+
+        State stateCA = new State(2L, "California", "CA");
+        Address a1Sully = new Address(13L, "1313 Disneyland Dr", null, "Anaheim", stateCA, "92802");
+        SortedSet<Address> addressesSully = new TreeSet<>();
+        addressesSully.add(a1);
+
+        Payment paySully = new Payment(26L, "James", "Sullivan", "123456789109887", new Date(1546905600000L), a5, 999);
+        SortedSet<Payment> paymentsSully = new TreeSet<>();
+        paymentsSully.add(paySully);
+
+        Person person2 = new Person(29L, "Sully", null, "Sullivan", null);
+        TEST_USERS.put("sully", new User(19L, "jsully", "31$16$T1TOZzS5UCxA1cOODRhzXm1vPWhYtmWFB3RK-5UiH7I",
+                person2, addressesSully, paymentsSully, null, new Date(1469155469613L), new Date(1469155469613L)));
     }
 
     @Before
     public void setUp() {
         // USE COPY CONSTRUCTOR SO THAT VARIABLES IN MAP ARE NOT MODIFIED
         tina = new User(UserTest.TEST_USERS.get("tina"));
+
     }
 
     @Test
