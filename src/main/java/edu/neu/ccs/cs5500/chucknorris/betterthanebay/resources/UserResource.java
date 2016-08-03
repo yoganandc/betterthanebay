@@ -1,6 +1,7 @@
 package edu.neu.ccs.cs5500.chucknorris.betterthanebay.resources;
 
 import java.net.URI;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -19,6 +20,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriBuilder;
 
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.auth.PasswordUtil;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.*;
@@ -171,8 +173,9 @@ public class UserResource {
         if (createdUser == null) {
             response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorMessage("Database error"));
 
-        } else { // user successfully created
-            response = Response.created(URI.create("/users/" + createdUser.getId())).entity(createdUser);
+        } else { // user successfully created4
+            URI uri = UriBuilder.fromResource(UserResource.class).build(createdUser.getId());
+            response = Response.created(uri).entity(createdUser);
         }
 
         return response.build();
