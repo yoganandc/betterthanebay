@@ -30,7 +30,7 @@ public class StateResource {
 
     @GET
     @UnitOfWork
-    public List<State> getAllStates(@Auth User loggedInUser) {
+    public List<State> getAllStates() {
         return stateDAO.getAllCategories();
     }
 }
