@@ -65,7 +65,7 @@ public class FeedbackResource {
     @UnitOfWork
     @ApiOperation(
             value = "Find feedback with given id",
-            notes = "If {feedbackId} exists, returns the corresponding feedback object",
+            notes = "If {feedbackId} exists, returns the corresponding feedback object. Valid IDs are 'seller' & 'buyer'",
             response = Feedback.class)
     @ApiResponses(value = {@ApiResponse(code = 404, message = "Feedback not found")})
     public Response getFeedback(@ApiParam(value = "Item ID", required = true) @PathParam("itemId") LongParam itemId,
@@ -164,7 +164,7 @@ public class FeedbackResource {
     @UnitOfWork
     @ApiOperation(
             value = "Updates feedback details",
-            notes = "Updates the given feedback's details for the logged in user",
+            notes = "Updates the given feedback's details for the logged in user. Valid IDs are 'seller' & 'buyer'",
             response = Feedback.class)
     @ApiResponses(value = {@ApiResponse(code = 400, message = "Invalid feedback data supplied"),
             @ApiResponse(code = 401, message = "User must be signed in"),
@@ -230,7 +230,7 @@ public class FeedbackResource {
     @UnitOfWork
     @ApiOperation(
             value = "Deletes feedback",
-            notes = "Deletes the feedback with given feedback ID and corresponding item ID")
+            notes = "Deletes the feedback with given feedback ID and corresponding item ID. Valid IDs are 'seller' & 'buyer'")
     @ApiResponses(value = {@ApiResponse(code = 204, message = "Feedback successfully deleted"),
             @ApiResponse(code = 401, message = "User must be signed in"),
             @ApiResponse(code = 403, message = "Feedback does not belong to signed in user"),

@@ -13,6 +13,8 @@ import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.User;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.db.StateDAO;
 import io.dropwizard.auth.Auth;
 import io.dropwizard.hibernate.UnitOfWork;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 
 /**
  * Created by yoganandc on 7/22/16.
@@ -20,6 +22,7 @@ import io.dropwizard.hibernate.UnitOfWork;
 @Path("/states")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
+@Api
 public class StateResource {
 
     private final StateDAO stateDAO;
@@ -30,6 +33,10 @@ public class StateResource {
 
     @GET
     @UnitOfWork
+    @ApiOperation(
+            value = "Returns a list of all US states",
+            notes = "Returns a list of all US states",
+            response = State.class)
     public List<State> getAllStates() {
         return stateDAO.getAllCategories();
     }
