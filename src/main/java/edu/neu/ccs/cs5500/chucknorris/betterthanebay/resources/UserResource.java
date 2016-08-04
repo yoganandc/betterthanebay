@@ -150,6 +150,10 @@ public class UserResource {
             @ApiResponse(code = 500, message = "Database error while creating user")})
     public Response addUser(@Valid User user) {
 
+        if(dao.findByCredentials(user.getUsername()) != null) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorMessage("Username already taken")).build();
+        }
+
         Response.ResponseBuilder response;
 
         // null out IDs
