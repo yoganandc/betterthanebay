@@ -326,7 +326,7 @@ public class UserResource {
     @GET
     @Path("/{userId}/feedback/{feedbackId}")
     @UnitOfWork
-    @ApiOperation(value = "Finds the user's feedback", notes = "Returns all user feedback",
+    @ApiOperation(value = "Finds the user's feedback", notes = "Returns all user feedback. Valid IDs are 'seller' & 'buyer'",
             response = Feedback.class)
     @ApiResponses(value = {@ApiResponse(code = 204, message = "No user feedback found"),
             @ApiResponse(code = 401, message = "User must be signed in")})

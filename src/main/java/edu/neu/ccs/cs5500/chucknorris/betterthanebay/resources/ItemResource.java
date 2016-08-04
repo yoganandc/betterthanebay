@@ -299,8 +299,12 @@ public class ItemResource {
     @GET
     @Path("/{itemId}/winning")
     @UnitOfWork
+    @ApiOperation(value = "Get winning bid",
+                    notes = "Get winning bid for item, if bids exist",
+                    response = Bid.class)
     @ApiResponses(value = {@ApiResponse(code = 404, message = "No bids found")})
-    public Response getCurrentWinningBid(@PathParam("itemId") LongParam itemId, @Auth User loggedInUser) {
+    public Response getCurrentWinningBid(
+            @ApiParam(value = "Item ID", required = true) @PathParam("itemId") LongParam itemId, @Auth User loggedInUser) {
 
         Bid bid = this.bidDAO.getCurrentWinningBid(itemId.get());
 
