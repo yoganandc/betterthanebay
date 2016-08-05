@@ -22,7 +22,7 @@ import io.swagger.annotations.ApiOperation;
 @Path("/states")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-@Api
+@Api(value = "state")
 public class StateResource {
 
     private final StateDAO stateDAO;
@@ -36,7 +36,8 @@ public class StateResource {
     @ApiOperation(
             value = "Returns a list of all US states",
             notes = "Returns a list of all US states",
-            response = State.class)
+            response = State.class,
+            responseContainer = "List")
     public List<State> getAllStates() {
         return stateDAO.getAllCategories();
     }

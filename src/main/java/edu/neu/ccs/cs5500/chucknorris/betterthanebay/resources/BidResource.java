@@ -37,7 +37,7 @@ import io.swagger.annotations.Authorization;
 
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-@Api //authorizations = {@Authorization(value = "basicauth")})
+@Api(value = "bid")
 public class BidResource {
 
   private BidDAO dao;

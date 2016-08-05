@@ -46,7 +46,7 @@ import io.swagger.annotations.Authorization;
 @Path("/users")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-@Api //authorizations = {@Authorization(value = "basicauth")})
+@Api(value = "user")
 public class UserResource {
 
     private final UserDAO dao;
@@ -281,7 +281,8 @@ public class UserResource {
     @UnitOfWork
     @ApiOperation(value = "Finds the user's items",
             notes = "Returns all user items for the logged in user and active items for another user",
-            response = Item.class)
+            response = Item.class,
+            responseContainer = "List")
     @ApiResponses(value = {@ApiResponse(code = 204, message = "No user items found"),
             @ApiResponse(code = 401, message = "User must be signed in"),
             @ApiResponse(code = 500, message = "Database error")})
@@ -309,7 +310,8 @@ public class UserResource {
     @Path("/{userId}/bids")
     @UnitOfWork
     @ApiOperation(value = "Finds the user's bids", notes = "Returns all user bids",
-            response = Bid.class)
+            response = Bid.class,
+            responseContainer = "List")
     @ApiResponses(value = {@ApiResponse(code = 204, message = "No user bids found"),
             @ApiResponse(code = 401, message = "User must be signed in")})
     public Response getBidsForUser(
@@ -332,8 +334,9 @@ public class UserResource {
     @GET
     @Path("/{userId}/feedback/{feedbackId}")
     @UnitOfWork
-    @ApiOperation(value = "Finds the user's feedback", notes = "Returns all user feedback. Valid IDs are 'seller' & 'buyer'",
-            response = Feedback.class)
+    @ApiOperation(value = "Finds the user's feedback as seller or buyer.", notes = "Returns all user feedback. Valid IDs are 'seller' & 'buyer'",
+            response = Feedback.class,
+            responseContainer = "List")
     @ApiResponses(value = {@ApiResponse(code = 204, message = "No user feedback found"),
             @ApiResponse(code = 401, message = "User must be signed in")})
     public Response getSellerFeedback(

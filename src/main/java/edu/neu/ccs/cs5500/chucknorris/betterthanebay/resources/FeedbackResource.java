@@ -42,7 +42,7 @@ import io.swagger.annotations.Authorization;
  */
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-@Api //authorizations = {@Authorization(value = "basicauth")})
+@Api(value = "feedback")
 public class FeedbackResource {
 
     private FeedbackDAO dao;
@@ -66,7 +66,7 @@ public class FeedbackResource {
     @Path("/{feedbackId}")
     @UnitOfWork
     @ApiOperation(
-            value = "Find feedback with given id",
+            value = "Find feedback left for item's buyer or seller",
             notes = "If {feedbackId} exists, returns the corresponding feedback object. Valid IDs are 'seller' & 'buyer'",
             response = Feedback.class)
     @ApiResponses(value = {@ApiResponse(code = 404, message = "Feedback not found")})

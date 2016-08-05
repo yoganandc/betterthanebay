@@ -22,7 +22,7 @@ import io.swagger.annotations.ApiResponses;
 @Path("/categories")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-@Api
+@Api(value = "category")
 public class CategoryResource {
 
     private final CategoryDAO dao;
@@ -36,7 +36,8 @@ public class CategoryResource {
     @ApiOperation(
             value = "Returns a list of all existing categories",
             notes = "Returns a list of all existing categories",
-            response = Category.class)
+            response = Category.class,
+            responseContainer = "List")
     public Response getAllCategories(@Auth User loggedInUser) {
         return Response.ok(dao.getAllCategories()).build();
     }
