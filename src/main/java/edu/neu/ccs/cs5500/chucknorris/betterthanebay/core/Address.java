@@ -15,6 +15,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+
+import io.swagger.annotations.ApiModelProperty;
 
 @Entity
 @Table(name = "address")
@@ -26,21 +29,25 @@ public class Address implements Comparable<Address> {
 
     @Column(nullable = false)
     @NotBlank
+    @ApiModelProperty(required = true)
     private String line1;
 
     private String line2;
 
     @Column(nullable = false)
     @NotBlank
+    @ApiModelProperty(required = true)
     private String city;
 
     @OneToOne(optional = false)
     @JoinColumn(name = "state_id", nullable = false)
     @Valid
+    @NotNull
     private State state;
 
     @Column(nullable = false)
     @NotBlank
+    @ApiModelProperty(required = true)
     private String zip;
 
     public Address() {

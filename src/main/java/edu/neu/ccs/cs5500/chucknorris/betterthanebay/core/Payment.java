@@ -22,6 +22,8 @@ import javax.persistence.TemporalType;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import io.swagger.annotations.ApiModelProperty;
+
 @Entity
 @Table(name = "payment")
 public class Payment implements Comparable<Payment> {
@@ -32,14 +34,17 @@ public class Payment implements Comparable<Payment> {
 
     @Column(name = "first_name", nullable = false)
     @NotBlank
+    @ApiModelProperty(required = true)
     private String firstName;
 
     @Column(name = "last_name", nullable = false)
     @NotBlank
+    @ApiModelProperty(required = true)
     private String lastName;
 
     @Column(nullable = false)
     @NotBlank
+    @ApiModelProperty(required = true)
     private String number;
 
     @Column(nullable = false)

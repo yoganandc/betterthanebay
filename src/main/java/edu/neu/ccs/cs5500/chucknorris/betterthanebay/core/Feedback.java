@@ -21,6 +21,8 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
+import io.swagger.annotations.ApiModelProperty;
+
 @MappedSuperclass
 public class Feedback {
 
@@ -29,16 +31,19 @@ public class Feedback {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @ApiModelProperty(required = true)
     private Long id;
 
     private String message;
 
     @Column(nullable = false, updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
+    @ApiModelProperty(required = true)
     private Date created;
 
     @Column(nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
+    @ApiModelProperty(required = true)
     private Date updated;
 
     @Column(name = "item_id", nullable = false)

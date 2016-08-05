@@ -14,6 +14,8 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import io.swagger.annotations.ApiModelProperty;
+
 /**
  * Created by yoganandc on 7/1/16.
  */
@@ -33,6 +35,7 @@ public class Category implements Comparable<Category> {
 
     @Column(nullable = false)
     @NotBlank
+    @ApiModelProperty(required = true)
     private String name;
 
     public Category() {

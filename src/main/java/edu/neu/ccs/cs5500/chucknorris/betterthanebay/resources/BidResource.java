@@ -58,7 +58,7 @@ public class BidResource {
   public Response getBid(
       @ApiParam(value = "Item ID", required = true) @PathParam("itemId") LongParam itemId,
       @ApiParam(value = "Bid ID", required = true) @PathParam("bidId") LongParam bidId,
-      @Auth User loggedInUser) {
+      @ApiParam(hidden = true) @Auth User loggedInUser) {
 
     final Bid bid = this.dao.findById(bidId.get());
 
@@ -83,7 +83,7 @@ public class BidResource {
       @ApiResponse(code = 401, message = "User must be logged in")})
   public Response getAllBids(
       @ApiParam(value = "Item ID", required = true) @PathParam("itemId") LongParam itemId,
-      @Auth User loggedInUser) {
+      @ApiParam(hidden = true) @Auth User loggedInUser) {
 
     final List<Bid> bids = dao.getBidsForItem(itemId.get());
 
@@ -114,7 +114,7 @@ public class BidResource {
       @ApiResponse(code = 404, message = "Item not found")})
   public Response addBid(
       @ApiParam(value = "Item ID", required = true) @PathParam("itemId") LongParam itemId,
-      @Valid Bid bid, @Auth User loggedInUser, @Context UriInfo uriInfo) {
+      @Valid Bid bid, @ApiParam(hidden = true) @Auth User loggedInUser, @Context UriInfo uriInfo) {
 
     Item item = this.itemDAO.findById(itemId.get());
 
@@ -185,7 +185,7 @@ public class BidResource {
   public Response updateBid(
       @ApiParam(value = "Item ID", required = true) @PathParam("itemId") LongParam itemId,
       @ApiParam(value = "Bid ID", required = true) @PathParam("bidId") LongParam bidId,
-      @Valid Bid bid, @Auth User loggedInUser) {
+      @Valid Bid bid, @ApiParam(hidden = true) @Auth User loggedInUser) {
 
     Bid found = this.dao.findById(bidId.get());
     if (found == null) {
@@ -240,7 +240,7 @@ public class BidResource {
   public Response deleteBid(
       @ApiParam(value = "Item ID", required = true) @PathParam("itemId") LongParam itemId,
       @ApiParam(value = "Bid ID", required = true) @PathParam("bidId") LongParam bidId,
-      @Auth User loggedInUser) {
+      @ApiParam(hidden = true) @Auth User loggedInUser) {
 
     Bid bid = this.dao.findById(bidId.get());
 

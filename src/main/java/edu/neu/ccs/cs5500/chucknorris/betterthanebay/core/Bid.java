@@ -20,6 +20,8 @@ import javax.validation.constraints.NotNull;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import io.swagger.annotations.ApiModelProperty;
+
 @Entity
 @Table(name = "bid")
 @NamedQueries(value = {@NamedQuery(
@@ -34,6 +36,7 @@ public class Bid {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @ApiModelProperty(required = true)
   private Long id;
 
   @Column(name = "item_id", nullable = false)
@@ -49,6 +52,7 @@ public class Bid {
 
   @Column(name = "created", nullable = false, updatable = false)
   @Temporal(TemporalType.TIMESTAMP)
+  @ApiModelProperty(required = true)
   private Date time;
 
   @Column(name = "payment_id", nullable = false)

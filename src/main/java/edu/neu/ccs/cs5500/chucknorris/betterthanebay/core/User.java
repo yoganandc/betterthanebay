@@ -36,6 +36,8 @@ import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
 
+import io.swagger.annotations.ApiModelProperty;
+
 @Entity
 @Table(name = "`user`")
 @NamedQueries(value = {
@@ -51,14 +53,17 @@ public class User implements Principal {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @ApiModelProperty(required = true)
     private Long id;
 
     @Column(nullable = false, unique = true, updatable = false)
     @NotBlank
+    @ApiModelProperty(required = true)
     private String username;
 
     @Column(nullable = false)
     @NotBlank
+    @ApiModelProperty(required = true)
     private String password;
 
     @OneToOne(cascade = CascadeType.ALL, optional = false, orphanRemoval = true)
@@ -73,6 +78,7 @@ public class User implements Principal {
     @Valid
     @NotEmpty
     @OrderBy(clause = "id ASC")
+    @ApiModelProperty(required = true)
     private SortedSet<Address> addresses = new TreeSet<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true,
@@ -80,6 +86,7 @@ public class User implements Principal {
     @Valid
     @NotEmpty
     @OrderBy(clause = "id ASC")
+    @ApiModelProperty(required = true)
     private SortedSet<Payment> payments = new TreeSet<>();
 
     @DecimalMax(value = "5.0")
@@ -88,10 +95,12 @@ public class User implements Principal {
 
     @Column(nullable = false, updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
+    @ApiModelProperty(required = true)
     private Date created;
 
     @Column(nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
+    @ApiModelProperty(required = true)
     private Date updated;
 
     public User() {

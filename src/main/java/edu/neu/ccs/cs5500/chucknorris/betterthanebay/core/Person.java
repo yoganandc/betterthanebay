@@ -16,6 +16,8 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import io.swagger.annotations.ApiModelProperty;
+
 @Entity
 @Table(name = "person")
 public class Person {
@@ -26,12 +28,14 @@ public class Person {
 
     @Column(nullable = false)
     @NotBlank
+    @ApiModelProperty(required = true)
     private String first;
 
     private String middle;
 
     @Column(nullable = false)
     @NotBlank
+    @ApiModelProperty(required = true)
     private String last;
 
     @Temporal(TemporalType.TIMESTAMP)

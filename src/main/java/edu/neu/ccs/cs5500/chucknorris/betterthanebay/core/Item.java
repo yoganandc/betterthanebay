@@ -36,6 +36,7 @@ import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import io.dropwizard.validation.ValidationMethod;
+import io.swagger.annotations.ApiModelProperty;
 
 @Entity
 @Table(name = "item")
@@ -59,10 +60,12 @@ public class Item {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @ApiModelProperty(required = true)
     private Long id;
 
     @Column(nullable = false)
     @NotBlank
+    @ApiModelProperty(required = true)
     private String name;
 
     private String description;
@@ -74,6 +77,7 @@ public class Item {
     @NotEmpty
     @Valid
     @OrderBy(clause = "id ASC")
+    @ApiModelProperty(required = true)
     private SortedSet<Category> categories = new TreeSet<>();
 
     @Column(name = "price", nullable = false)
@@ -83,11 +87,13 @@ public class Item {
 
     @Column(name = "start_date", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
+    @ApiModelProperty(required = true)
     private Date startDate;
 
     @Column(name = "end_date", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     @NotNull
+    @ApiModelProperty(required = true)
     private Date endDate;
 
     private String image;
@@ -97,10 +103,12 @@ public class Item {
 
     @Column(nullable = false, updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
+    @ApiModelProperty(required = true)
     private Date created;
 
     @Column(nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
+    @ApiModelProperty(required = true)
     private Date updated;
 
     public Item() {

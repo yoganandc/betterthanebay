@@ -14,6 +14,8 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import io.swagger.annotations.ApiModelProperty;
+
 /**
  * Created by yoganandc on 6/29/16.
  */
@@ -33,10 +35,12 @@ public class State implements Comparable<State> {
 
     @Column(nullable = false, unique = true)
     @NotBlank
+    @ApiModelProperty(required = true)
     private String name;
 
     @Column(nullable = false, unique = true)
     @NotBlank
+    @ApiModelProperty(required = true)
     private String code;
 
     public State() {

@@ -71,7 +71,7 @@ public class UserResource {
     @ApiResponses(value = {@ApiResponse(code = 404, message = "User ID doesn't exist")})
     public Response getUser(
             @ApiParam(value = "ID of a user", required = true) @PathParam("userId") LongParam userId,
-            @Auth User loggedInUser) {
+            @ApiParam(hidden = true) @Auth User loggedInUser) {
 
         final User user = this.dao.findById(userId.get());
         if (user == null) {
@@ -102,7 +102,7 @@ public class UserResource {
                     required = true) @QueryParam("username") NonEmptyStringParam username,
             @ApiParam(value = "results offset", required = false) @QueryParam("start") IntParam start,
             @ApiParam(value = "results list size", required = false) @QueryParam("size") IntParam size,
-            @Auth User loggedInUser) {
+            @ApiParam(hidden = true) @Auth User loggedInUser) {
 
         if (username == null || !username.get().isPresent()) {
             return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorMessage("No username entered")).build();
@@ -146,7 +146,8 @@ public class UserResource {
 
     @POST
     @UnitOfWork
-    @ApiOperation(value = "Creates a new user account", notes = "Adds the given user to the database",
+    @ApiOperation(value = "Creates a new user account", notes = "Adds the given user to the database. " +
+            "User to be created must have at least one address and one payment option.",
             response = User.class)
     @ApiResponses(value = {@ApiResponse(code = 400, message = "Invalid user data supplied"),
             @ApiResponse(code = 500, message = "Database error while creating user")})
@@ -198,7 +199,7 @@ public class UserResource {
             @ApiResponse(code = 404, message = "User ID not found")})
     public Response updateUser(
             @ApiParam(value = "ID of a user", required = true) @PathParam("userId") LongParam userId,
-            @Valid User user, @Auth User loggedInUser) {
+            @Valid User user, @ApiParam(hidden = true) @Auth User loggedInUser) {
 
         // FORBIDDEN TO UPDATE IF USER LOGGED IN IS NOT THE SAME
         if (!userId.get().equals(loggedInUser.getId())) {
@@ -259,7 +260,7 @@ public class UserResource {
             @ApiResponse(code = 404, message = "User ID not found")})
     public Response deleteUser(
             @ApiParam(value = "ID of a user", required = true) @PathParam("userId") LongParam userId,
-            @Auth User loggedInUser) {
+            @ApiParam(hidden = true) @Auth User loggedInUser) {
 
         // FORBIDDEN TO DELETE IF USER LOGGED IN IS NOT THE SAME
         if (!userId.get().equals(loggedInUser.getId())) {
@@ -288,7 +289,7 @@ public class UserResource {
             @ApiResponse(code = 500, message = "Database error")})
     public Response getItemsForUser(
             @ApiParam(value = "ID of a user", required = true) @PathParam("userId") LongParam userId,
-            @Auth User loggedInUser) {
+            @ApiParam(hidden = true) @Auth User loggedInUser) {
         List<Item> items = null;
         if (loggedInUser.getId().equals(userId.get())) {
             items = this.itemDAO.getAllItems(userId.get());
@@ -316,7 +317,7 @@ public class UserResource {
             @ApiResponse(code = 401, message = "User must be signed in")})
     public Response getBidsForUser(
             @ApiParam(value = "ID of a user", required = true) @PathParam("userId") LongParam userId,
-            @Auth User loggedInUser) {
+            @ApiParam(hidden = true) @Auth User loggedInUser) {
 
         List<Bid> list = bidDAO.getBidsForUser(userId.get());
 
@@ -343,7 +344,7 @@ public class UserResource {
             @ApiParam(value = "User ID", required = true) @PathParam("userId") LongParam userId,
             @ApiParam(value = "Feedback ID of a user",
                     required = true) @PathParam("feedbackId") NonEmptyStringParam feedbackId,
-            @Auth User loggedInUser) {
+            @ApiParam(hidden = true) @Auth User loggedInUser) {
         List<Feedback> feedbackList = null;
 
         if(feedbackId.equals(Feedback.SELLER)) {

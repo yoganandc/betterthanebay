@@ -68,7 +68,7 @@ public class ItemResource {
   @ApiResponses(value = {@ApiResponse(code = 404, message = "Item ID not found")})
   public Response getItem(
       @ApiParam(value = "Item ID", required = true) @PathParam("itemId") LongParam itemId,
-      @Auth User loggedInUser) {
+      @ApiParam(hidden = true) @Auth User loggedInUser) {
 
         Item item = this.dao.findById(itemId.get());
 
@@ -104,7 +104,7 @@ public class ItemResource {
                     required = false) @QueryParam("priceTo") IntParam priceTo,
             @ApiParam(value = "Results offset", required = false) @QueryParam("start") IntParam start,
             @ApiParam(value = "Results list size", required = false) @QueryParam("size") IntParam size,
-            @Auth User loggedInUser) {
+            @ApiParam(hidden = true) @Auth User loggedInUser) {
 
         String searchQuery;
 
@@ -179,7 +179,7 @@ public class ItemResource {
     @ApiResponses(value = {@ApiResponse(code = 400, message = "Invalid item data supplied"),
             @ApiResponse(code = 401, message = "User must be signed in"),
             @ApiResponse(code = 500, message = "Database error")})
-    public Response addItem(@Valid Item item, @Auth User loggedInUser, @Context UriInfo uriInfo) {
+    public Response addItem(@Valid Item item, @ApiParam(hidden = true) @Auth User loggedInUser, @Context UriInfo uriInfo) {
 
         Date now = new Date();
         if (item.getStartDate().before(now)) {
@@ -223,7 +223,7 @@ public class ItemResource {
             @ApiResponse(code = 403, message = "User cannot update item data for another user"),
             @ApiResponse(code = 404, message = "Item ID not found")})
     public Response updateItem(@ApiParam(value = "Item ID", required = true) @PathParam("itemId") LongParam itemId,
-            @Valid Item item, @Auth User loggedInUser) {
+            @Valid Item item, @ApiParam(hidden = true) @Auth User loggedInUser) {
 
         Item found = this.dao.findById(itemId.get());
         if (found == null) {
@@ -282,7 +282,7 @@ public class ItemResource {
             @ApiResponse(code = 404, message = "Item ID not found")})
     public Response deleteItem(
             @ApiParam(value = "Item ID", required = true) @PathParam("itemId") LongParam itemId,
-            @Auth User loggedInUser) {
+            @ApiParam(hidden = true) @Auth User loggedInUser) {
 
         Item found = this.dao.findById(itemId.get());
 
@@ -307,7 +307,8 @@ public class ItemResource {
                     response = Bid.class)
     @ApiResponses(value = {@ApiResponse(code = 404, message = "No bids found")})
     public Response getCurrentWinningBid(
-            @ApiParam(value = "Item ID", required = true) @PathParam("itemId") LongParam itemId, @Auth User loggedInUser) {
+            @ApiParam(value = "Item ID", required = true) @PathParam("itemId") LongParam itemId,
+            @ApiParam(hidden = true) @Auth User loggedInUser) {
 
         Bid bid = this.bidDAO.getCurrentWinningBid(itemId.get());
 

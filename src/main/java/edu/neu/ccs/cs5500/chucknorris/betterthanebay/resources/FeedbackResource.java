@@ -72,7 +72,7 @@ public class FeedbackResource {
     @ApiResponses(value = {@ApiResponse(code = 404, message = "Feedback not found")})
     public Response getFeedback(@ApiParam(value = "Item ID", required = true) @PathParam("itemId") LongParam itemId,
                                 @ApiParam(value = "Feedback ID", required = true) @PathParam("feedbackId") NonEmptyStringParam feedbackId,
-                                @Auth User loggedInUser) {
+                                @ApiParam(hidden = true) @Auth User loggedInUser) {
 
         if(!feedbackId.get().isPresent() || !VALID_ID.contains(feedbackId.get().get())) {
             return Response.status(Response.Status.NOT_FOUND).entity(new ErrorMessage("Valid ID is either \"seller\" or \"buyer\"")).build();
@@ -99,7 +99,7 @@ public class FeedbackResource {
             @ApiResponse(code = 404, message = "Item ID not found"),
             @ApiResponse(code = 500, message = "Database error while creating feedback")})
     public Response addFeedback(@ApiParam(value = "Item ID", required = true) @PathParam("itemId") LongParam itemId,
-                                @Valid Feedback feedback, @Auth User loggedInUser, @Context UriInfo uriInfo) {
+                                @Valid Feedback feedback, @ApiParam(hidden = true) @Auth User loggedInUser, @Context UriInfo uriInfo) {
 
         Item item = itemDAO.findById(itemId.get());
         if(item == null) {
@@ -175,7 +175,7 @@ public class FeedbackResource {
             @ApiResponse(code = 500, message = "Database error")})
     public Response updateFeedback(@ApiParam(value = "Item ID", required = true) @PathParam("itemId") LongParam itemId,
                                    @ApiParam(value = "Feedback ID", required = true) @PathParam("feedbackId") NonEmptyStringParam feedbackId,
-                                   @Valid Feedback feedback, @Auth User loggedInUser) {
+                                   @Valid Feedback feedback, @ApiParam(hidden = true) @Auth User loggedInUser) {
 
         if(!feedbackId.get().isPresent() || !VALID_ID.contains(feedbackId.get().get())) {
             return Response.status(Response.Status.NOT_FOUND).entity(new ErrorMessage("Valid ID is either \"seller\" or \"buyer\"")).build();
@@ -239,7 +239,7 @@ public class FeedbackResource {
             @ApiResponse(code = 404, message = "Feedback not found")})
     public Response deleteFeedback(@ApiParam(value = "Item ID", required = true) @PathParam("itemId") LongParam itemId,
                                    @ApiParam(value = "Feedback ID", required = true) @PathParam("feedbackId") NonEmptyStringParam feedbackId,
-                                   @Auth User loggedInUser) {
+                                   @ApiParam(hidden = true) @Auth User loggedInUser) {
 
         if(!feedbackId.get().isPresent() || VALID_ID.contains(feedbackId.get().get())) {
             return Response.status(Response.Status.NOT_FOUND).entity(new ErrorMessage("Valid ID is either \"seller\" or \"buyer\"")).build();
