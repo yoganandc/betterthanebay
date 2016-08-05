@@ -15,8 +15,10 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Bid;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.ErrorMessage;
@@ -177,7 +179,7 @@ public class ItemResource {
     @ApiResponses(value = {@ApiResponse(code = 400, message = "Invalid item data supplied"),
             @ApiResponse(code = 401, message = "User must be signed in"),
             @ApiResponse(code = 500, message = "Database error")})
-    public Response addItem(@Valid Item item, @Auth User loggedInUser) {
+    public Response addItem(@Valid Item item, @Auth User loggedInUser, @Context UriInfo uriInfo) {
 
         Date now = new Date();
         if (item.getStartDate().before(now)) {
@@ -206,7 +208,8 @@ public class ItemResource {
         if (createdItem == null) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorMessage("Database error")).build();
         }
-        return Response.created(URI.create("/items/" + createdItem.getId())).entity(createdItem)
+        URI uri = uriInfo.getAbsolutePathBuilder().path(createdItem.getId().toString()).build();
+        return Response.created(uri).entity(createdItem)
                         .build();
     }
 

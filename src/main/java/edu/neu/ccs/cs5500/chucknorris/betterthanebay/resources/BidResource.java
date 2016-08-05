@@ -14,8 +14,10 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Bid;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Item;
@@ -112,7 +114,7 @@ public class BidResource {
       @ApiResponse(code = 404, message = "Item not found")})
   public Response addBid(
       @ApiParam(value = "Item ID", required = true) @PathParam("itemId") LongParam itemId,
-      @Valid Bid bid, @Auth User loggedInUser) {
+      @Valid Bid bid, @Auth User loggedInUser, @Context UriInfo uriInfo) {
 
     Item item = this.itemDAO.findById(itemId.get());
 
@@ -165,7 +167,8 @@ public class BidResource {
     if (createdBid == null) {
       return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
     } else {
-      return Response.created(URI.create("/bids/" + createdBid.getId())).entity(createdBid).build();
+        URI uri = uriInfo.getAbsolutePathBuilder().path(createdBid.getId().toString()).build();
+      return Response.created(uri).entity(createdBid).build();
     }
   }
 

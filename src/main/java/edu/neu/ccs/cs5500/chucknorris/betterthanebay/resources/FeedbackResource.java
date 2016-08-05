@@ -14,9 +14,11 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
+import javax.ws.rs.core.UriInfo;
 
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.*;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.db.BidDAO;
@@ -97,7 +99,7 @@ public class FeedbackResource {
             @ApiResponse(code = 404, message = "Item ID not found"),
             @ApiResponse(code = 500, message = "Database error while creating feedback")})
     public Response addFeedback(@ApiParam(value = "Item ID", required = true) @PathParam("itemId") LongParam itemId,
-                                @Valid Feedback feedback, @Auth User loggedInUser) {
+                                @Valid Feedback feedback, @Auth User loggedInUser, @Context UriInfo uriInfo) {
 
         Item item = itemDAO.findById(itemId.get());
         if(item == null) {
@@ -148,11 +150,11 @@ public class FeedbackResource {
         } else {
 
             if (bid.getUserId().equals(loggedInUser.getId())) {
-                return Response.created(URI.create("/items/" + item.getId() + "/feedback/" + Feedback.SELLER))
+                return Response.created(uriInfo.getAbsolutePathBuilder().path(Feedback.SELLER).build())
                         .entity(created)
                         .build();
             } else {
-                return Response.created(URI.create("/items/" + item.getId() + "/feedback/" + Feedback.BUYER))
+                return Response.created(uriInfo.getAbsolutePathBuilder().path(Feedback.BUYER).build())
                         .entity(created)
                         .build();
             }

@@ -18,9 +18,11 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
+import javax.ws.rs.core.UriInfo;
 
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.auth.PasswordUtil;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.*;
@@ -148,7 +150,7 @@ public class UserResource {
             response = User.class)
     @ApiResponses(value = {@ApiResponse(code = 400, message = "Invalid user data supplied"),
             @ApiResponse(code = 500, message = "Database error while creating user")})
-    public Response addUser(@Valid User user) {
+    public Response addUser(@Valid User user, @Context UriInfo uriInfo) {
 
         if(dao.findByCredentials(user.getUsername()) != null) {
             return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorMessage("Username already taken")).build();
@@ -177,8 +179,8 @@ public class UserResource {
         if (createdUser == null) {
             response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorMessage("Database error"));
 
-        } else { // user successfully created4
-            URI uri = UriBuilder.fromResource(UserResource.class).build(createdUser.getId());
+        } else { // user successfully created
+            URI uri = uriInfo.getAbsolutePathBuilder().path(createdUser.getId().toString()).build();
             response = Response.created(uri).entity(createdUser);
         }
 
