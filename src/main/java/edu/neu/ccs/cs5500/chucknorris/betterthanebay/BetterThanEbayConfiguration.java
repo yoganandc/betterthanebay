@@ -18,17 +18,12 @@ public class BetterThanEbayConfiguration extends Configuration {
 
     @JsonProperty("swagger")
     public SwaggerBundleConfiguration swaggerBundleConfiguration;
-   
-    @JsonProperty
-    public DataSourceFactory getDataSourceFactory() {
 
+    public DataSourceFactory getDataSourceFactory() {
         return database;
     }
 
-    @JsonProperty
     public void setDataSourceFactory(DataSourceFactory database) {
-
         this.database = database;
     }
-
 }

@@ -79,7 +79,6 @@ public class BetterThanEbayApplication extends Application<BetterThanEbayConfigu
                 return configuration.getDataSourceFactory();
             }
         });
-        bootstrap.addBundle(new AssetsBundle("/assets", "/"));
     }
 
     @Override
