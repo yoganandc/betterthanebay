@@ -1,0 +1,10 @@
+.idea/
+*.iml
+.metadata/
+.recommenders/
+.classpath
+.project
+.settings/
+.DS_Store
+target/
+src/main/resources/assets/
