@@ -79,11 +79,12 @@ public class UserResource {
             throw new WebApplicationException("User does not exist", Status.NOT_FOUND);
         }
 
+        User userCopy = new User(user);
+        userCopy.setPassword(null);
+
         if (user.getId().equals(loggedInUser.getId())) {
-            return user;
+            return userCopy;
         } else {
-            User userCopy = new User(user);
-            userCopy.setPassword(null);
             userCopy.getPayments().clear();
             userCopy.getAddresses().clear();
             userCopy.setDetails(null);
@@ -132,8 +133,8 @@ public class UserResource {
 
         for(User user : list) {
             User userCopy = new User(user);
+            userCopy.setPassword(null);
             if(!userCopy.getId().equals(loggedInUser.getId())) {
-                userCopy.setPassword(null);
                 userCopy.getPayments().clear();
                 userCopy.getAddresses().clear();
                 userCopy.setDetails(null);
