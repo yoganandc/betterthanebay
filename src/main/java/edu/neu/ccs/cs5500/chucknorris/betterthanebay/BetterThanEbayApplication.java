@@ -10,6 +10,10 @@ import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Address;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Bid;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.BuyerFeedback;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Category;
+<<<<<<< HEAD
+=======
+import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Feedback;
+>>>>>>> c2b4d56329ab5bdfb9471243e6b1ff4baa0c5abc
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Item;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Payment;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Person;
@@ -29,6 +33,10 @@ import edu.neu.ccs.cs5500.chucknorris.betterthanebay.resources.ItemResource;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.resources.StateResource;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.resources.UserResource;
 import io.dropwizard.Application;
+<<<<<<< HEAD
+=======
+import io.dropwizard.assets.AssetsBundle;
+>>>>>>> c2b4d56329ab5bdfb9471243e6b1ff4baa0c5abc
 import io.dropwizard.auth.AuthDynamicFeature;
 import io.dropwizard.auth.AuthValueFactoryProvider;
 import io.dropwizard.auth.basic.BasicCredentialAuthFilter;
