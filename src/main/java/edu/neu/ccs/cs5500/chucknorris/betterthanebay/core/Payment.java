@@ -1,10 +1,7 @@
 package edu.neu.ccs.cs5500.chucknorris.betterthanebay.core;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-<<<<<<< HEAD
 import com.fasterxml.jackson.annotation.JsonProperty;
-=======
->>>>>>> c2b4d56329ab5bdfb9471243e6b1ff4baa0c5abc
 
 import org.hibernate.validator.constraints.NotBlank;
 
@@ -96,11 +93,7 @@ public class Payment implements Comparable<Payment> {
         this.csv = csv;
     }
 
-<<<<<<< HEAD
     @JsonProperty
-=======
-    @JsonIgnore
->>>>>>> c2b4d56329ab5bdfb9471243e6b1ff4baa0c5abc
     public Long getId() {
         return this.id;
     }

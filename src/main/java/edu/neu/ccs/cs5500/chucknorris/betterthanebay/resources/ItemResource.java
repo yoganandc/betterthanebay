@@ -15,34 +15,19 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-<<<<<<< HEAD
 import javax.ws.rs.WebApplicationException;
-=======
->>>>>>> c2b4d56329ab5bdfb9471243e6b1ff4baa0c5abc
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Bid;
-<<<<<<< HEAD
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Item;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.User;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.db.BidDAO;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.db.ItemDAO;
 import io.dropwizard.auth.Auth;
 import io.dropwizard.hibernate.UnitOfWork;
-=======
-import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.ErrorMessage;
-import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Item;
-import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.User;
-import edu.neu.ccs.cs5500.chucknorris.betterthanebay.db.BidDAO;
-import edu.neu.ccs.cs5500.chucknorris.betterthanebay.db.FeedbackDAO;
-import edu.neu.ccs.cs5500.chucknorris.betterthanebay.db.ItemDAO;
-import io.dropwizard.auth.Auth;
-import io.dropwizard.hibernate.UnitOfWork;
-import io.dropwizard.hibernate.UnitOfWorkAwareProxyFactory;
->>>>>>> c2b4d56329ab5bdfb9471243e6b1ff4baa0c5abc
 import io.dropwizard.jersey.params.IntParam;
 import io.dropwizard.jersey.params.LongParam;
 import io.dropwizard.jersey.params.NonEmptyStringParam;
@@ -51,10 +36,6 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-<<<<<<< HEAD
-=======
-import io.swagger.annotations.Authorization;
->>>>>>> c2b4d56329ab5bdfb9471243e6b1ff4baa0c5abc
 
 
 @Path("/items")
@@ -64,7 +45,6 @@ import io.swagger.annotations.Authorization;
 public class ItemResource {
 
 
-<<<<<<< HEAD
     private ItemDAO dao;
     private BidDAO bidDAO;
     private FeedbackResource feedbackResource;
@@ -86,34 +66,10 @@ public class ItemResource {
     public Item getItem(
             @ApiParam(value = "Item ID", required = true) @PathParam("itemId") LongParam itemId,
             @ApiParam(hidden = true) @Auth User loggedInUser) {
-=======
-  private ItemDAO dao;
-  private BidDAO bidDAO;
-  private FeedbackResource feedbackResource;
-    private BidResource bidResource;
-
-  public ItemResource(ItemDAO dao, BidDAO bidDAO, FeedbackResource feedbackResource, BidResource bidResource) {
-    this.dao = dao;
-    this.bidDAO = bidDAO;
-    this.feedbackResource = feedbackResource;
-      this.bidResource = bidResource;
-  }
-
-  @GET
-  @Path("/{itemId}")
-  @UnitOfWork
-  @ApiOperation(value = "Find item with given id",
-      notes = "If {itemId} exists, returns the corresponding item object", response = Item.class)
-  @ApiResponses(value = {@ApiResponse(code = 404, message = "Item ID not found")})
-  public Response getItem(
-      @ApiParam(value = "Item ID", required = true) @PathParam("itemId") LongParam itemId,
-      @ApiParam(hidden = true) @Auth User loggedInUser) {
->>>>>>> c2b4d56329ab5bdfb9471243e6b1ff4baa0c5abc
 
         Item item = this.dao.findById(itemId.get());
 
         if (item == null) {
-<<<<<<< HEAD
             throw new WebApplicationException("Item not found", Response.Status.NOT_FOUND);
         }
 
@@ -123,17 +79,6 @@ public class ItemResource {
         }
 
         return item;
-=======
-            return Response.status(Response.Status.NOT_FOUND).entity(new ErrorMessage("Item ID not found")).build();
-        }
-
-      Date now = new Date();
-      if ((item.getStartDate().after(now) || item.getEndDate().before(now)) && !loggedInUser.getId().equals(item.getUserId())) {
-          return Response.status(Response.Status.NOT_FOUND).entity(new ErrorMessage("Item ID not found")).build();
-      }
-
-        return Response.ok(item).build();
->>>>>>> c2b4d56329ab5bdfb9471243e6b1ff4baa0c5abc
     }
 
     @GET
@@ -145,11 +90,7 @@ public class ItemResource {
     @ApiResponses(value = {@ApiResponse(code = 204, message = "No matching results found"),
             @ApiResponse(code = 401, message = "User must be logged in"),
             @ApiResponse(code = 500, message = "Database error")})
-<<<<<<< HEAD
     public List<Item> getItems(
-=======
-    public Response getItems(
->>>>>>> c2b4d56329ab5bdfb9471243e6b1ff4baa0c5abc
             @ApiParam(value = "Item keyword",
                     required = false) @QueryParam("name") NonEmptyStringParam name,
             @ApiParam(value = "Item category",
@@ -187,11 +128,7 @@ public class ItemResource {
         }
 
         if (endPrice.compareTo(startPrice) < 0) {
-<<<<<<< HEAD
             throw new WebApplicationException("Highest price is less than lowest price", Response.Status.BAD_REQUEST);
-=======
-            return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorMessage("Highest price is less than lowest price")).build();
->>>>>>> c2b4d56329ab5bdfb9471243e6b1ff4baa0c5abc
         }
 
         int startVal;
@@ -199,11 +136,7 @@ public class ItemResource {
             startVal = 0;
         } else {
             if (start.get().compareTo(0) < 0) {
-<<<<<<< HEAD
                 throw new WebApplicationException("List offset must be greater than 0", Response.Status.BAD_REQUEST);
-=======
-                return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorMessage("List offset must be greater than 0")).build();
->>>>>>> c2b4d56329ab5bdfb9471243e6b1ff4baa0c5abc
             }
             startVal = start.get();
         }
@@ -213,11 +146,7 @@ public class ItemResource {
             sizeVal = 20;
         } else {
             if (size.get().compareTo(0) < 0) {
-<<<<<<< HEAD
                 throw new WebApplicationException("List size must be greater than 0", Response.Status.BAD_REQUEST);
-=======
-                return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorMessage("List size must be greater than 0")).build();
->>>>>>> c2b4d56329ab5bdfb9471243e6b1ff4baa0c5abc
             }
             sizeVal = size.get();
         }
@@ -231,19 +160,10 @@ public class ItemResource {
             list = this.dao.searchWithoutCategory(searchQuery, startPrice, endPrice, startVal, sizeVal);
         }
 
-<<<<<<< HEAD
         if (list.isEmpty()) {
             throw new WebApplicationException("No items found", Response.Status.NOT_FOUND);
         }
         return list;
-=======
-        if (list == null) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorMessage("Database error")).build();
-        } else if (list.isEmpty()) {
-            return Response.status(Response.Status.NO_CONTENT).entity(new ErrorMessage("No matching results found")).build();
-        }
-        return Response.ok(list).build();
->>>>>>> c2b4d56329ab5bdfb9471243e6b1ff4baa0c5abc
     }
 
 
@@ -258,19 +178,11 @@ public class ItemResource {
 
         Date now = new Date();
         if (item.getStartDate().before(now)) {
-<<<<<<< HEAD
             throw new WebApplicationException("Auction start date/time precedes current date/time", Response.Status.BAD_REQUEST);
         }
 
         if (item.getEndDate().before(item.getStartDate())) {
             throw new WebApplicationException("Auction end date/time precedes start date/time", Response.Status.BAD_REQUEST);
-=======
-            return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorMessage("Auction start date/time precedes current date/time")).build();
-        }
-
-        if (item.getEndDate().before(item.getStartDate())) {
-            return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorMessage("Auction end date/time precedes start date/time")).build();
->>>>>>> c2b4d56329ab5bdfb9471243e6b1ff4baa0c5abc
         }
 
         // null out item id
@@ -288,17 +200,8 @@ public class ItemResource {
 
         Item createdItem = this.dao.create(item);
 
-<<<<<<< HEAD
         URI uri = uriInfo.getAbsolutePathBuilder().path(createdItem.getId().toString()).build();
         return Response.created(uri).entity(createdItem).build();
-=======
-        if (createdItem == null) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorMessage("Database error")).build();
-        }
-        URI uri = uriInfo.getAbsolutePathBuilder().path(createdItem.getId().toString()).build();
-        return Response.created(uri).entity(createdItem)
-                        .build();
->>>>>>> c2b4d56329ab5bdfb9471243e6b1ff4baa0c5abc
     }
 
     @PUT
@@ -310,41 +213,24 @@ public class ItemResource {
             @ApiResponse(code = 401, message = "User must be signed in"),
             @ApiResponse(code = 403, message = "User cannot update item data for another user"),
             @ApiResponse(code = 404, message = "Item ID not found")})
-<<<<<<< HEAD
     public Item updateItem(@ApiParam(value = "Item ID", required = true) @PathParam("itemId") LongParam itemId,
                                @Valid Item item, @ApiParam(hidden = true) @Auth User loggedInUser) {
 
         Item found = this.dao.findById(itemId.get());
         if (found == null) {
             throw new WebApplicationException("Item not found", Response.Status.NOT_FOUND);
-=======
-    public Response updateItem(@ApiParam(value = "Item ID", required = true) @PathParam("itemId") LongParam itemId,
-            @Valid Item item, @ApiParam(hidden = true) @Auth User loggedInUser) {
-
-        Item found = this.dao.findById(itemId.get());
-        if (found == null) {
-            return Response.status(Response.Status.NOT_FOUND).entity(new ErrorMessage("Item ID not found")).build();
->>>>>>> c2b4d56329ab5bdfb9471243e6b1ff4baa0c5abc
         }
 
         // forbidden to update if logged in user did not post item
         if (!found.getUserId().equals(loggedInUser.getId())) {
-<<<<<<< HEAD
             throw new WebApplicationException("Logged in user cannot modify another user's item", Response.Status.FORBIDDEN);
-=======
-            return Response.status(Response.Status.FORBIDDEN).entity(new ErrorMessage("Logged in user cannot modify another user's item")).build();
->>>>>>> c2b4d56329ab5bdfb9471243e6b1ff4baa0c5abc
         }
 
         Date now = new Date();
 
         // if item's end_date has crossed, you can no longer modify the item
         if (!found.getEndDate().after(now)) {
-<<<<<<< HEAD
             throw new WebApplicationException("Item auction has ended", Response.Status.FORBIDDEN);
-=======
-            return Response.status(Response.Status.FORBIDDEN).entity(new ErrorMessage("Item auction has ended")).build();
->>>>>>> c2b4d56329ab5bdfb9471243e6b1ff4baa0c5abc
         }
 
         // start date could be null
@@ -359,19 +245,11 @@ public class ItemResource {
             item.setInitialPrice(found.getInitialPrice());
         }
         else if (item.getStartDate().before(now)) {
-<<<<<<< HEAD
             throw new WebApplicationException("Auction start date/time precedes current date/time", Response.Status.BAD_REQUEST);
         }
 
         if (item.getEndDate().before(item.getStartDate())) {
             throw new WebApplicationException("Auction end date/time precedes start date/time", Response.Status.BAD_REQUEST);
-=======
-            return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorMessage("Auction start date/time precedes current date/time")).build();
-        }
-
-        if (item.getEndDate().before(item.getStartDate())) {
-            return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorMessage("Auction end date/time precedes start date/time")).build();
->>>>>>> c2b4d56329ab5bdfb9471243e6b1ff4baa0c5abc
         }
 
         // set json ignored properties
@@ -382,11 +260,7 @@ public class ItemResource {
 
         Item updatedItem = this.dao.update(item);
 
-<<<<<<< HEAD
         return updatedItem;
-=======
-        return Response.ok(updatedItem).build();
->>>>>>> c2b4d56329ab5bdfb9471243e6b1ff4baa0c5abc
     }
 
     @DELETE
@@ -405,7 +279,6 @@ public class ItemResource {
 
         // item doesn't exist
         if (found == null) {
-<<<<<<< HEAD
             throw new WebApplicationException("Item not found", Response.Status.NOT_FOUND);
         }
 
@@ -415,51 +288,26 @@ public class ItemResource {
 
         boolean success = this.dao.deleteItem(itemId.get());
         return Response.status(Response.Status.NO_CONTENT).build();
-=======
-            return Response.status(Response.Status.NOT_FOUND).entity(new ErrorMessage("Item ID not found")).build();
-        }
-
-        if (!found.getUserId().equals(loggedInUser.getId())) {
-            return Response.status(Response.Status.FORBIDDEN).entity(new ErrorMessage("Logged in user cannot delete another user's item")).build();
-        }
-
-        boolean success = this.dao.deleteItem(itemId.get());
-        return Response.status(Response.Status.NO_CONTENT).entity(new ErrorMessage("item successfully deleted")).build();
->>>>>>> c2b4d56329ab5bdfb9471243e6b1ff4baa0c5abc
     }
 
     @GET
     @Path("/{itemId}/winning")
     @UnitOfWork
     @ApiOperation(value = "Get winning bid",
-<<<<<<< HEAD
             notes = "Get winning bid for item, if bids exist",
             response = Bid.class)
     @ApiResponses(value = {@ApiResponse(code = 404, message = "No bids found")})
     public Bid getCurrentWinningBid(
-=======
-                    notes = "Get winning bid for item, if bids exist",
-                    response = Bid.class)
-    @ApiResponses(value = {@ApiResponse(code = 404, message = "No bids found")})
-    public Response getCurrentWinningBid(
->>>>>>> c2b4d56329ab5bdfb9471243e6b1ff4baa0c5abc
             @ApiParam(value = "Item ID", required = true) @PathParam("itemId") LongParam itemId,
             @ApiParam(hidden = true) @Auth User loggedInUser) {
 
         Bid bid = this.bidDAO.getCurrentWinningBid(itemId.get());
 
         if (bid == null) {
-<<<<<<< HEAD
             throw new WebApplicationException("No bids have been placed", Response.Status.NOT_FOUND);
         }
 
         return bid;
-=======
-            return Response.status(Response.Status.NOT_FOUND).entity(new ErrorMessage("No bids placed on this item")).build();
-        }
-
-        return Response.ok(bid).build();
->>>>>>> c2b4d56329ab5bdfb9471243e6b1ff4baa0c5abc
     }
 
     @Path("/{itemId}/bids")
