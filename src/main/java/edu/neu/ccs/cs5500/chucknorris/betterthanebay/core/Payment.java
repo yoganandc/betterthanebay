@@ -1,6 +1,7 @@
 package edu.neu.ccs.cs5500.chucknorris.betterthanebay.core;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.hibernate.validator.constraints.NotBlank;
 
@@ -92,7 +93,7 @@ public class Payment implements Comparable<Payment> {
         this.csv = csv;
     }
 
-    @JsonIgnore
+    @JsonProperty
     public Long getId() {
         return this.id;
     }

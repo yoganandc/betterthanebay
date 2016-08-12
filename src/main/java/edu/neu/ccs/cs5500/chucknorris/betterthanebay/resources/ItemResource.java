@@ -15,21 +15,19 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Bid;
-import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.ErrorMessage;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.Item;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.core.User;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.db.BidDAO;
-import edu.neu.ccs.cs5500.chucknorris.betterthanebay.db.FeedbackDAO;
 import edu.neu.ccs.cs5500.chucknorris.betterthanebay.db.ItemDAO;
 import io.dropwizard.auth.Auth;
 import io.dropwizard.hibernate.UnitOfWork;
-import io.dropwizard.hibernate.UnitOfWorkAwareProxyFactory;
 import io.dropwizard.jersey.params.IntParam;
 import io.dropwizard.jersey.params.LongParam;
 import io.dropwizard.jersey.params.NonEmptyStringParam;
@@ -38,7 +36,6 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import io.swagger.annotations.Authorization;
 
 
 @Path("/items")
@@ -48,40 +45,40 @@ import io.swagger.annotations.Authorization;
 public class ItemResource {
 
 
-  private ItemDAO dao;
-  private BidDAO bidDAO;
-  private FeedbackResource feedbackResource;
+    private ItemDAO dao;
+    private BidDAO bidDAO;
+    private FeedbackResource feedbackResource;
     private BidResource bidResource;
 
-  public ItemResource(ItemDAO dao, BidDAO bidDAO, FeedbackResource feedbackResource, BidResource bidResource) {
-    this.dao = dao;
-    this.bidDAO = bidDAO;
-    this.feedbackResource = feedbackResource;
-      this.bidResource = bidResource;
-  }
+    public ItemResource(ItemDAO dao, BidDAO bidDAO, FeedbackResource feedbackResource, BidResource bidResource) {
+        this.dao = dao;
+        this.bidDAO = bidDAO;
+        this.feedbackResource = feedbackResource;
+        this.bidResource = bidResource;
+    }
 
-  @GET
-  @Path("/{itemId}")
-  @UnitOfWork
-  @ApiOperation(value = "Find item with given id",
-      notes = "If {itemId} exists, returns the corresponding item object", response = Item.class)
-  @ApiResponses(value = {@ApiResponse(code = 404, message = "Item ID not found")})
-  public Response getItem(
-      @ApiParam(value = "Item ID", required = true) @PathParam("itemId") LongParam itemId,
-      @ApiParam(hidden = true) @Auth User loggedInUser) {
+    @GET
+    @Path("/{itemId}")
+    @UnitOfWork
+    @ApiOperation(value = "Find item with given id",
+            notes = "If {itemId} exists, returns the corresponding item object", response = Item.class)
+    @ApiResponses(value = {@ApiResponse(code = 404, message = "Item ID not found")})
+    public Item getItem(
+            @ApiParam(value = "Item ID", required = true) @PathParam("itemId") LongParam itemId,
+            @ApiParam(hidden = true) @Auth User loggedInUser) {
 
         Item item = this.dao.findById(itemId.get());
 
         if (item == null) {
-            return Response.status(Response.Status.NOT_FOUND).entity(new ErrorMessage("Item ID not found")).build();
+            throw new WebApplicationException("Item not found", Response.Status.NOT_FOUND);
         }
 
-      Date now = new Date();
-      if ((item.getStartDate().after(now) || item.getEndDate().before(now)) && !loggedInUser.getId().equals(item.getUserId())) {
-          return Response.status(Response.Status.NOT_FOUND).entity(new ErrorMessage("Item ID not found")).build();
-      }
+        Date now = new Date();
+        if ((item.getStartDate().after(now) || item.getEndDate().before(now)) && !loggedInUser.getId().equals(item.getUserId())) {
+            throw new WebApplicationException("Item not found", Response.Status.NOT_FOUND);
+        }
 
-        return Response.ok(item).build();
+        return item;
     }
 
     @GET
@@ -93,7 +90,7 @@ public class ItemResource {
     @ApiResponses(value = {@ApiResponse(code = 204, message = "No matching results found"),
             @ApiResponse(code = 401, message = "User must be logged in"),
             @ApiResponse(code = 500, message = "Database error")})
-    public Response getItems(
+    public List<Item> getItems(
             @ApiParam(value = "Item keyword",
                     required = false) @QueryParam("name") NonEmptyStringParam name,
             @ApiParam(value = "Item category",
@@ -131,7 +128,7 @@ public class ItemResource {
         }
 
         if (endPrice.compareTo(startPrice) < 0) {
-            return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorMessage("Highest price is less than lowest price")).build();
+            throw new WebApplicationException("Highest price is less than lowest price", Response.Status.BAD_REQUEST);
         }
 
         int startVal;
@@ -139,7 +136,7 @@ public class ItemResource {
             startVal = 0;
         } else {
             if (start.get().compareTo(0) < 0) {
-                return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorMessage("List offset must be greater than 0")).build();
+                throw new WebApplicationException("List offset must be greater than 0", Response.Status.BAD_REQUEST);
             }
             startVal = start.get();
         }
@@ -149,7 +146,7 @@ public class ItemResource {
             sizeVal = 20;
         } else {
             if (size.get().compareTo(0) < 0) {
-                return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorMessage("List size must be greater than 0")).build();
+                throw new WebApplicationException("List size must be greater than 0", Response.Status.BAD_REQUEST);
             }
             sizeVal = size.get();
         }
@@ -163,12 +160,10 @@ public class ItemResource {
             list = this.dao.searchWithoutCategory(searchQuery, startPrice, endPrice, startVal, sizeVal);
         }
 
-        if (list == null) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorMessage("Database error")).build();
-        } else if (list.isEmpty()) {
-            return Response.status(Response.Status.NO_CONTENT).entity(new ErrorMessage("No matching results found")).build();
+        if (list.isEmpty()) {
+            throw new WebApplicationException("No items found", Response.Status.NOT_FOUND);
         }
-        return Response.ok(list).build();
+        return list;
     }
 
 
@@ -183,11 +178,11 @@ public class ItemResource {
 
         Date now = new Date();
         if (item.getStartDate().before(now)) {
-            return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorMessage("Auction start date/time precedes current date/time")).build();
+            throw new WebApplicationException("Auction start date/time precedes current date/time", Response.Status.BAD_REQUEST);
         }
 
         if (item.getEndDate().before(item.getStartDate())) {
-            return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorMessage("Auction end date/time precedes start date/time")).build();
+            throw new WebApplicationException("Auction end date/time precedes start date/time", Response.Status.BAD_REQUEST);
         }
 
         // null out item id
@@ -205,12 +200,8 @@ public class ItemResource {
 
         Item createdItem = this.dao.create(item);
 
-        if (createdItem == null) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorMessage("Database error")).build();
-        }
         URI uri = uriInfo.getAbsolutePathBuilder().path(createdItem.getId().toString()).build();
-        return Response.created(uri).entity(createdItem)
-                        .build();
+        return Response.created(uri).entity(createdItem).build();
     }
 
     @PUT
@@ -222,24 +213,24 @@ public class ItemResource {
             @ApiResponse(code = 401, message = "User must be signed in"),
             @ApiResponse(code = 403, message = "User cannot update item data for another user"),
             @ApiResponse(code = 404, message = "Item ID not found")})
-    public Response updateItem(@ApiParam(value = "Item ID", required = true) @PathParam("itemId") LongParam itemId,
-            @Valid Item item, @ApiParam(hidden = true) @Auth User loggedInUser) {
+    public Item updateItem(@ApiParam(value = "Item ID", required = true) @PathParam("itemId") LongParam itemId,
+                               @Valid Item item, @ApiParam(hidden = true) @Auth User loggedInUser) {
 
         Item found = this.dao.findById(itemId.get());
         if (found == null) {
-            return Response.status(Response.Status.NOT_FOUND).entity(new ErrorMessage("Item ID not found")).build();
+            throw new WebApplicationException("Item not found", Response.Status.NOT_FOUND);
         }
 
         // forbidden to update if logged in user did not post item
         if (!found.getUserId().equals(loggedInUser.getId())) {
-            return Response.status(Response.Status.FORBIDDEN).entity(new ErrorMessage("Logged in user cannot modify another user's item")).build();
+            throw new WebApplicationException("Logged in user cannot modify another user's item", Response.Status.FORBIDDEN);
         }
 
         Date now = new Date();
 
         // if item's end_date has crossed, you can no longer modify the item
         if (!found.getEndDate().after(now)) {
-            return Response.status(Response.Status.FORBIDDEN).entity(new ErrorMessage("Item auction has ended")).build();
+            throw new WebApplicationException("Item auction has ended", Response.Status.FORBIDDEN);
         }
 
         // start date could be null
@@ -254,11 +245,11 @@ public class ItemResource {
             item.setInitialPrice(found.getInitialPrice());
         }
         else if (item.getStartDate().before(now)) {
-            return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorMessage("Auction start date/time precedes current date/time")).build();
+            throw new WebApplicationException("Auction start date/time precedes current date/time", Response.Status.BAD_REQUEST);
         }
 
         if (item.getEndDate().before(item.getStartDate())) {
-            return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorMessage("Auction end date/time precedes start date/time")).build();
+            throw new WebApplicationException("Auction end date/time precedes start date/time", Response.Status.BAD_REQUEST);
         }
 
         // set json ignored properties
@@ -269,7 +260,7 @@ public class ItemResource {
 
         Item updatedItem = this.dao.update(item);
 
-        return Response.ok(updatedItem).build();
+        return updatedItem;
     }
 
     @DELETE
@@ -288,35 +279,35 @@ public class ItemResource {
 
         // item doesn't exist
         if (found == null) {
-            return Response.status(Response.Status.NOT_FOUND).entity(new ErrorMessage("Item ID not found")).build();
+            throw new WebApplicationException("Item not found", Response.Status.NOT_FOUND);
         }
 
         if (!found.getUserId().equals(loggedInUser.getId())) {
-            return Response.status(Response.Status.FORBIDDEN).entity(new ErrorMessage("Logged in user cannot delete another user's item")).build();
+            throw new WebApplicationException("Logged in user cannot delete another user's item", Response.Status.FORBIDDEN);
         }
 
         boolean success = this.dao.deleteItem(itemId.get());
-        return Response.status(Response.Status.NO_CONTENT).entity(new ErrorMessage("item successfully deleted")).build();
+        return Response.status(Response.Status.NO_CONTENT).build();
     }
 
     @GET
     @Path("/{itemId}/winning")
     @UnitOfWork
     @ApiOperation(value = "Get winning bid",
-                    notes = "Get winning bid for item, if bids exist",
-                    response = Bid.class)
+            notes = "Get winning bid for item, if bids exist",
+            response = Bid.class)
     @ApiResponses(value = {@ApiResponse(code = 404, message = "No bids found")})
-    public Response getCurrentWinningBid(
+    public Bid getCurrentWinningBid(
             @ApiParam(value = "Item ID", required = true) @PathParam("itemId") LongParam itemId,
             @ApiParam(hidden = true) @Auth User loggedInUser) {
 
         Bid bid = this.bidDAO.getCurrentWinningBid(itemId.get());
 
         if (bid == null) {
-            return Response.status(Response.Status.NOT_FOUND).entity(new ErrorMessage("No bids placed on this item")).build();
+            throw new WebApplicationException("No bids have been placed", Response.Status.NOT_FOUND);
         }
 
-        return Response.ok(bid).build();
+        return bid;
     }
 
     @Path("/{itemId}/bids")

@@ -14,6 +14,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -70,21 +71,21 @@ public class FeedbackResource {
             notes = "If {feedbackId} exists, returns the corresponding feedback object. Valid IDs are 'seller' & 'buyer'",
             response = Feedback.class)
     @ApiResponses(value = {@ApiResponse(code = 404, message = "Feedback not found")})
-    public Response getFeedback(@ApiParam(value = "Item ID", required = true) @PathParam("itemId") LongParam itemId,
+    public Feedback getFeedback(@ApiParam(value = "Item ID", required = true) @PathParam("itemId") LongParam itemId,
                                 @ApiParam(value = "Feedback ID", required = true) @PathParam("feedbackId") NonEmptyStringParam feedbackId,
                                 @ApiParam(hidden = true) @Auth User loggedInUser) {
 
         if(!feedbackId.get().isPresent() || !VALID_ID.contains(feedbackId.get().get())) {
-            return Response.status(Response.Status.NOT_FOUND).entity(new ErrorMessage("Valid ID is either \"seller\" or \"buyer\"")).build();
+            throw new WebApplicationException("Valid ID is either \"seller\" or \"buyer\"", Response.Status.NOT_FOUND);
         }
 
         Feedback feedback = dao.findById(itemId.get(), feedbackId.get().get());
 
         if (feedback == null) {
-            return Response.status(Response.Status.NOT_FOUND).entity(new ErrorMessage("No feedback found for feedback id")).build();
+            throw new WebApplicationException("No feedback found", Response.Status.NOT_FOUND);
         }
 
-        return Response.ok(feedback).build();
+        return feedback;
     }
 
     @POST
@@ -103,22 +104,22 @@ public class FeedbackResource {
 
         Item item = itemDAO.findById(itemId.get());
         if(item == null) {
-            return Response.status(Response.Status.NOT_FOUND).entity(new ErrorMessage("Item ID not found")).build();
+            throw new WebApplicationException("Item ID not found", Response.Status.NOT_FOUND);
         }
 
         // FIRST CHECK IF ITEM HAS FINISHED AUCTION
         Date now = new Date();
         if(item.getEndDate().after(now)) {
-            return Response.status(Response.Status.FORBIDDEN).entity(new ErrorMessage("Item auction has not ended")).build();
+            throw new WebApplicationException("Item auction has not ended", Response.Status.BAD_REQUEST);
         }
 
         // NOW CHECK IF USER POSTED ITEM OR WON IT
         Bid bid = bidDAO.getCurrentWinningBid(item.getId());
 
         if (bid == null) {
-            return Response.status(Response.Status.FORBIDDEN).entity(new ErrorMessage("Item was not bid on")).build();
+            throw new WebApplicationException("Item auction has not ended", Response.Status.FORBIDDEN);
         } else if (!bid.getUserId().equals(loggedInUser.getId()) && !item.getUserId().equals(loggedInUser.getId())) {
-            return Response.status(Response.Status.FORBIDDEN).entity(new ErrorMessage("Only seller or buyer of the item can leave feedback")).build();
+            throw new WebApplicationException("Only seller or buyer of the item can leave feedback", Response.Status.FORBIDDEN);
         }
 
         //set id to null
@@ -145,19 +146,14 @@ public class FeedbackResource {
             created = dao.create(feedback, Feedback.BUYER);
         }
 
-        if(created == null) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorMessage("Database error")).build();
+        if (bid.getUserId().equals(loggedInUser.getId())) {
+            return Response.created(uriInfo.getAbsolutePathBuilder().path(Feedback.SELLER).build())
+                    .entity(created)
+                    .build();
         } else {
-
-            if (bid.getUserId().equals(loggedInUser.getId())) {
-                return Response.created(uriInfo.getAbsolutePathBuilder().path(Feedback.SELLER).build())
-                        .entity(created)
-                        .build();
-            } else {
-                return Response.created(uriInfo.getAbsolutePathBuilder().path(Feedback.BUYER).build())
-                        .entity(created)
-                        .build();
-            }
+            return Response.created(uriInfo.getAbsolutePathBuilder().path(Feedback.BUYER).build())
+                    .entity(created)
+                    .build();
         }
     }
 
@@ -173,18 +169,18 @@ public class FeedbackResource {
             @ApiResponse(code = 403, message = "User cannot update feedback data for another user"),
             @ApiResponse(code = 404, message = "Feedback not found"),
             @ApiResponse(code = 500, message = "Database error")})
-    public Response updateFeedback(@ApiParam(value = "Item ID", required = true) @PathParam("itemId") LongParam itemId,
+    public Feedback updateFeedback(@ApiParam(value = "Item ID", required = true) @PathParam("itemId") LongParam itemId,
                                    @ApiParam(value = "Feedback ID", required = true) @PathParam("feedbackId") NonEmptyStringParam feedbackId,
                                    @Valid Feedback feedback, @ApiParam(hidden = true) @Auth User loggedInUser) {
 
         if(!feedbackId.get().isPresent() || !VALID_ID.contains(feedbackId.get().get())) {
-            return Response.status(Response.Status.NOT_FOUND).entity(new ErrorMessage("Valid ID is either \"seller\" or \"buyer\"")).build();
+            throw new WebApplicationException("Valid ID is either \"seller\" or \"buyer\"", Response.Status.NOT_FOUND);
         }
 
         // get associated item
         Item item = itemDAO.findById(itemId.get());
         if(item == null) {
-            return Response.status(Response.Status.NOT_FOUND).entity(new ErrorMessage("Item ID not found")).build();
+            throw new WebApplicationException("Item with given ID not found", Response.Status.NOT_FOUND);
         }
 
         // get associated winning bid
@@ -192,17 +188,17 @@ public class FeedbackResource {
 
         // check if user accessing feedback is buyer (for seller, i.e., at path /seller)
         if(feedbackId.get().get().equals(Feedback.SELLER) &&!loggedInUser.getId().equals(bid.getUserId())) {
-            return Response.status(Response.Status.FORBIDDEN).entity(new ErrorMessage("Seller cannot update their own feedback")).build();
+            throw new WebApplicationException("Seller cannot update their own feedback", Response.Status.FORBIDDEN);
         }
 
         //check if user accessing is seller (for buyer, i.e., at path /buyer)
         if(feedbackId.get().get().equals(Feedback.BUYER) &&!loggedInUser.getId().equals(item.getUserId())) {
-            return Response.status(Response.Status.FORBIDDEN).entity(new ErrorMessage("Buyer cannot update their own feedback")).build();
+            throw new WebApplicationException("Buyer cannot update their own feedback", Response.Status.FORBIDDEN);
         }
 
         Feedback found = dao.findById(itemId.get(), feedbackId.get().get());
         if(found == null) {
-            return Response.status(Response.Status.NOT_FOUND).entity(new ErrorMessage("Feedback type for item ID not found")).build();
+            throw new WebApplicationException("Feedback not found", Response.Status.NOT_FOUND);
         }
 
         // set json ignored properties
@@ -221,10 +217,7 @@ public class FeedbackResource {
             updatedFeedback = dao.update(feedback, Feedback.BUYER);
         }
 
-        if (updatedFeedback == null) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorMessage("Database error")).build();
-        }
-        return Response.ok(updatedFeedback).build();
+        return updatedFeedback;
     }
 
     @DELETE
@@ -242,13 +235,13 @@ public class FeedbackResource {
                                    @ApiParam(hidden = true) @Auth User loggedInUser) {
 
         if(!feedbackId.get().isPresent() || VALID_ID.contains(feedbackId.get().get())) {
-            return Response.status(Response.Status.NOT_FOUND).entity(new ErrorMessage("Valid ID is either \"seller\" or \"buyer\"")).build();
+            throw new WebApplicationException("Valid ID is either \"seller\" or \"buyer\"", Response.Status.NOT_FOUND);
         }
 
         // get associated item
         Item item = itemDAO.findById(itemId.get());
         if(item == null) {
-            return Response.status(Response.Status.NOT_FOUND).entity(new ErrorMessage("Item ID not found")).build();
+            throw new WebApplicationException("Item with given ID not found", Response.Status.NOT_FOUND);
         }
 
         // get associated winning bid
@@ -256,12 +249,12 @@ public class FeedbackResource {
 
         // check if user accessing feedback is buyer (for seller, i.e., at path /seller)
         if(feedbackId.get().get().equals(Feedback.SELLER) &&!loggedInUser.getId().equals(bid.getUserId())) {
-            return Response.status(Response.Status.FORBIDDEN).entity(new ErrorMessage("Seller cannot delete feedback left by buyer")).build();
+            throw new WebApplicationException("Seller cannot delete feedback left by buyer", Response.Status.FORBIDDEN);
         }
 
         //check if user accessing is seller (for buyer, i.e., at path /buyer)
         if(feedbackId.get().get().equals(Feedback.BUYER) &&!loggedInUser.getId().equals(item.getUserId())) {
-            return Response.status(Response.Status.FORBIDDEN).entity(new ErrorMessage("Buyer cannot delete feedback left by seller")).build();
+            throw new WebApplicationException("Buyer cannot delete feedback left by seller", Response.Status.FORBIDDEN);
         }
 
         boolean success = false;
@@ -274,10 +267,10 @@ public class FeedbackResource {
         }
 
         if (success) {
-            return Response.status(Response.Status.NO_CONTENT).entity(new ErrorMessage("Feedback successfully deleted")).build();
+            return Response.status(Response.Status.NO_CONTENT).build();
         }
         else {
-            return Response.status(Response.Status.NOT_FOUND).entity(new ErrorMessage("Feedback type for this item doesn't exist")).build();
+            throw new WebApplicationException("Feedback not found", Response.Status.NOT_FOUND);
         }
     }
 }

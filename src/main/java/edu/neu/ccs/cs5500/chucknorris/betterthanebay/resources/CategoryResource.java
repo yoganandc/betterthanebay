@@ -1,5 +1,7 @@
 package edu.neu.ccs.cs5500.chucknorris.betterthanebay.resources;
 
+import java.util.List;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -39,7 +41,7 @@ public class CategoryResource {
             notes = "Returns a list of all existing categories",
             response = Category.class,
             responseContainer = "List")
-    public Response getAllCategories(@ApiParam(hidden = true) @Auth User loggedInUser) {
-        return Response.ok(dao.getAllCategories()).build();
+    public List<Category> getAllCategories(@ApiParam(hidden = true) @Auth User loggedInUser) {
+        return dao.getAllCategories();
     }
 }
